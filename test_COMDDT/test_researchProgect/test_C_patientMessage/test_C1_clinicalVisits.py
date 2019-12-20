@@ -369,8 +369,8 @@ class Test_clinicalVisits:
             for i in range(int(len(taskId)/2)):           # 这里大概是有一半的数据提交CRF
                 data = dict(taskId=taskId[i],  # 从患者列表信息中来的 ["responseData"]["content"][0]["taskId"]
                             # 这个参数和选取的值是一致的
-                            content='[{"linkId":"%s","value":["|past"]}]' % linkId,
-                            practitionerId="",
+                            content='[{"linkId":"%s","value":["|2"]}]' % linkId,
+                            #practitionerId="",
                             authUserId=response1["authUserId"], authToken=response1["authToken"])
                 assert_post(url, data, headers=header, hint=taskId[i])
 

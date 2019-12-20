@@ -637,15 +637,18 @@ class Test_projectManage:
 
     @allure.title("进行中的项目 从筛选中 添加受试患者")
     @allure.story("项目审核后的操作")
-    def test_startStatus_userCreate(self, dlogin, resultList):
+    def test_startStatus_userCreate(self, resultList):
         url = host + port_project + "/project/user/create.json"
+        # orgId = ['4400004', '4398028', '4400025', '4399480', '4399358', '4399695', '4398293', '4399037', '4399046', '4399436',
+        #  '4398125', '4399098', '4399991', '4399419', '4399963', '4399013', '4399245', '4398247', '4399024', '4400014',
+        #  '4399608', '4400047', '4400077', '4398368', '4399231']
         dataId = resultList["orgUserId"]
         dataIds = ""
         for i in dataId:
             dataIds += i + ","
         projectId = self.transfer_saveBase()
         centerProjectId = self.transfer_groupsList()["PATIENT_ID"]
-        header = {"cookie": dlogin}
+        # header = {"cookie": dlogin}
         allure.attach(f"内部参数：筛选患者列表={resultList}\nprojectId={projectId}\ncenterProjectId={centerProjectId}")
         data = dict(dataType=1, status=1, projectId=projectId,  # 7390
                     operatorId=self.authUserId,
@@ -654,7 +657,7 @@ class Test_projectManage:
                     grouptime=timelocal,
                     authUserId=self.authUserId,
                     authToken=self.authToken)
-        assert_post(url, data, headers=header)
+        assert_post(url, data, self.cook)
 
     @allure.title("获取分组列表  并取值prevTaskId")
     @allure.story("项目审核后的操作")

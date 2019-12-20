@@ -149,7 +149,7 @@ class Test_questionManage:
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
-            assert_get(url, data, self.cook, "请描述")
+            assert_get(url, data, self.cook, "text")
 
     @allure.title("查找医院的信息")
     @allure.story("问卷管理")

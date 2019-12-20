@@ -6,7 +6,7 @@
 @Author:Terence
 """
 import os, configparser, pytest, requests, \
-    json, time, sqlite3, re, allure, random, yaml
+    json, time, sqlite3, re, allure, random, yaml, datetime
 from public.Regular_frist import *
 
 
@@ -62,7 +62,7 @@ def get_email(name):
 def readyamlload(yamlName):
     yamlfile1 = open(yamlName, "r", encoding="utf-8")
     fileY1 = yamlfile1.read()
-    conyaml1 = yaml.load(fileY1)
+    conyaml1 = yaml.full_load(fileY1)
     return conyaml1
 
 # ----------变量---------
@@ -120,10 +120,25 @@ num = random.randint(1, 999)
 # 对json数据的分行加工
 def print_json_multi_row(resultDic):
     print(json.dumps(resultDic, sort_keys=True, indent=1, ensure_ascii=False))
-
-
+# ----*--写入yaml数据--*----
+def writhyaml():
+    dd = [["05001,05005", "肺功能检查率"], ("02001,02002", "COPD抗菌药物使用率"), ("01006,01003", "CD率"), ("01004,01005", "48小时再入院率"), ("01001,01002", "COPD急性加重期住院死亡率")]
+    try:
+        with open(yamlPath, "a+", encoding="utf-8") as file:
+            yaml.dump(data=dd, stream=file, allow_unicode=True)
+    except Exception as e:
+        print(f"写入yaml文件失败{e}")
+    else:
+        print(f"写入yaml文件成功")
 
 if __name__ == '__main__':  # 测试一下，我们读取配置文件的方法是否可用
-    print('HTTP中的baseurl值为：', get_url("loginurl"))
-    print('EMAIL中的开关on_off值为：', get_port('python'))
-    print(time_up)
+    # print('HTTP中的baseurl值为：', get_url("loginurl"))
+    # print('EMAIL中的开关on_off值为：', get_port('python'))
+    # print(time_up)
+    # writhyaml()
+    print(congyaml["质控首页_患者基本指标"],"\n",f'type={type(congyaml["质控首页_患者基本指标"][0])}')
+    # data1234 = [("05001,05005", "肺功能检查率"), ("02001,02002", "COPD抗菌药物使用率"), ("01006,01003", "CD率"),
+    #             ("01004,01005", "48小时再入院率"), ("01001,01002", "COPD急性加重期住院死亡率")]
+    # data12345 = data1234 + [pytest.param('01006,01003', "肺功能检查率", marks=pytest.mark.xfail)]
+    # print(f"\ndata1234={data1234}\ndata12345={data12345}")
+

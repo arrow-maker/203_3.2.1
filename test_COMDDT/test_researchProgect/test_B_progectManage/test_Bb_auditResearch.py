@@ -206,10 +206,10 @@ class Test_project_audict:
                     pageSize=10, projectId=ids[0], operatorId=response1["authUserId"], dept="",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
-        aa = json.loads(result.text)["responseData"]["content"]
+        resultdic = json.loads(result.text)["responseData"]["content"]
         datalist = {"taskId": [], "patientId": []}
-        if len(aa) > 0:
-            for i in aa:
+        if len(resultdic) > 0:
+            for i in resultdic:
                 datalist["taskId"].append(i["reviewTaskId"])
                 datalist["patientId"].append(i["patientId"])
         return datalist

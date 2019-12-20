@@ -128,7 +128,7 @@ def assert_get(url, params=None, cook=None, hint="true", **kwargs):
     result = requests.get(url, params=params, cookies=cook, **kwargs)
     resultdic = json.loads(result.text)
     print_json_multi_row(resultdic)
-    allure.attach(f"url={url}\nparams={params}\nhint={hint}\nkwargs={kwargs}\nresult={result.text}", name="参数数据")
+    allure.attach(f"url={url}\nparams={params}\nhint={hint}\nkwargs={kwargs}\nresult={result.text}", name="断言参数数据")
     if hint not in result.text:
         assert "SUCCESS" in result.text
     return result.text, resultdic
@@ -138,8 +138,39 @@ def assert_post(url, data=None, cook=None, hint="true", **kwargs):
     result = requests.post(url, data=data, cookies=cook, **kwargs)
     resultdic = json.loads(result.text)
     print_json_multi_row(resultdic)
-    allure.attach(f"url={url}\ndata={data}\nhint={hint}\nkwargs={kwargs}\nresult={result.text}", name="参数数据")
+    allure.attach(f"url={url}\ndata={data}\nhint={hint}\nkwargs={kwargs}\nresult={result.text}", name="断言参数数据")
     if hint not in result.text:
         assert "SUCCESS" in result.text
     return result.text, resultdic
 
+aa = ['2015-01-16 16:35:43', '2015-04-27 11:26:56', '2015-07-27 13:50:45', '2015-08-31 15:08:16', '2015-12-19 12:18:00',
+      '2016-04-07 12:07:45', '2016-08-30 13:51:56', '2016-01-22 09:29:35', '2016-01-25 14:45:56', '2016-02-01 14:58:07',
+      '2016-02-15 15:29:27', '2016-02-29 15:18:11', '2016-03-07 15:07:05', '2016-05-06 09:44:24', '2017-09-19 14:37:06',
+      '2018-12-06 16:29:42', '2018-12-07 08:59:01', '2018-12-07 09:05:20']
+# aa2 = [time.strptime(x, "%Y-%m-%d %H:%M:%S") for x in aa]   # 这个是时间数据
+# print(aa2)
+# # 字符时间转换为时间戳
+# aa1 = [int(time.mktime(time.strptime(x, "%Y-%m-%d %H:%M:%S"))) for x in aa]
+aa1 = []
+for i in aa:
+    print(i)
+    timeArray = time.strptime(i, "%Y-%m-%d %H:%M:%S")
+    aa1.append(int(time.mktime(timeArray)))
+# # 时间戳转化为字符时间
+bb = [time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(x)) for x in sorted(aa1)]
+print(f"aa1={aa1} \naa2={sorted(aa1)}")
+print(f"bb={bb}")
+print(f"aa={aa}")
+# assert aa == bb1
+# assert aa1 == sorted(aa1)
+# cc = ['2016-01-22 09:29:35', '2016-01-25 14:45:56', '2016-02-01 14:58:07', '2016-02-15 15:29:27', '2016-02-29 15:18:11', '2016-03-07 15:07:05', '2016-04-07 12:07:45', '2016-05-06 09:44:24', '2016-08-30 13:51:56',]
+# cc1 = [int(time.mktime(time.strptime(x, "%Y-%m-%d %H:%M:%S"))) for x in cc]
+# print(cc1)
+# assert cc1 == sorted(cc1)
+# print(aa1.sort())
+# assert aa1 == sorted(aa1)
+dd = [1460002065, 1472536316, 1453426175, 1453704356, 1454309887, 1455521367, 1456730291, 1457334425, 1462499064]
+dd1= [1453426175, 1453704356, 1454309887, 1455521367, 1456730291, 1457334425, 1460002065, 1462499064, 1472536316]
+cc = [time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(x)) for x in dd]
+cc1= [time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(x)) for x in dd1]
+print(f"cc={cc}\ncc1={cc1}")

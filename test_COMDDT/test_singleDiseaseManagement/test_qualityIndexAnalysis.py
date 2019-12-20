@@ -110,21 +110,25 @@ class Test_qualityIndexAnalysis:
 
     @allure.title("获取报告分组列表")
     @allure.story("首次加载的接口加载")
-    def test_getReportGroupList(self):
+    @pytest.mark.parametrize("groupNos, hint", (("01", "2-31天再入院率"), ("02", "COPD药占比"), ("03", "入院途径分析"),
+                                               ("04", "平均住院日分析"), ("05", "入住ICU率")))
+    def test_getReportGroupList(self, groupNos, hint):
         url = host + port_sourcedata + "/quality/control/getReportGroupList.json"
-        data = dict(groupNo="01", multiCenter=0,
+        data = dict(groupNo=groupNos, multiCenter=0,
                     authUserId=self.authUserId, authToken=self.authToken)
-        assert_get(url, data, self.cook)
+        assert_get(url, data, self.cook, hint)
 
+    data1234 = congyaml["质控首页_患者基本指标"]
     @allure.title("质控首页的数据展示，合理用药指标展示，患者基础指标")
     @allure.story("首次加载的接口加载")
-    def test_getReportDatas(self):
+    @pytest.mark.parametrize("reportNos,hint", data1234+[pytest.param('01006,01003', "肺功能检查率", marks=pytest.mark.xfail)])
+    def test_getReportDatas(self, reportNos, hint):
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
         data = dict(hospitalCode=self.hospitalCode, slave="true",
-                    reportNos="01001,01002,01004,01005,01006,01003,02001,02002,05001,05005",
+                    reportNos=reportNos,
                     timeSlice="月", indexTimeStart="2019-09-01", indexTimeEnd="2019-09-30",
                     authUserId=self.authUserId, authToken=self.authToken)
-        assert_get(url, data, self.cook, "01004")
+        assert_get(url, data, self.cook, hint)
 
 
 if __name__ == '__main__':

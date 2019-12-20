@@ -14,13 +14,13 @@
 '''
 import os, sys
 
-path111 = os.path.dirname(__file__)
-sys.path.append(path111)
+sys.path.append(os.path.dirname(__file__))
 
 from public.overWrite_Assert import *
 from selenium import webdriver
 import win32crypt
-
+# 用于修改运行中的中文显示U码
+from py.xml import html
 
 # --------------------登录------------------
 @pytest.fixture(scope="session")
@@ -49,6 +49,7 @@ def login():
 
     yield datadic, result.cookies
 
+
 @pytest.fixture(scope="session")
 def login2():
     result = requests.post(url=loginurl, data=logindata2)
@@ -58,6 +59,7 @@ def login2():
     datadic = {"authUserId": authUserId, "authToken": authToken}
 
     yield datadic, result.cookies
+
 
 @pytest.fixture()
 def orgPath(login):
@@ -72,7 +74,10 @@ def orgPath(login):
 
 # 读取chrome 登录的cookie值
 def transferCookie(host):
-    cookiepath = os.environ['LOCALAPPDATA'] + r"\Google\Chrome\User Data\Default\Cookies"  # 找到Chrome cookie路径
+    # cookiepath = os.environ['LOCALAPPDATA'] + r"\Google\Chrome\User Data\Default\Cookies"  # 找到Chrome cookie路径
+    # jenkins不能找到这个路径，所以这里给个固定的（在python中他有两个方法可以得到它os.getenv()和上面的os.environ()）
+
+    cookiepath = r"C:\Users\TP-GZ-A02-050\AppData\Local\Google\Chrome\User Data\Default\Cookies"
     sql = "select host_key,name,encrypted_value from cookies where host_key='%s'" % host  # 找到特定的cookie
     with sqlite3.connect(cookiepath) as conn:
         cu = conn.cursor()
@@ -139,7 +144,7 @@ def getDataAnalysisCount(response1, cook):
     templateId = savedataTempLate(response1, cook)
     url = host + port_dataindex + "/dataIndex/dataStore/getDataAnalyzeCount.json"
     data = dict(templateId=templateId, authUserId=response1["authUserId"], authToken=response1["authToken"])
-    assert_post(url, data, cook)
+    requests.post(url, data, cook)
     return templateId
 
 
@@ -161,3 +166,36 @@ def resultList(login):
         ids["orgUserId"].append(i["ORG_USER_ID"])
         ids["patiId"].append(i["PATI_ID"])
     return ids
+
+#   这两个是用于修改运行时的中文显示
+@pytest.mark.optionalhook
+def pytest_html_results_table_header(cells):
+    cells.insert(1, html.th('Description'))
+    cells.insert(2, html.th('Test_nodeid'))
+    # cells.insert(1, html.th('Time', class_='sortable time', col='time'))
+    cells.pop(2)
+
+#   这两个时用于修改运行时的中文显示
+@pytest.mark.optionalhook
+def pytest_html_results_table_row(report, cells):
+    cells.insert(1, html.td(report.description))
+    cells.insert(2, html.td(report.nodeid))
+    # cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
+    cells.pop(2)
+
+
+#   下面两个是用于配置命令行的参数
+def pytest_addoption(parser):
+    """
+    default: this is a transfrom variable , if you needing
+    :param parser:
+    :return:
+    """
+    parser.addoption(
+        "--cmdopt", action="store", default=None, help="my option: type1 or type2"
+    )
+
+#   这里是配置命令行的参数
+@pytest.fixture
+def cmdopt(request):
+    return request.config.getoption("--cmdopt")

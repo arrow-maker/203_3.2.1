@@ -25,6 +25,7 @@ def login_cookies():
 # orgName = response["responseData"]["roleList"][0]["orgName"]        # 用户所属的科室
 # orgId = response["responseData"]["roleList"][0]["orgId"]
 # userName = response["responseData"]["userName"]
+# loginName = response["responseData"]["loginName"]
 # mobile = response["responseData"]["mobileTelephone"]
 # hospital = response["responseData"]["platformList"][0]["platformName"]  # 获取医院的名字
 # itemOrgId = response["responseData"]["itemOrgId"]

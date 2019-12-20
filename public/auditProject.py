@@ -11,16 +11,16 @@ from public.overWrite_Assert import *
 
 
 # ------项目审核--------------
-@allure.description("我的项目-项目审核-信息列表")
 def auditProjectList(cook, authUserId, authToken):
     url = host + port_project + "/project/check/list.json"
     data = dict(checkType="1",  # 待审核的
                 projectCenter="", projectName="",
                 page=1, size=10, operatorId=authUserId,
                 authUserId=authUserId, authToken=authToken)
-    result = requests.get(url, data, cookies=cook)
+    result = assert_get(url, data, cook)
+    allure.attach(f'\nurl={url}\ndata={data}\nresult={result[0]}', name="我的项目-项目审核-信息列表")
     auditData = {"DATA_ID": [], "ID": [], "ORG_ID": [], "name": []}
-    aa = json.loads(result.text)["responseData"]["content"]
+    aa = result[1]["responseData"]["content"]
     if len(aa) > 0:
         for i in aa:
             auditData["ORG_ID"].append(i["ORG_ID"])
@@ -30,7 +30,6 @@ def auditProjectList(cook, authUserId, authToken):
     return auditData
 
 
-@allure.description("我的项目-项目审核-审核对应的项目")
 def auditCheckSave(name12, cook, authUserId, authToken):
     url = host + port_project + "/project/check/save.json"
     dataid1 = auditProjectList(cook, authUserId, authToken)
@@ -46,16 +45,13 @@ def auditCheckSave(name12, cook, authUserId, authToken):
         "authUserId ": authUserId,
         "authToken": authToken
     }
-    result = requests.post(url, data, cookies=cook)
-    print(f"\nurl={url} \ndata={data}")
-    print(result.text)
-    time.sleep(20)
-    if dataid1["DATA_ID"][0] not in result.text:
-        assert "已审核" in result.text
+    result = assert_post(url, data, cook)
+    allure.attach(f'\nurl={url}\ndata={data}\nresult={result[0]}', name="我的项目-项目审核-审核对应的项目")
+    if dataid1["DATA_ID"][0] not in result[0]:
+        assert "已审核" in result[0]
 
 
 # ------------项目申请--------------------
-@allure.description("科研质控-申请项目-基础信息的保存")
 def projectBase(response1, cook):
     url = host + port_project + "/project/save.json"
     data = {
@@ -110,6 +106,7 @@ def projectBase(response1, cook):
         "authToken": response1["authToken"]
     }
     result = requests.post(url, data, cookies=cook)
+    allure.attach(f"\nurl={url}\ndata={data}\nresult={result.text}", name="科研质控-申请项目-基础信息的保存")
     resultdic = json.loads(result.text)["responseData"]
     projectId = resultdic["projectId"]
     return projectId
