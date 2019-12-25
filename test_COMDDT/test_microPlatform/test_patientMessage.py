@@ -8,9 +8,7 @@
 from public.Login_Cookies import login_cookies
 from public.overWrite_Assert import *
 
-"""
-    在看一下，肯能有遗漏
-"""
+
 @allure.feature("帮助中心管理")
 class Test_patientListMessage:
 

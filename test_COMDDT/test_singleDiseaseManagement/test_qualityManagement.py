@@ -157,6 +157,22 @@ class Test_qualityDepartment:
         }
         assert_get(url, data, self.cook)
 
+    """
+        这里的生成简表没有添加
+    """
+    @allure.title("生成简表")
+    @allure.story("本次质控")
+    def test_batchCreate(self):
+        url = host + port_dataindex + "/qc/batch/create.json"
+        ids = congyaml["医疗质量管理"]["质控部门"]["生成简表"]["ids"]
+        data = {
+            "type": 1,
+            "ids": ids,
+            "operatorId": self.authUserId,
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        assert_post(url, data, self.cook)
 
 if __name__ == '__main__':
     pytest.main()

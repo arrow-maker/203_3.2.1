@@ -9,7 +9,7 @@ from public.Login_Cookies import *
 from public.overWrite_Assert import *
 
 
-@allure.feature("角色权限管理")
+@allure.feature("用户管理")
 class Test_userControl:
 
     def setup_class(self):

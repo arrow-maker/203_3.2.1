@@ -77,10 +77,13 @@ class Test_qualityIndexAnalysis:
 
     @allure.title("查看预警详情")
     @allure.story("首次加载的接口加载")
-    def test_getReportData(self):
+    @pytest.mark.parametrize("slice,start,end", (("年", "2019-01-01", "2019-12-31"), ("年", "2018-01-01", "2018-12-31"),
+                                                 ("季", "2018-01-01", "2019-3-30"),
+                                           ("半年", "2019-01-01", "2019-06-30"), ("月", "2019-04-01", "2019-04-30")))
+    def test_getReportData(self, slice, start, end):
         url = host + port_sourcedata + "/quality/control/getReportData.json"
-        data = dict(hospitalCode=self.hospitalCode, reportNo=21003, timeSlice="月",
-                    indexTimeStart="2019-01-01", indexTimeEnd="2019-09-14",
+        data = dict(hospitalCode=self.hospitalCode, reportNo=21003, timeSlice=slice,
+                    indexTimeStart=start, indexTimeEnd=end,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook)
 
@@ -122,11 +125,14 @@ class Test_qualityIndexAnalysis:
     @allure.title("质控首页的数据展示，合理用药指标展示，患者基础指标")
     @allure.story("首次加载的接口加载")
     @pytest.mark.parametrize("reportNos,hint", data1234+[pytest.param('01006,01003', "肺功能检查率", marks=pytest.mark.xfail)])
-    def test_getReportDatas(self, reportNos, hint):
+    @pytest.mark.parametrize("slice,start,end", (("年", "2019-01-01", "2019-12-31"), ("年", "2018-01-01", "2018-12-31"),
+                                                 ("季", "2018-01-01", "2019-3-30"),
+                                                 ("半年", "2019-01-01", "2019-06-30"), ("月", "2019-04-01", "2019-04-30")))
+    def test_getReportDatas(self, reportNos, hint, slice, start, end):
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
         data = dict(hospitalCode=self.hospitalCode, slave="true",
                     reportNos=reportNos,
-                    timeSlice="月", indexTimeStart="2019-09-01", indexTimeEnd="2019-09-30",
+                    timeSlice=slice, indexTimeStart=start, indexTimeEnd=end,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, hint)
 

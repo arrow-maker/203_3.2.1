@@ -49,7 +49,13 @@ class Test_homePage:
         data = dict(modularType=1, noticeTypeIds=4,
                     page=1, size=8,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
-        assert_get(url, data, cook)
+        result = assert_get(url, data, cook)
+        createTime = []
+        for i in result[1]["responseData"]["content"]:
+            createTime.append(i["creationTime"])
+        createTime = [int(time.mktime(time.strptime(x, "%Y-%m-%d %H:%M:%S"))) for x in createTime]  # 转化为时间戳
+        # 这里是对消息的时间进行排序
+        assert createTime == sorted(createTime, reverse=True)
 
     @allure.title("公告")
     @allure.story("首页显示")
@@ -84,6 +90,21 @@ class Test_homePage:
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
+    @allure.title("点击日期显示的数据")
+    @allure.story("首页显示")
+    @allure.step("参数：login={0}")
+    def test_calendarCount(self, login):
+        response1, cook = login
+        url = host + portlogin + "/userhome/calendar/datedetail.json"
+        data = {
+            "orgUserId": response1["authUserId"],
+            "date": "2019-12-22",
+            "type": 1,
+            "authUserId": response1["authUserId"],
+            "authToken": response1["authToken"]
+        }
+        assert_get(url, data, cook)
+
     @allure.title("显示上次登录的时间")
     @allure.story("首页显示")
     def test_getLastUserInfo(self, dlogin, login):
@@ -112,6 +133,19 @@ class Test_homePage:
         header = {"cookie": dlogin}
         data = dict(authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, headers=header)
+
+    @allure.title("审核情况-跳转")
+    @allure.story("首页显示")
+    def test_getAudit(self, login):
+        response1, cook = login
+        url = host + port_project + "/project/functionList.json"
+        data = {
+            "keyName": "ALL_CENTER_CHECK_CRF, CHECK_CRF",
+            "operatorId": response1["authUserId"],
+            "authUserId": response1["authUserId"],
+            "authToken": response1["authToken"]
+        }
+        assert_get(url, data, cook)
 
     @allure.title("跳转质控界面，这里是指控的菜单列表")
     @allure.story("首页操作")

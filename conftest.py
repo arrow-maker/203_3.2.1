@@ -20,7 +20,7 @@ from public.overWrite_Assert import *
 from selenium import webdriver
 import win32crypt
 # 用于修改运行中的中文显示U码
-from py.xml import html
+# from py.xml import html
 
 # --------------------登录------------------
 @pytest.fixture(scope="session")

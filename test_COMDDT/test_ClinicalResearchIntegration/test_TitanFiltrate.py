@@ -27,7 +27,7 @@ class Test_TitanFiltrateClass():
     """
     这两个是最复杂的设计(第二个有七个for循环：伤心)：是使用的pandas(利用行与行之间的关系，行和列之间的关系)
         设计思路是找到所有的行中的某一列值是给定的，这样逐级的筛选找到需要的那一行
-        xlid 这个行之间没有关系，或者找总的行数，非常的不方便
+        xlrd 这个行之间没有关系，或者找总的行数，非常的不方便
     """
 
     def grayAssert(self, datadic, pandas12):  # 置灰数据
@@ -171,6 +171,19 @@ class Test_TitanFiltrateClass():
                     else:
                         self.grayAssert(jdata[k], pdd2[k: k + 1])  # 第三级 非目录 置灰
 
+    @allure.title("查看疾病ICD编码")
+    @allure.story("天塔筛选-通用指标")
+    @pytest.mark.parametrize("dataId", (4162, 3294, 1565))
+    def test_saveDataTemplate(self, dataId):
+        url = host + port_dataindex + "/dataIndex/synonym/geSynonymTreeList.json"
+        data = {
+            "dataId": dataId,
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        assert_get(url, data, self.cook)
+
+
     # 用于保存临时数据的Id，筛选的
     global templateId
     templateId = 12632
@@ -259,6 +272,38 @@ class Test_TitanFiltrateClass():
             "authToken": self.authToken
         }
         assert_get(url, data, self.cook)
+
+    @allure.title("筛选添加收藏指标")
+    @allure.story("天塔筛选-通用指标")
+    def test_saveDataQueryGroup2(self):
+        url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataQueryGroup.json"
+        patientQuery = congyaml["天塔筛选收藏指标"]["patientQueryWhere"]
+        data = {
+            "operatorId": self.authUserId,
+            "groupName": "性别指标",
+            "whereType": 1,
+            "patientQueryWhere": patientQuery,
+            "categoryId": 15723,        # 这里是固定的
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        assert_post(url, data, self.cook, "性别指标")
+
+    @allure.title("筛选结果导出")
+    @allure.story("天塔筛选-通用指标")
+    def test_exportDataAnalysisResult(self):
+        url = host + port_dataindex + "/dataIndex/dataTemplate/exportDataAnalysisResult.json"
+        data = {
+            "templateId": templateId,
+            "resultType": 0,
+            "dataScope": 1,
+            "operatorId": self.authUserId,
+            "operatorFunction": "54246-exportLungvalue",
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        result = requests.get(url, data, cookies=self.cook)
+        assert result.status_code == 200
 
 
 if __name__ == '__main__':

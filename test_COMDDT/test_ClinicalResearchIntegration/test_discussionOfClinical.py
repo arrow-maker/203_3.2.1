@@ -6,7 +6,7 @@
     Author:  Arrow
 """
 from public.overWrite_Assert import *
-
+replyId = []       # 讨论的Id
 """
 这个模块要使用两个账号登录：
     一个用于审核，一个是创建者
@@ -51,7 +51,7 @@ class Test_dicussion():
             ids.append(i["patiId"])
         return ids
 
-    @allure.title("病例讨论中添加患者")
+    @allure.title("添加患者")
     @allure.story("病例讨论-患者")
     @allure.step("参数：login={0}")
     def test_topicSave(self, login):
@@ -68,7 +68,7 @@ class Test_dicussion():
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook, patiIds)
 
-    @allure.title("病例讨论中添加病例")
+    @allure.title("添加病例")
     @allure.story("病例讨论-患者")
     def test_topicSave2(self, login, resultList):
         response, cook = login
@@ -274,10 +274,24 @@ class Test_dicussion():
         }
         assert_post(url, data, cook, "勇敢的风格")
 
-    @allure.title("审核-整理并提审-不通过")
+    @allure.title("审核-整理并提审-添加讨论意见")
     @allure.story("病例讨论-审核")
     @allure.step("参数：login2={0}")
     def test_topicsave5(self, login2):
+        response, cook = login2
+        url = host + port_bbs + "/bbs/topic/save.json"
+        topicId = self.topicList_toCheck(response, cook)
+        allure.attach(f"内部参数：topicId={topicId}")
+        data = dict(serviceName="discussCaseService", submitType=4, updatedUserId=response["authUserId"],
+                    topicId=909, discussingItem='[{"orgUserId":"4400143","content":"整理谈论结论，发表意见","seq":1}]',
+                    conclusion="添加讨论意见终结", auditType=3,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook, "添加讨论意见终结")
+
+    @allure.title("审核-整理并提审-不通过")
+    @allure.story("病例讨论-审核")
+    @allure.step("参数：login2={0}")
+    def test_topicsave6(self, login2):
         response, cook = login2
         url = host + port_bbs + "/bbs/topic/save.json"
         topicId = self.topicList_toCheck(response, cook)
@@ -318,6 +332,160 @@ class Test_dicussion():
         result, resultdic = assert_get(url, data, cook)
         assert resultdic["responseData"]["bbsTopic"]["totalElements"] == 1
 
+    """
+        这里的是对患者列表的操作：查看详情、编辑信息
+    """
+    @allure.title("讨论列表查看")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_intelligentfindList(self, login):
+        response, cook = login
+        url = host + port_resource + "/analysis/intelligent/findList.json"
+        topicId = self.topicList(response, cook)
+        data = dict(topicId=topicId[0],
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_get(url, data, cook)
+
+    @allure.title("患者列表中的讨论状态")
+    @allure.story("数据操作-讨论管理")
+    @allure.step("参数：login={0}")
+    @pytest.mark.parametrize("audittype", (2, 1))
+    def test_bbstopicsave(self, login, audittype):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/save.json"
+        data = {
+            "serviceName": "discussCaseService",
+            "submitType": 4,
+            "topicId": dataId,
+            "auditType": audittype,
+            "updatedUserId": response["authUserId"],
+            "authUserId": response["authUserId"],
+            "authToken": response["authToken"]
+        }
+        assert_post(url, data, cook, response["authToken"])
+
+    @allure.title("详情中添加关键字")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_topicSave7(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/save.json"
+        topicId = self.topicList(response, cook)
+        data = dict(submitType=2, serviceName="discussCaseService",
+                    updatedUserId=response["authUserId"], topicId=topicId[0], tags="新增关键字1",
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
+    @allure.title("关键字删除")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_topicSave8(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/save.json"
+        topicId = self.topicList(response, cook)
+        data = dict(submitType=2, serviceName="discussCaseService",
+                    updatedUserId=response["authUserId"], topicId=topicId[0], tags="",
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
+    @allure.title("添加讨论意见")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_replysave(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/reply/save.json"
+        data = dict(replyContent="<p>表示没有见过患者，不发表意见</p><p><br></p>",
+                    topicId=909, createdUserId=response["authUserId"], sectionId=185,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
+    @allure.title("详情中的讨论意见列表")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_replygetList(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/reply/getList.json"
+        data = dict(openSign="true", sectionId=185, topicId=909, page=1, size=20,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        result = assert_get(url, data, cook)
+        assert timelocal in result[0]  # 当天的日期
+        assert response["userName"] in result[0]  # 创建人是自己
+        for i in result[1]["responseData"]["content"]:
+            replyId.append(i["replyId"])
+
+    @allure.title("讨论意见的回复")
+    @allure.story("数据操作-查看详情")
+    @allure.step("参数：login={0}")
+    def test_replysave1(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/reply/save.json"
+        data = dict(replyId=replyId[0], replyContent="没意见", topicId=909,
+                    createdUserId=response["authUserId"], sectionId=185,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
+    @allure.title("患者的就诊信息")
+    @allure.story("数据操作-编辑信息")
+    @allure.step("参数：login={0}")
+    def test_getAdmissionMrInfoList(self, login):
+        response, cook = login
+        url = host + port_es + "/data/getAdmissionMrInfoList.json"
+        data = dict(id="YS00014530b85d-99d2-4824-b288-7690b9b2d3c6",
+                    startDate="", endDate="",
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_get(url, data, cook)
+
+    @allure.title("保存编辑的信息")
+    @allure.story("数据操作-编辑信息保存")
+    @allure.step("参数：login={0}")
+    def test_topicSave9(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/save.json"
+        topicId = self.topicList(response, cook)
+        data = dict(submitType=3, topicId=topicId[0], serviceName="discussCaseService",
+                    patientExamineVo='{"inspect":[],"checkout":[]}',
+                    updatedUserId=response["authUserId"], deathTime="Invalid date", inpatientNo="ZY020000582379",
+                    visitDate="2018-05-20", orgName=response["orgName"], mainDiagnose="1、急性间质性肺炎",
+                    discussAddress="宣武医院", hospitalName="演示医院1",hospitalCode=response["hospitalCode"],
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
+    @allure.title("审核通过/未通过列表展示")
+    @allure.story("审核")
+    @allure.step("参数：login={0}")
+    @pytest.mark.parametrize("audittype", (4, 5))
+    def test_topicList4(self, login, audittype):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/list.json"
+        data = dict(serviceName="discussCaseService", timeStamp=time_up,
+                    auditType=audittype, keyword="", sectionId=sectionId,
+                    updatedUserId=response["authUserId"],
+                    page=1, size=10,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_get(url, data, cook)
+
+    @allure.title("审核通过导出病例报告")
+    @allure.story("审核")
+    @allure.step("参数：login={0}")
+    def test_topicreportdownload(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/report/download"
+        data = dict(topicId=dataId,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        result = requests.get(url, data, cookies=cook)
+        assert result.status_code == 200
+
+    @allure.title("审核未通过的转套讨论中")
+    @allure.story("审核")
+    @allure.step("参数：login={0}")
+    def test_topicsave10(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/topic/save.json"
+        data = dict(serviceName="discussCaseService", submitType=4,
+                    updatedUserId=response["authUserId"], topicId=dataId, auditType=1,
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        assert_post(url, data, cook)
+
     @allure.title("上传文件")
     @allure.story("组共享")
     @allure.step("参数：login={0}")
@@ -349,7 +517,10 @@ class Test_dicussion():
             "authUserId": response["authUserId"],
             "authToken": response["authToken"]
         }
-        assert_get(url, data, cook, "生成图片")
+        result = assert_get(url, data, cook, "生成图片")
+        assert timelocal in result[0]               # 验证是当天添加的文件
+        assert response["userName"] in result[0]    # 验证是正确的人添加的文件
+        assert '"STATUS":"1"' in result[0]        # 验证是待审核的状态
 
     def fileId(self, response, cook):
         url = host + port_bbs + "/bbs/file/list.json"
@@ -402,6 +573,20 @@ class Test_dicussion():
         }
         assert_post(url, data, cook)
 
+    @allure.title("上传文件多个下载")
+    @allure.story("组共享")
+    @allure.step("参数：login={0}")
+    def test_downloadBbsFileBatch(self, login):
+        response, cook = login
+        url = host + port_bbs + "/bbs/file/downloadBbsFileBatch.json"
+        fileId = self.fileId(response, cook)
+        allure.attach(f"内部参数：fileId={fileId}")
+        data = dict(fileIds=fileId[0],
+                    operatorId=response["authUserId"],
+                    authUserId=response["authUserId"], authToken=response["authToken"])
+        result = requests.get(url, data, cookies=cook)
+        assert result.status_code == 200
+
     @allure.title("上传文件删除")
     @allure.story("组共享")
     @allure.step("参数：login={0}")
@@ -421,6 +606,7 @@ class Test_dicussion():
     @allure.title("删除讨论列表")
     @allure.story("病例讨论-列表")
     @allure.step("参数：login={0}")
+    @pytest.mark.repeat(5)
     def test_sectiondelete(self, login):
         response, cook = login
         url = host + port_bbs + "/bbs/section/delete.json"
@@ -428,6 +614,7 @@ class Test_dicussion():
                     updatedUserId=response["authUserId"],
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook, str(sectionId))
+
 
 if __name__ == '__main__':
     pytest.main()

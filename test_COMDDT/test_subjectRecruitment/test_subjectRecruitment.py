@@ -9,7 +9,6 @@ from public.Login_Cookies import *
 from public.overWrite_Assert import *
 
 
-
 @allure.feature("受试者招募")
 class Test_subjectRecruitment:
 

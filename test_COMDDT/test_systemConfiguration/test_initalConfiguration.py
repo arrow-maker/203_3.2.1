@@ -9,8 +9,9 @@ from public.Login_Cookies import *
 from public.overWrite_Assert import *
 
 
-@allure.feature("临床辅助决策系统-患者相似性度量")
+@allure.feature("患者相似性度量")
 class Test_initalConfiguration:
+
     @classmethod
     def setup_class(self):
         response1, self.cook = login_cookies()

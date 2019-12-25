@@ -8,12 +8,7 @@
 from public.Login_Cookies import login_cookies
 from public.overWrite_Assert import *
 
-'''
-这个项目现在的： 
-    还不能添加标题和链接
-    没有删除数据信息
-    还没有写完？？？
-'''
+
 @allure.feature("内容管理")
 class Test_management:
 

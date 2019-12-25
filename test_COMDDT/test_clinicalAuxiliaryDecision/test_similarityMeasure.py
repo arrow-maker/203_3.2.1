@@ -116,7 +116,6 @@ class Test_similarityMeasure:
                      authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data1, cook, inpatientNo[0])
 
-
     @allure.title("由权重找患者--")
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
@@ -133,6 +132,39 @@ class Test_similarityMeasure:
                     hospitalCode=response1["hospitalCode"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, response1["hospitalCode"])
+
+    @allure.title("相似患者个数配置")
+    @allure.story("数据库患者列表")
+    @allure.description("这个接口必须要和添加的接口联用")
+    @pytest.mark.parametrize("size", (10, 20))
+    def test_patientPage1(self, login, size):
+        response1, cook = login
+        url = host + port_python + "/generalSimilarity/patientPage"
+        scoreData = congyaml["相似病例分析"]["当前相似患者"]["scoreData"]
+        data = {
+            "page": 1,
+            "size": size,
+            "sort": 0,
+            "number": 100,
+            "scoreData": scoreData,
+            "hospitalCode": "YS0001",
+            "authUserId": 4400143,
+            "authToken": "57be66d24a251449e49ceeaf68c7653d"
+        }
+        assert_post(url, data, cook)
+
+    @allure.title("导出相似患者列表")
+    @allure.story("数据库患者列表")
+    @allure.description("这个接口必须要和添加的接口联用")
+    def test_downloadFile(self, login):
+        response1, cook = login
+        url = host + port_python + "/generalSimilarity/downloadFile"
+        scoreData = congyaml["相似病例分析"]["当前相似患者"]["scoreData"]
+        data = {
+            "scoreData": scoreData
+        }
+        result = requests.post(url, data, cookies=cook)
+        assert result.status_code == 200
 
     @allure.title("相似患者信息菜单配置")
     @allure.story("数据库患者列表")
@@ -185,6 +217,7 @@ class Test_similarityMeasure:
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @allure.step("参数：login={0}")
+    @pytest.mark.parametrize()
     def test_getReportDatas(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
