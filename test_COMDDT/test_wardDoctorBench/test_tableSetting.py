@@ -62,17 +62,17 @@ class Test_tableSetting:
     def test_saveConfig(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/reportWarning/saveConfig.json"
-        reportNo1 = self.transfer_findConfig(response1, cook)["reportNo"]  # 添加过的report
-        reportNo2 = self.transfer_findReport(response1, cook)  # 所有的report
+        reportNo1 = self.transfer_findConfig(response1, cook)["reportNo"]
+        reportNo2 = self.transfer_findReport(response1, cook)
         allure.attach(f"内部参数：report1={reportNo1}\n report2={reportNo2}")
         if len(reportNo1) > 0:  # 这里是取没有添加过的reportNo
             reportNo = list(set(reportNo2) ^ set(reportNo1))  # 取差集 这里可以使用^或者使用-都可以
         else:
             reportNo = reportNo2
         data = dict(hospitalCode=response1["hospitalCode"], medCode="COPD-001",
-                    reportNo=reportNo[0],  # 这个只能使用一次
+                    reportNo=reportNo[0],
                     upper=9, lower=1,
-                    # id="",               # 当有参数id时，是修改的指标
+                    # id="",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
@@ -172,7 +172,7 @@ class Test_tableSetting:
         if len(groupId[0]) > 0:
             data = dict(groupId=groupId[0][0],
                         # page=1,size=10,
-                        # keyName="0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
+                        # keyName="0156789",
                         path=path[0],
                         memberType=2,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -203,9 +203,9 @@ class Test_tableSetting:
         groupLeaderId = self.transfer_groupUserList(response1, cook)
         allure.attach(f"内部参数：path={path}\n groupleaderId={groupLeaderId}")
         data = dict(name="新增诊疗组3",
-                    groupLeaderId=groupLeaderId[1],  # 诊疗组-组长传值过来
+                    groupLeaderId=groupLeaderId[1],
                     operatorId=response1["authUserId"],
-                    path=path[1],  # 400,75635,75637,医院科室传值(这里可以确定是哪个科室的)400,75635,75827,沿江呼吸科
+                    path=path[1],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
@@ -235,12 +235,12 @@ class Test_tableSetting:
         orgUserIds = self.transfer_groupUserList(response1, cook)
         groupId = self.transfer_groupId(response1, cook)
         allure.attach(f"内部参数:orguserId={orgUserIds}\n groupId={groupId}")
-        if len(groupId[1][0]) > 0:   # 有医生可以添加
+        if len(groupId[1][0]) > 0:
             data = {
-                "groupId": groupId[1][0],  # 分组ID      给没有医生的组添加医生
+                "groupId": groupId[1][0],
                 "operatorId": response1["authUserId"],
-                "memberType": 2,  # 固定类型
-                "orgUserIds": orgUserIds[0],  # 医生ID
+                "memberType": 2,
+                "orgUserIds": orgUserIds[0],
                 "authUserId": response1["authUserId"],
                 "authToken": response1["authToken"]
             }
@@ -250,7 +250,7 @@ class Test_tableSetting:
         url = host + port_sourcedata + "/workbench/group/user/list"
         path = self.transfer_path(response1, cook)
         allure.attach(f"内部参数：path={path}")
-        data = dict(groupId=group, path=path[0],  # 这里数据是所有全部
+        data = dict(groupId=group, path=path[0],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
         userId = []
@@ -266,8 +266,8 @@ class Test_tableSetting:
         response1, cook = login
         url = host + port_sourcedata + "/workbench/group/user/delete"
         groupId1 = self.transfer_groupId(response1, cook)
-        if len(groupId1[0][0]) > 0:     # 有多余的组可以移除医生
-            orgUserIds1 = self.transfer_delectGroupList(groupId1[0][0], response1, cook)  # 注意这里要保证是同一个的诊疗组
+        if len(groupId1[0][0]) > 0:
+            orgUserIds1 = self.transfer_delectGroupList(groupId1[0][0], response1, cook)
             allure.attach(f"内部参数：groupId={groupId1}\n orgUserIds={orgUserIds1}")
             data = dict(groupId=groupId1[0][0],
                         orgUserIds=orgUserIds1[0],
@@ -284,11 +284,11 @@ class Test_tableSetting:
         assertdic = "存在组员，不允许删除", "SUCCESS"
         allure.attach(f"内部参数：groupId={groupId}")
         if len(groupId[1]) > 0 and len(groupId[0]) > 0:
-            for i in range(len(groupId)):  # 分别删除带有成员和不带成员的
+            for i in range(len(groupId)):
                 data = dict(groupId=groupId[i][0], operatorId=response1["authUserId"],
                             authUserId=response1["authUserId"], authToken=response1["authToken"])
                 assert_post(url, data, cook, assertdic[i])
 
 
 if __name__ == '__main__':
-    pytest.main(["-s", "-m", "q1", "test_tableSetting.py"])
+    pytest.main(["-s", "test_tableSetting.py"])

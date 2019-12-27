@@ -141,7 +141,7 @@ class Test_patientList:
         ids = self.orgUserId()
         allure.attach(f"传值参数：ids={ids}")
         if len(ids) > 0:
-            data = dict(orgUserId=ids[0],  # 4348409
+            data = dict(orgUserId=ids[0],
                         authUserId=self.authUserId, authToken=self.authToken)
             assert_get(url, data, self.cook)
 
@@ -152,7 +152,7 @@ class Test_patientList:
         ids = self.orgUserId()
         allure.attach(f"传值参数：ids={ids}")
         if len(ids) > 0:
-            data = dict(orgUserId=ids[0],  # 4316920
+            data = dict(orgUserId=ids[0],
                         authUserId=self.authUserId, authToken=self.authToken)
             assert_post(url, data, self.cook)
 
@@ -181,7 +181,7 @@ class Test_patientList:
         ids = self.answerPatientId()
         qtId = ids["qtId"]
         answerPatientId = ids["answerPatientId"]
-        allure.attach(f"传值参数：ids={ids}\nqtId={qtId}\nanswerPatientId={answerPatientId}")    # 1000005   10192
+        allure.attach(f"传值参数：ids={ids}\nqtId={qtId}\nanswerPatientId={answerPatientId}")
         if len(answerPatientId) > 0:
             data = dict(appUse=1, qtId=qtId[0], isShow=1, answerPatientId=answerPatientId[0],
                         authUserId=self.authUserId, authToken=self.authToken)

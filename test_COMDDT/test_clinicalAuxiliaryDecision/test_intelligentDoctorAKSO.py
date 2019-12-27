@@ -66,7 +66,7 @@ class Test_AKSO:
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
         icdname = list(index_search.keys())
         allure.attach(f"内部参数：icdName={icdname}")
-        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",  # 这里是默认的
+        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",
                     icd10=icdname,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, hint="咳嗽变异性哮喘")
@@ -144,7 +144,7 @@ class Test_AKSO:
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
         icdname = list(muti_search.keys())
         allure.attach(f"内部参数：icdName={icdname}")
-        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",  # 这里是默认的
+        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",
                     icd10=icdname[0],
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, hint="支气管或肺恶性肿瘤")
@@ -249,7 +249,7 @@ class Test_AKSO:
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
         icdname = list(patient_search.keys())
         allure.attach(f"内部参数：icdName={icdname}")
-        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",  # 这里是默认的
+        data = dict(name="疾病概述,临床表现,推荐检查,推荐检验,推荐治疗方案",
                     icd10=icdname,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, hint="支气管或肺恶性肿瘤")

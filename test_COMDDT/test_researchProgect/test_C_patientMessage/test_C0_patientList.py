@@ -44,7 +44,8 @@ class Test_patientList:
 
     @allure.title("患者列表数据")
     @allure.story("患者总库")
-    def test_patientSearch(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_patientSearch(self, start, end):
         """
         下面的患者的病例操作是全景，有单独的全景的模块，这里就不赘述
         :return:
@@ -52,7 +53,7 @@ class Test_patientList:
         url = host + port_dataindex + "/patient/search.json"
         data = dict(page=1, size=10, orgPath="400,75722,75726,", orgType=35,
                     orgId=75726, searchWord="", sourceType=2, sourceRecord=1,
-                    indexTimeBegin="", indexTimeEnd="", visitDateBegin="",
+                    indexTimeBegin=start, indexTimeEnd=end, visitDateBegin="",
                     visitDateEnd="", followUpDateBegin="", followUpDateEnd="",
                     diseaseType=1, diseaseName="", sourceDataType="",
                     neSourceDataType=3, panoramicSearch="",

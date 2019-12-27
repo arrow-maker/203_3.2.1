@@ -23,14 +23,15 @@ class Test_pulmonaryTrendAnalysis:
         assert_get(url, data, cook)
 
     @allure.title("患者列表")
-    def test_search(self, login, orgPath):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_search(self, login, orgPath, start, end):
         response1, cook = login
         url = host + port_dataindex + "/patient/search.json"
         data = dict(
             page=1, size=10, orgPath=orgPath,
             orgType=35,  # 变动的数据
             orgId=response1['orgId'], searchWord="", sourceType=2,
-            sourceRecord="", indexTimeBegin="", indexTimeEnd="",
+            sourceRecord="", indexTimeBegin=start, indexTimeEnd=end,
             visitDateBegin="", visitDateEnd="", followUpDateBegin="",
             followUpDateEnd="", diseaseType=1, diseaseName="",
             sourceDataType=3, neSourceDataType="",
@@ -79,14 +80,15 @@ class Test_pulmonaryTrendAnalysis:
 
     @allure.title("报告详情-报告列表")
     @allure.story("肺功能检查")
-    def test_getExamReportMasterAssistMaster(self, login, orgPath):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getExamReportMasterAssistMaster(self, login, orgPath, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getExamReportMasterAssistMaster.json"
         path = self.patild(response1, cook, orgPath)
         allure.attach(f"内部参数： path={path}")
         data = dict(reportName="examReportMaster",
                     id=path[0],
-                    startDate="", endDate="",
+                    startDate=start, endDate=end,
                     page=1, size=10, sort="desc",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)

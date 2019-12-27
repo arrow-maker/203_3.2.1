@@ -14,12 +14,13 @@ class Test_similarityMeasure:
     # ------------------------------选择与新建患者-----------------------------
     @allure.title("数据库患者列表展示")
     @allure.story("数据库患者列表")
-    def test_getPatientList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getPatientList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/similarnew/data/getPatientList.json"
         data = dict(userId=response1["authUserId"],
                     page=1, size=10,
-                    key="", startDate="", endDate="",
+                    key="", startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
@@ -67,11 +68,9 @@ class Test_similarityMeasure:
     def test_saveWeightTemplate(self, login):
         response1, cook = login
         url = host + port_python + "/generalSimilarity/saveWeightTemplate"
+        yamdata = congyaml["相似病例智能分析"]["保存权重修改"]
         data = dict(ptType=1,
-                    data='{"基本信息":{"num":1,"status":1},"全部诊断":{"num":7,"status":1},"主要诊断":{"num":9,"status":1},'
-                         '"临床表现":{"num":9,"status":1},"主诉":{"num":8,"status":1},"现病史":{"num":0,"status":0},"家族史":'
-                         '{"num":0,"status":0},"既往史":{"num":0,"status":0},"个人史":{"num":0,"status":0},"检查":'
-                         '{"num":0,"status":0},"检验":{"num":0,"status":0}}',
+                    data=yamdata["data"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, "权重配置保存成功")
 
@@ -105,14 +104,9 @@ class Test_similarityMeasure:
         url = host + port_python + "/generalSimilarity/insertSimilarRecord"
         inpatientNo = self.transfer_getPatientList(response1, cook)["ids"]
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
+        yamdata = congyaml["相似病例智能分析"]["患者信息添加到数据库"]
         data1 = dict(name="similar", ptType=1, inpatientNo=inpatientNo[0],
-                     data='{"基本信息":{"pati_id":"73c80db4-733e-4fd1-894f-34a4896bc134",'
-                          '"patient_id":"43B48141A4880976ABBEFFC93AE3A7C5","hospital_code":"12440100455344205E",'
-                          '"姓名":"C15D0771741833C9A1BA790818077F60","年龄":64,"性别":"男","居住地":"山西省","是否有ICU转科":0,'
-                          '"住院时长":"6","住院总费用":"10328.66","手术费用":"0","病例分型":"疑难","转归":"好转","吸烟史":"有","已戒烟":"有",'
-                          '"吸烟持续时间":"20年","吸烟包年":"20"},"诊断":{"主要诊断":"1.双肺肺炎","全部诊断":"1.双肺肺炎 2.慢性阻塞性肺疾病"},'
-                          '"入院记录":{"影像描述":"   '
-                          '两肺肺纹理增多、紊乱，右中叶、左上肺舌段、两下肺散在斑片、条索影。左上肺尖后段可见条索影及高密度结节影，边界尚清。余两肺透亮度增高，见广泛小叶结构简化改变，两肺弥漫多发无壁、壁薄透亮影；气管、各大支气管通畅。两侧肺门不大，左肺门及纵隔可见多发钙化淋巴结。心影不大。两侧胸腔未见积液，胸膜未见增厚。所见胸廓骨骼未见骨质异常。胸廓软组织未见异常。   扫及胆囊窝见高密度结节影。","入院日期":"2017-02-03","出院日期":"2017-02-09","临床表现":"白痰,发热,寒颤,咳嗽,气促,全身肌肉酸痛","主诉":"发热、气促4天。","现病史":"缘患者4天前无明显诱因下出现发热症状，伴寒颤，最高38.7℃，伴全身肌肉酸痛，伴咳嗽、咳白痰，无黄脓痰，伴活动后气促，无夜间阵发性呼吸困难，无头晕头痛，无恶心呕吐，到东莞市塘厦医院行胸片提示：两肺感染，予静脉滴注“左氧氟沙星0.3g bid”症状无明显缓解，今到我院门诊就诊，门诊拟“肺部感染”收入我科治疗，患者起病后精神、胃纳一般，睡眠尚可，大小便正常，体重无明显变化。","家族史":"家庭成员中无类似疾病、遗传病、传染病等患者","个人史":"无疫区接触史，曾吸烟20余年，20支/日，已戒烟3年。无饮酒史。"},"检验":{"血常规":{"红细胞计数":"正常","血小板计数":"正常","血小板分布宽度":"正常","血小板压积":"正常","淋巴细胞计数":"正常","红细胞分布宽度变异系数":"正常","嗜碱性粒细胞计数":"正常","红细胞平均Hb含量":"正常","红细胞比积":"正常","单核细胞比率":"正常","白细胞总数":"正常","中性粒细胞比率":"正常","血红蛋白":"正常","嗜碱性粒细胞比率":"正常","嗜酸性粒细胞计数":"正常","红细胞平均体积":"升高","嗜酸性粒细胞比率":"正常","红细胞平均Hb浓度":"正常","血小板平均体积":"正常","淋巴细胞比率":"正常","中性粒细胞计数":"正常","单核细胞计数":"正常"},"肝功能检查":{"血清α-L-岩藻糖苷酶测定":"正常","血清白蛋白测定":"正常","血清直接胆红素测定":"正常","血清总胆汁酸测定":"正常","血清总胆红素测定":"正常","血清天门冬氨酸氨基转移酶测定":"正常","血清丙氨酸氨基转移酶测定":"正常","血清γ-谷氨酰基转移酶测定":"正常","血清总蛋白测定":"降低"},"血气分析":{"氧分压（体温）":"降低","二氧化碳分压(体温)":"正常","HCO3-":"降低","氧分压（测定）":"升高","pH值（测定）":"正常","pH值(体温)":"正常","标准碱剩余":"降低","标准碳酸氢根浓度":"正常","氧饱和度（测量）":"降低","二氧化碳分压（测定）":"正常","氧合血红蛋白浓度（测定）":"降低"},"粪便检查":{"粪便白细胞检查":"正常","粪便性状检查":"正常","粪便红细胞检查":"正常"},"糖及其代谢物测定":{"血葡萄糖测定":"正常"},"心肌疾病的实验诊断":{"B型钠尿肽前体（PRO-BNP）测定":"正常","血清肌钙蛋白Ⅰ测定":"正常","血清肌红蛋白测定":"正常"},"凝血及抗凝血检查":{"血清凝血酶原时间测定(PT)":"正常","国际标准化比值(INR)":"正常","凝血酶原时间活动度(PTTA)":"正常","活化部分凝血活酶时间测定(APTT)":"升高","凝血酶时间测定(TT)":"正常"},"酶类检查":{"血清肌酸激酶同工酶测定":"正常"},"肿瘤相关抗原测定":{"糖类抗原测定CA15－3":"正常","糖类抗原测定CA-125":"正常","癌胚抗原测定(CEA)":"正常","神经元特异性烯醇化酶测定(NSE)":"升高"},"无机元素测定（血液样本）":{"钾测定":"正常","氯测定":"正常","钠测定":"正常","钙测定":"正常"},"红细胞沉降率测定(ESR)":{"红细胞沉降率测定(ESR)":"正常"},"纤溶系统检查":{"血浆D-二聚体测定(D-Dimer)-各种免疫学方法":"正常"},"肾脏疾病的实验诊断":{"血肌酐测定":"正常"},"激素测定":{"降钙素原检测(荧光定量法)":"升高"}}}',
+                     data=yamdata["data"],
                      authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data1, cook, inpatientNo[0])
 
@@ -124,11 +118,9 @@ class Test_similarityMeasure:
         url = host + port_python + "/generalSimilarity/matchWeight"
         inpatientNo = self.transfer_getPatientList(response1, cook)["ids"]
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
+        yamdata = congyaml["相似病例智能分析"]["权重查找患者"]
         data = dict(inpatientNo=inpatientNo[-1],
-                    data='{"基本信息":{"num":1,"status":1},"全部诊断":{"num":7,"status":1},"主要诊断":{"num":9,"status":1},'
-                         '"临床表现":{"num":9,"status":1},"主诉":{"num":8,"status":1},"现病史":{"num":0,"status":0},'
-                         '"家族史":{"num":0,"status":0},"既往史":{"num":0,"status":0},"个人史":{"num":0,"status":0},'
-                         '"检查":{"num":0,"status":0},"检验":{"num":0,"status":0}}',
+                    data=yamdata["data"],
                     hospitalCode=response1["hospitalCode"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, response1["hospitalCode"])
@@ -136,20 +128,20 @@ class Test_similarityMeasure:
     @allure.title("相似患者个数配置")
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
-    @pytest.mark.parametrize("size", (10, 20))
+    @pytest.mark.parametrize("size", (10, 15, 20, 25))
     def test_patientPage1(self, login, size):
         response1, cook = login
         url = host + port_python + "/generalSimilarity/patientPage"
-        scoreData = congyaml["相似病例分析"]["当前相似患者"]["scoreData"]
+        scoreData = congyaml["相似病例智能分析"]["当前相似患者"]["scoreData"]
         data = {
             "page": 1,
             "size": size,
             "sort": 0,
             "number": 100,
             "scoreData": scoreData,
-            "hospitalCode": "YS0001",
-            "authUserId": 4400143,
-            "authToken": "57be66d24a251449e49ceeaf68c7653d"
+            "hospitalCode": response1["hospitalCode"],
+            "authUserId": response1["authUserId"],
+            "authToken": response1["authToken"]
         }
         assert_post(url, data, cook)
 
@@ -159,7 +151,7 @@ class Test_similarityMeasure:
     def test_downloadFile(self, login):
         response1, cook = login
         url = host + port_python + "/generalSimilarity/downloadFile"
-        scoreData = congyaml["相似病例分析"]["当前相似患者"]["scoreData"]
+        scoreData = congyaml["相似病例智能分析"]["当前相似患者"]["scoreData"]
         data = {
             "scoreData": scoreData
         }
@@ -169,27 +161,25 @@ class Test_similarityMeasure:
     @allure.title("相似患者信息菜单配置")
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
-    def test_getReportGroupList(self, login):
+    @pytest.mark.parametrize("groupNo", ("XSG01", "XSG02", "XSG03", "XSG04", "XSG05", "XSG07"))
+    def test_getReportGroupList(self, login, groupNo):
         response1, cook = login
         url = host + port_sourcedata + "/quality/control/getReportGroupList.json"
-        data = dict(groupNo="XSG01",
+        data = dict(groupNo=groupNo,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
     def inpatient_NO(self, response1, cook):
         url = host + port_python + "/generalSimilarity/matchWeight"
         inpatientNo = self.transfer_getPatientList(response1, cook)["ids"]
+        yamdata = congyaml["相似病例智能分析"]["权重查找患者"]
         data = dict(inpatientNo=inpatientNo[-1],
-                    data='{"基本信息":{"num":1,"status":1},"全部诊断":{"num":7,"status":1},"主要诊断":{"num":9,"status":1},'
-                         '"临床表现":{"num":9,"status":1},"主诉":{"num":8,"status":1},"现病史":{"num":0,"status":0},'
-                         '"家族史":{"num":0,"status":0},"既往史":{"num":0,"status":0},"个人史":{"num":0,"status":0},'
-                         '"检查":{"num":0,"status":0},"检验":{"num":0,"status":0}}',
+                    data=yamdata["data"],
                     hospitalCode=response1["hospitalCode"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.post(url, data, cookies=cook)
         ids = {"key": [], "data": [], "inpatientNo": []}
         if "patientList" in result.text:
-
             resultdic = json.loads(result.text)["resultData"]
             resultdic1 = resultdic["patientList"]
             resultdic2 = resultdic["localData"]
@@ -217,7 +207,6 @@ class Test_similarityMeasure:
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @allure.step("参数：login={0}")
-    @pytest.mark.parametrize()
     def test_getReportDatas(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
@@ -257,7 +246,8 @@ class Test_similarityMeasure:
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @allure.step("参数：login={0}")
-    def test_treatmentPathway(self, login):
+    @pytest.mark.parametrize("drugName", (0, 1, 2, 3, 4))
+    def test_treatmentPathway(self, login, drugName):
         response1, cook = login
         url = host + port_python + "/generalSimilarity/treatmentPathway"
         inpatient = self.inpatient_NO(login[0], login[1])["key"]
@@ -267,7 +257,7 @@ class Test_similarityMeasure:
         allure.attach(f"内部参数：inpatent={inpatient}")
         data = dict(
             ptList=inpatientNo,
-            drugName=2,
+            drugName=drugName,
             hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 

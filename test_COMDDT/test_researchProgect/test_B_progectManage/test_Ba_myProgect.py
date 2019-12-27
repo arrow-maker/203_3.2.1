@@ -21,19 +21,43 @@ class Test_projectManage:
     def test_list(self):
         url = host + port_project + "/project/list.json"
         data = {
-            # "ProjectName":"",                        #项目名称   用于项目查询xls
-            # "projectCenter":"",                      #1代表单中心，2代表多中心xls
+            # "ProjectName":"",
+            # "projectCenter":"",
             # "projectStatus":"",  #10：待提交,1:待审核，7：审核不通过，11：启动中，3进行中，8：已终止，5：已结束
-            # "page":1,                                #当前的页码  默认为一xls
-            # "size":15,                               #当前的每页显示的个数xls
+            # "page":1,
+            # "size":15,
             "operatorId": self.authUserId,
-            # "projectUserStatus":1,                  # * 项目用户的状态xls
+            # "projectUserStatus":1,
             # "joinType": "1",          #1：我加入的，2：邀请我的，3：其他公开的
-            "authUserId": self.authUserId,  # *操作人员的id
+            "authUserId": self.authUserId,
             "authToken": self.authToken
         }
         overWrite_assert_get_xls_hint(url, data, self.cook, researchCatePath, "我的项目-项目数据")
 
+    @allure.title("项目管理->我的项目2")
+    @allure.story("我加入的")
+    @pytest.mark.parametrize("status", (1, 2, 3, 4, 5, 7, 8, 9, 10, 11))
+    @pytest.mark.parametrize("joinpath", (1, 2, 3))
+    def test_list2(self, status, joinpath):
+        """
+        :param status:  10：待提交,1:待审核，7：审核不通过，11：启动中，3进行中，8：已终止，5：已结束
+        :param joinpath:  1：我加入的，2：邀请我的，3：其他公开的
+        :return:
+        """
+        url = host + port_project + "/project/list.json"
+        data = {
+            "ProjectName":"",
+            "projectCenter":"",
+            "projectStatus":"",
+            "page":1,
+            "size":15,
+            "operatorId": self.authUserId,
+            "projectUserStatus":1,
+            "joinType": "1",
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        assert_get(url, data, self.cook)
     @allure.title("我的项目->申请项目->（字典数据）中的下拉菜单")
     @allure.story("我加入的")
     def test_apply_for_project(self):
@@ -71,7 +95,7 @@ class Test_projectManage:
             # "projectObjectiveSecond": "研究次要目的",  # 研究次要目的xls
             # "projectObjectiveOther": "研究其他目的",  # 研究其他目的xls
 
-            # "projectCenter": "1",  # *研究中心1：单中心2:多中心xls        这里的数据关系要问开发的之间有关联
+            # "projectCenter": "1",  # *研究中心1：单中心2:多中心xls
             # "diseaseIds": "110",  # *学科分类的id
             # "centerCode": "01234567890123456789",  # *中心编号xls
             # "organizerPhone": "15599999555",  # 申办方电话xls
@@ -104,11 +128,11 @@ class Test_projectManage:
             "unblinding": "",
             "randomPart": "",
             "randomLength": "",
-            "projectContact": self.userName,  # *登录的用户名发起人
-            "projectContactId": self.authUserId,  # 登录的orgUserId
-            "projectContactUnitId": self.orgId,  # 登录的orgId
-            "projectContactMobile": self.mobile,  # 登录的手机号
-            "projectContactUnit": self.hospital,  # 所属医院
+            "projectContact": self.userName,
+            "projectContactId": self.authUserId,
+            "projectContactUnitId": self.orgId,
+            "projectContactMobile": self.mobile,
+            "projectContactUnit": self.hospital,
             "entryRequire": "",
             "projectUserInType": "",
             "authUserId": self.authUserId,
@@ -127,15 +151,15 @@ class Test_projectManage:
             "page": 1,
             "size": 15,
             "operatorId": self.authUserId,
-            "projectUserStatus": 1,  # * 项目用户的状态xls
-            "authUserId": self.authUserId,  # *操作人员的id
+            "projectUserStatus": 1,
+            "authUserId": self.authUserId,
             "authToken": self.authToken
         }
         result, resultData = assert_get(url, data, self.cook)
         dataDict = {"projectId": [], "dataId": []}
-        if int(resultData["responseData"]["numberOfElements"] > 0):  # 当有数据时
+        if int(resultData["responseData"]["numberOfElements"] > 0):
             for i in resultData["responseData"]["content"]:
-                dataDict["projectId"].append(i["PROJECT_ID"])  # 这里添加的是给定的状态
+                dataDict["projectId"].append(i["PROJECT_ID"])
                 dataDict["dataId"].append(i["PROJECT_USER_DATA_R_ID"])
         return dataDict
 
@@ -146,7 +170,7 @@ class Test_projectManage:
         dataDict = self.get_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id     这里要保证和提交一的一致性
+            "projectId": dataDict["projectId"][0],
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -159,19 +183,20 @@ class Test_projectManage:
         dataDict = self.get_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id?
-            "operatorId": self.authUserId,  # 我的id
-            # "unInGroupDeadline":22,                         #*未入组患者释放期限xls
-            # "deadlineType":1,                               #*最后期限类型?
+            "projectId": dataDict["projectId"][0],
+            "operatorId": self.authUserId,
+            # "unInGroupDeadline":22,
+            # "deadlineType":1,
             "followupPlan":'[{"visitOrder":{"start":1,"end":2},"stepCount":2,"stepUnit":{"value":"d","code":"d",'
                             '"display":"天"},"preThreshold":1,"postThreshold":4,"thresholdType":"d",'
-                            '"questionnaireId":"%s"}]'%questionId[0],                            #筛选条件xls
-            # '[{"visitOrder":{"start":1,"end":1},"stepCount":1,"stepUnit":{"value":"d","code":"d","display":"天"},"preThreshold":1,"postThreshold":1,"thresholdType":"d","questionnaireId":"Questionnaire/117087"}]'
-            # "startUpPeriodRule":1,                          #筛选号来源1：人工，2：系统生成
-            # "startUpPeriodDesc":123456789,                  #人工录入的编号xls
-            # "startUpPeriodPart":0,                          #启动周期部分 xls 0：人工的，1：系统的
-            # "startUpPeriodLength":"",                       #系统生成筛选号->位序号xls*
-            # "startUpPeriodPrefix":"",                       #系统生成筛选号->筛选号前缀xls*
+                            '"questionnaireId":"%s"}]'%questionId[0],
+            # '[{"visitOrder":{"start":1,"end":1},"stepCount":1,"stepUnit":{"value":"d","code":"d","display":"天"},
+            # "preThreshold":1,"postThreshold":1,"thresholdType":"d","questionnaireId":"Questionnaire/117087"}]'
+            # "startUpPeriodRule":1,
+            # "startUpPeriodDesc":123456789,
+            # "startUpPeriodPart":0,
+            # "startUpPeriodLength":"",
+            # "startUpPeriodPrefix":"",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -186,15 +211,14 @@ class Test_projectManage:
         data = {
             "projectId": dataDict["projectId"][0],
             "operatorId": self.authUserId,
-            # "projectName":"试验组1",                    #分组名称xls
-            # "projectDesc":'{"inCriteria": "纳入标准", "outCriteria": "排除标准"}',#筛选指标xls
-            # "centerCode":"0011",                         #分组代码xls
+            # "projectName":"试验组1",
+            # "projectDesc":'{"inCriteria": "纳入标准", "outCriteria": "排除标准"}',
+            # "centerCode":"0011",
             "projectCount": 0,
             "allowScaleOver": 0,
             "followupPlan": '[{"visitOrder":{"start":1,"end":2},"stepCount":2,"stepUnit":{"value":"d","code":"d",'
                             '"display":"天"},"preThreshold":1,"postThreshold":3,"thresholdType":"d",'
                             '"questionnaireId":"%s"}]'%questionId[0],
-            # 操作权限xls
             "dataIds": dataDict["dataId"][0],
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -208,12 +232,12 @@ class Test_projectManage:
         dataDict = self.get_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id？
-            # "centerProjectName": "",  # 医院的名称（中心名称）xls
+            "projectId": dataDict["projectId"][0],
+            # "centerProjectName": "",
             "operatorId": self.authUserId,
-            # "page": 1,  # 默认显示第几页
-            # "size": 10,  # 每一页的数据数
-            "projectStatus": "",  # 状态是复用的
+            # "page": 1,
+            # "size": 10,
+            "projectStatus": "",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -241,7 +265,7 @@ class Test_projectManage:
     def getPricipalUsersList(self):
         url = host + portlogin + "/projectUser/getUsersList.json"
         data = dict(
-            path=f"400,{self.get_userHospitalList()['orgId'][1]}",  # 77386
+            path=f"400,{self.get_userHospitalList()['orgId'][1]}",
             keyword="", page=1, size=9999, status=1,
             authUserId=self.authUserId, authToken=self.authToken)
         result = requests.get(url, data, cookies=self.cook)
@@ -261,8 +285,8 @@ class Test_projectManage:
         dataDict = self.get_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id
-            "allowScaleOver": 20,  # 设置的上浮数
+            "projectId": dataDict["projectId"][0],
+            "allowScaleOver": 20,
             "operatorId": self.authUserId,
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -274,19 +298,18 @@ class Test_projectManage:
     def test_apply_save_centerChange(self):
         url = host + port_project + "/project/info/minute-center/save.json"
         dataDict = self.get_projectId(["10"])
-        userdata = self.getPricipalUsersList()  # 医生的data
+        userdata = self.getPricipalUsersList()
         allure.attach(f"项目Id={dataDict['projectId']}\n医生data={userdata}")
         data = {
             "projectId": dataDict["projectId"][0],
-            "orgId": userdata["orgId"][0],  # 77386  ["ORG_ID"]
-            "projectName": "清远人民医院",  # 清远人民医院 name
+            "orgId": userdata["orgId"][0],
+            "projectName": "清远人民医院",
             "operatorId": self.authUserId,
-            "principalUserId": userdata["ORG_USER_ID"][0],  # 4488376 ["ORG_USER_ID"]
-            "principalUserName": userdata["USERNAME"][0],  # 清水心 ["USERNAME"]
+            "principalUserId": userdata["ORG_USER_ID"][0],
+            "principalUserName": userdata["USERNAME"][0],
             "planStartDateStr": timelocal,
             "projectGroupsData": '[{"projectCount":"555","groupProjectId":7397}]',
-            # 唯一可以修改的projectCount -- 这里是要添加人数的 注意要足够的到保证后面的添加的人数足够
-            "centerCode": 5435,  # 分中心编号
+            "centerCode": 5435,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -299,17 +322,17 @@ class Test_projectManage:
             url = host + port_project + "/project/file/save.json"
             dataDict = self.get_projectId(["10"])
             allure.attach(f"项目Id={dataDict['projectId']}")
-            file = {"file": r"C:\Users\TP-GZ-A02-050\Desktop\数据库表关系.png"}  # 定义上传的文件
+            file = {"file": r"C:\Users\TP-GZ-A02-050\Desktop\数据库表关系.png"}
             # file = open(r"C:\Users\TP-GZ-A02-050\Desktop\数据库表关系.png","rb")
             data = {
                 "file": "(binary)",
-                "dataId": dataDict["projectId"][0],  # 我的项目->申请项目：共享文件列表 上传文件？？？
+                "dataId": dataDict["projectId"][0],
                 "dataType": 210,
                 "operatorId": self.authUserId,
                 "projectId": dataDict["projectId"][0],
                 "shareType": 1,
                 "orgId": self.orgId,
-                "displayName": "analysis_result.csv"  # 文件名
+                "displayName": "analysis_result.csv"
             }
             assert_post(url, data, self.cook, files=file)
         except Exception as e:
@@ -324,8 +347,8 @@ class Test_projectManage:
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
             # "shareType": 0,  # 0:全部，1：本人，2:仅中心，3：仅项目
-            # "page": 1,  # 默认当前的页数
-            "projectId": dataDict["projectId"][0],  # 我的项目dataDict["projectId"][1]3583490
+            # "page": 1,
+            "projectId": dataDict["projectId"][0],
             "operatorId": self.authUserId,
             # "size": 10,
             # "status": 10,  # 我的状态
@@ -343,12 +366,12 @@ class Test_projectManage:
         allure.attach(f"项目Id={dataDict['projectId']}")
         if len(dataDict["projectId"]) > 0:
             data = {
-                "shareType": 0,  # 0:全部，1：本人，2:仅中心，3：仅项目
-                "page": 1,  # 默认当前的页数
-                "projectId": dataDict["projectId"][0],  # 我的项目dataDict["projectId"][1]
+                "shareType": 0,
+                "page": 1,
+                "projectId": dataDict["projectId"][0],
                 "operatorId": self.authUserId,
                 "size": 10,
-                "status": 1,  # 我的状态
+                "status": 1,
                 "orgId": self.authUserId,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
@@ -375,30 +398,29 @@ class Test_projectManage:
         }
         assert_post(url, data, self.cook)
 
-    # ******请思考？-----这里的执行的顺序有问题-（在提交前会把添加的删除，在提交后不是同一个的项目ID）
     @allure.title("审核特定人员的项目")
     @allure.story("项目进行审核")
     def test_Showlist(self):
         aduit1(self.userName, self.cook, self.authUserId, self.authToken)
 
-    def get_delect_projectId(self, stutasList):  # 这里是获取保存项目的id
+    def get_delect_projectId(self, stutasList):
         url = host + port_project + "/project/list.json"
         data = {
-            "ProjectName": "",  # 项目名称   用于项目查询xls
-            "projectCenter": "",  # 1代表单中心，2代表多中心xls
-            "projectStatus": stutasList[0],  # 10：待提交,1:待审核，7：审核不通过，11：启动中，3进行中，8：已终止，5：已结束
-            "page": 1,  # 当前的页码  默认为一xls
-            "size": 20,  # 当前的每页显示的个数xls
+            "ProjectName": "",
+            "projectCenter": "",
+            "projectStatus": stutasList[0],
+            "page": 1,
+            "size": 20,
             "operatorId": self.authUserId,
-            "projectUserStatus": 1,  # * 项目用户的状态xls
-            "joinType": "1",  # 1：我加入的，2：邀请我的，3：其他公开的
-            "authUserId": self.authUserId,  # *操作人员的id
+            "projectUserStatus": 1,
+            "joinType": "1",
+            "authUserId": self.authUserId,
             "authToken": self.authToken
         }
         actualResult = requests.get(url, data, cookies=self.cook)
         dataDict = {"projectId": [], "dataId": []}
         resultData = json.loads(actualResult.text)
-        if int(resultData["responseData"]["numberOfElements"] > 0):  # 当有数据时
+        if int(resultData["responseData"]["numberOfElements"] > 0):
             for i in resultData["responseData"]["content"]:
                 if i["PROJECT_OBJECTIVE_SECOND"] == "研究次要目的":
                     dataDict["projectId"].append(i["PROJECT_ID"])  # 这里添加的是给定的状态
@@ -429,9 +451,9 @@ class Test_projectManage:
         url = host + port_project + "/project/file/delete.json"
         fileId = self.givesharefileList()
         data = {
-            "fileId": fileId,  # 文件的id(可以由上传中的返回值中)
+            "fileId": fileId,
             "operatorId": self.authUserId,
-            "status": 9,  # 状态
+            "status": 9,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -441,7 +463,7 @@ class Test_projectManage:
     @allure.story("我加入的")
     @pytest.mark.repeat(2)
     def test_list_delect(self):
-        url = host + port_project + "/project/delete.json"  # 当状态等待提交时可以删除
+        url = host + port_project + "/project/delete.json"
         dataDict = self.get_delect_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         if dataDict["projectId"] is not None:
@@ -449,7 +471,7 @@ class Test_projectManage:
                 data = {
                     "projectId": dataDict["projectId"][i],
                     "operatorId": self.authUserId,
-                    "operatorFunction": "54806-deleteProject",  # 这里是固定的
+                    "operatorFunction": "54806-deleteProject",
                     "authUserId": self.authUserId,
                     "authToken": self.authToken
                 }
@@ -463,10 +485,10 @@ class Test_projectManage:
         allure.attach(f"项目Id={dataDict['projectId']}")
         if len(dataDict["projectId"]) > 0:
             data = {
-                "projectId": dataDict["projectId"][0],  # 由申请项目时传过来
-                "dataIds": int(dataDict["projectId"][0]) + 1,  # 由前面传过来3583151
+                "projectId": dataDict["projectId"][0],
+                "dataIds": int(dataDict["projectId"][0]) + 1,
                 "operatorId": self.authUserId,
-                "status": 3,  # 项目开启状态
+                "status": 3,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -478,7 +500,6 @@ class Test_projectManage:
         url = host + port_project + "/project/user/list.json"
         dataDict = self.get_projectId(["3"])
         allure.attach(f"项目Id={dataDict['projectId']}")
-        # 添加参与的研究者的data
         data = dict(dataType=2,
                     projectId=dataDict["projectId"][0],
                     path=f"400,{self.itemOrgId},",
@@ -509,16 +530,16 @@ class Test_projectManage:
     @allure.story("项目审核后的操作")
     def test_startStatus_addDoctor(self):
         url = host + port_project + "/project/user/create.json"
-        dataDict = self.get_projectId(["3"])  # 获取projectId进行中项目的id
-        listDataId = self.giveDoctorList()  # 获取dataId
+        dataDict = self.get_projectId(["3"])
+        listDataId = self.giveDoctorList()
         orgId = self.givePratitionerBase()
         allure.attach(f"项目Id={dataDict['projectId']}\nlistdataId={listDataId}\norgId={orgId}")
-        data = dict(dataType=2,  # 数据类型
+        data = dict(dataType=2,
                     projectId=dataDict["projectId"][0],
                     dataIds=listDataId[0],
                     status=2,
-                    joinType=2,  # 加入类型
-                    orgId=orgId,  # 机构id
+                    joinType=2,
+                    orgId=orgId,
                     operatorId=self.authUserId,
                     authUserId=self.authUserId,
                     authToken=self.authToken)
@@ -536,16 +557,7 @@ class Test_projectManage:
     #                 operatorId=self.authUserId,
     #                 authUserId=self.authUserId,
     #                 authToken=self.authToken)
-    #     result = requests.post(url, data, cookies=self.cook)
-    #     dataDict1 = self.get_projectId(["3"])
-    #     print(f'审核后-进行项目的状态+{dataDict1["projectId"]}')
-    #     dataDict2 = self.get_projectId(["10"])
-    #     print(f'审核后-待提交的状态-{dataDict2["projectId"]}')
-    #     dataDict2 = self.get_projectId(["5"])
-    #     print(f'审核后-已结束的状态-{dataDict2["projectId"]}')
-    #     dataDict2 = self.get_projectId(["8"])
-    #     print(f'审核后-已终止的状态-{dataDict2["projectId"]}')
-    #     print(result.text)
+    #     requests.post(url, data, cookies=self.cook)
     #     assert "true" in result.text
     @allure.title("获取审核过后的 参与研究者的信息 参与医生列表")
     @allure.story("项目审核后的操作")
@@ -555,7 +567,7 @@ class Test_projectManage:
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
             "projectId": dataDict["projectId"][0],
-            "path": f"400,{self.itemOrgId}",  # 这里是医院的id 只是适用于广医的
+            "path": f"400,{self.itemOrgId}",
             "username": "",
             "page": 1,
             "size": 10,
@@ -565,10 +577,10 @@ class Test_projectManage:
         }
         result = requests.get(url, data, cookies=self.cook)
         valuesList = json.loads(result.text)["responseData"]["content"]
-        if len(valuesList) >= 1:  # 当有别的（除去创建者）医生
-            for i in valuesList:  # 获取每个医生的数据
-                if i["PROJECT_FUNCTION"] is not None:  # 当这个医生的权力不是空的
-                    return i["ID"]  # 返回第一个医生的ID
+        if len(valuesList) >= 1:
+            for i in valuesList:
+                if i["PROJECT_FUNCTION"] is not None:
+                    return i["ID"]
         else:
             print(f"请先添加参与的医生")
 
@@ -578,7 +590,7 @@ class Test_projectManage:
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
         data = {
             "operatorId": self.authUserId,
-            "topCategoryId": 3108,  # 固定的数字
+            "topCategoryId": 3108,
             "diseaseIds": 1,
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -592,7 +604,7 @@ class Test_projectManage:
         dataDict = self.get_projectId(["3"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id？
+            "projectId": dataDict["projectId"][0],
             "orgUserId": self.authUserId,
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -611,12 +623,12 @@ class Test_projectManage:
         dataDict = self.get_projectId(["3"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "projectId": dataDict["projectId"][0],  # 项目的id？
-            "centerProjectName": "",  # 医院的名称（中心名称）xls
+            "projectId": dataDict["projectId"][0],
+            "centerProjectName": "",
             "operatorId": self.authUserId,
-            "page": 1,  # 默认显示第几页
-            "size": 10,  # 每一页的数据数
-            "projectStatus": "",  # 状态是复用的
+            "page": 1,
+            "size": 10,
+            "projectStatus": "",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -624,7 +636,7 @@ class Test_projectManage:
         listIds1 = {"PATIENT_ID": [], "dataIds": []}
         resultdic = json.loads(result.text)["responseData"]
         if type(resultdic) is list:
-            aa = resultdic[0]["dataPage"]["content"]  # 患者列表
+            aa = resultdic[0]["dataPage"]["content"]
             if len(aa) > 0:
                 for i in aa:
                     listIds1["PATIENT_ID"].append(i["PATIENT_ID"])
@@ -639,8 +651,7 @@ class Test_projectManage:
     @allure.story("项目审核后的操作")
     def test_startStatus_userCreate(self, resultList):
         url = host + port_project + "/project/user/create.json"
-        # orgId = ['4400004', '4398028', '4400025', '4399480', '4399358', '4399695', '4398293', '4399037', '4399046', '4399436',
-        #  '4398125', '4399098', '4399991', '4399419', '4399963', '4399013', '4399245', '4398247', '4399024', '4400014',
+        # orgId = ['4400004', '4398028', '4400025', '4399480', '4399358', '4399695', '4398293',
         #  '4399608', '4400047', '4400077', '4398368', '4399231']
         dataId = resultList["orgUserId"]
         dataIds = ""
@@ -648,11 +659,10 @@ class Test_projectManage:
             dataIds += i + ","
         projectId = self.transfer_saveBase()
         centerProjectId = self.transfer_groupsList()["PATIENT_ID"]
-        # header = {"cookie": dlogin}
         allure.attach(f"内部参数：筛选患者列表={resultList}\nprojectId={projectId}\ncenterProjectId={centerProjectId}")
-        data = dict(dataType=1, status=1, projectId=projectId,  # 7390
+        data = dict(dataType=1, status=1, projectId=projectId,
                     operatorId=self.authUserId,
-                    centerProjectId=centerProjectId[0],  # 7389
+                    centerProjectId=centerProjectId[0],
                     dataIds=dataIds,
                     grouptime=timelocal,
                     authUserId=self.authUserId,
@@ -678,12 +688,13 @@ class Test_projectManage:
                        "PROJECT_NAME": [], "patientId": [], "birthDay": [], "age": []}
         if len(resultdic) > 0:
             for i in resultdic:
-                if "taskId" in i.keys():  # 这个参数是单独是用的和别的没有关系
+                if "taskId" in i.keys():
                     listPatient["taskId"].append(i["taskId"])
                 if "ID" in i.keys():  # 这两个参数是同是使用的
                     listPatient["carePlanId"].append(i["carePlanId"])
                     listPatient["ID"].append(i["ID"])
-                if "ORG_USER_ID" in i.keys() and "PROJECT_ID" in i.keys() and "name" in i.keys() and "PROJECT_NAME" in i.keys():  # 用于添加不良事件用到指标
+                if "ORG_USER_ID" in i.keys() and "PROJECT_ID" in i.keys() and "name" in i.keys() \
+                        and "PROJECT_NAME" in i.keys():  # 用于添加不良事件用到指标
                     listPatient["ORG_USER_ID"].append(i["ORG_USER_ID"])
                     listPatient["PROJECT_ID"].append(i["PROJECT_ID"])
                     listPatient["name"].append(i["name"])
@@ -816,7 +827,6 @@ class Test_projectManage:
             linkId = json.loads(resultdic)["item"][0]["linkId"]
         return linkId
 
-
     @allure.title("保存CRF记录")
     @allure.story("项目审核后的操作")
     def test_startStatus_saveCRF(self, dlogin):
@@ -894,7 +904,7 @@ class Test_projectManage:
         allure.attach(f"内部参数：dataDic={datadic}\n ids={ids}\n carePlanId={carePlanId}")
         data = {
             "id": ids[0],
-            "carePlanId": carePlanId[0],  # 这个参数有问题
+            "carePlanId": carePlanId[0],
             "operatorId": self.authUserId,
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -939,14 +949,14 @@ class Test_projectManage:
         allure.attach(f"内部参数：listProject={listProject}")
         if len(listProject["PROJECT_ID"]) > 0:
             data = {
-                "type": 1,  # 类型        不变的
-                "projectId": listProject["PROJECT_ID"][0],  # 项目ID
-                "patientId": listProject["ORG_USER_ID"][0],  # 患者ID
-                "patientName": listProject["name"][0],  # 患者姓名
-                "projectName": listProject["PROJECT_NAME"][0],  # 项目名称
-                "category": 2,  # SAE是1 AE是2
-                "reportUser": self.userName,  # 报告用户
-                "operatorId": self.authUserId,  # 操作人ID
+                "type": 1,
+                "projectId": listProject["PROJECT_ID"][0],
+                "patientId": listProject["ORG_USER_ID"][0],
+                "patientName": listProject["name"][0],
+                "projectName": listProject["PROJECT_NAME"][0],
+                "category": 2,
+                "reportUser": self.userName,
+                "operatorId": self.authUserId,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -958,14 +968,14 @@ class Test_projectManage:
         allure.attach(f"内部参数：projectId={listProject}")
         if len(listProject["PROJECT_ID"]) > 0:
             data = {
-                "type": 1,  # 类型        不变的
-                "projectId": listProject["PROJECT_ID"][0],  # 项目ID
-                "patientId": listProject["ORG_USER_ID"][0],  # 患者ID
-                "patientName": listProject["name"][0],  # 患者姓名
-                "projectName": listProject["PROJECT_NAME"][0],  # 项目名称
-                "category": 2,  # SAE是1 AE是2
-                "reportUser": self.userName,  # 报告用户
-                "operatorId": self.authUserId,  # 操作人ID
+                "type": 1,
+                "projectId": listProject["PROJECT_ID"][0],
+                "patientId": listProject["ORG_USER_ID"][0],
+                "patientName": listProject["name"][0],
+                "projectName": listProject["PROJECT_NAME"][0],
+                "category": 2,
+                "reportUser": self.userName,
+                "operatorId": self.authUserId,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -989,14 +999,15 @@ class Test_projectManage:
 
     @allure.title("不良事件AE-实验相关资料保存")
     @allure.story("不良事件")
-    def test_startStatus_event_SaveTestAE(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_startStatus_event_SaveTestAE(self, start, end):
         url = host + port_project + "/project/event/saveTest.json"
         datadic = self.getcarePlanId_ID()
         projectName = datadic["PROJECT_NAME"]
         code = self.getCode()
         allure.attach(f"内部参数：datadic={datadic}\n projectName={projectName}\n code={code}")
         data1 = dict(no=22, reportDate="2019-11-07 00:00", clinicalApprovalNo="", orgName=self.hospital, centerNo="",
-                     dept=self.hospital, projectName=projectName[0], projectStartdate="2019-11-07", projectEnddate="2019-12-31",
+                     dept=self.hospital, projectName=projectName[0], projectStartdate=start, projectEnddate=end,
                      drugCategory="", drugRegistCategory="", drugDosage="", clinicalTrialsCategory="", code=code,
                      operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data1, self.cook)
@@ -1009,13 +1020,13 @@ class Test_projectManage:
         projectName = datadic["PROJECT_NAME"]
         allure.attach(f"内部参数：datdic={datadic}\n progectName={projectName}")
         data = dict(no=12, reportDate="2019-08-20 00:00", clinicalApprovalNo="新药临床研究批准文号",
-                    orgName=self.hospital,  # 必填     传值
-                    centerNo="中心编号", dept="胸外一区",  # 必填     传值
-                    projectName=projectName[0],  # 必填     传值
+                    orgName=self.hospital,
+                    centerNo="中心编号", dept="胸外一区",
+                    projectName=projectName[0],
                     projectStartdate="", projectEnddate="", drugName="试验用药品中文名称", drugNameEn="试验用药品英文名称",
                     drugCategory="BIOLOGICAL_PRODUCTS_PREVENTION", drugRegistCategory=1, drugDosage="TABLETS",
                     clinicalTrials="临床试验适应症", clinicalTrialsCategory="PHASE1",
-                    id=700016, operatorId=self.authUserId,  # 必填  传值
+                    id=700016, operatorId=self.authUserId,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook)
 
@@ -1051,7 +1062,8 @@ class Test_projectManage:
                     saeOutcome=2, projectId=projectId[0], patientId=patientId[0], saePatientRelated="",
                     code=code, lastDate="", lastWeekNo="", chiefComplaint="",
                     analyticResult="有好转的迹象，结果分析", saeId="", labJson="", checkJson="",
-                    complicationJson='[{"drug":"","usage":"","consumption":"","unit":"","startDate":"","endDate":"","category":"3","id":""}]',
+                    complicationJson='[{"drug":"","usage":"","consumption":"","unit":"","startDate":"","endDate":"",'
+                                     '"category":"3","id":""}]',
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook, projectId[0])
 
@@ -1077,13 +1089,13 @@ class Test_projectManage:
         projectName = datadic["PROJECT_NAME"]
         allure.attach(f"内部参数：datadic={datadic}\n projectName={projectName}")
         data = dict(reportFirst=1, reportDate="2019-08-20 00:00", clinicalApprovalNo="新药临床研究批准文号",
-                    orgName=self.hospital,  # 必填     传值
-                    centerNo="中心编号", dept="胸外一区",  # 必填     传值
-                    projectName=projectName[0],  # 必填     传值
+                    orgName=self.hospital,
+                    centerNo="中心编号", dept="胸外一区",
+                    projectName=projectName[0],
                     projectStartdate="", projectEnddate="", drugName="试验用药品中文名称", drugNameEn="试验用药品英文名称",
                     drugCategory="BIOLOGICAL_PRODUCTS_PREVENTION", drugRegistCategory=1, drugDosage="TABLETS",
                     clinicalTrials="临床试验适应症", clinicalTrialsCategory="PHASE1",
-                    id=700016, operatorId=self.authUserId,  # 必填  传值
+                    id=700016, operatorId=self.authUserId,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook)
 
@@ -1268,7 +1280,7 @@ class Test_projectManage:
 
     @allure.title("锁库结题")
     @allure.story("中期汇报")
-    def test_startStatus_lockLibraryReport(self):  # 锁库结题
+    def test_startStatus_lockLibraryReport(self):
         url = host + port_project + "/project/result/report/lockLibraryReport.json"
         dataDict = self.get_projectId(["3"])
         allure.attach(f"项目Id={dataDict['projectId']}")
@@ -1290,8 +1302,6 @@ class Test_projectManage:
                     page=1, size=10, projectStatus="",
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook)
-
-
 
     @allure.title("项目进度-汇报-保存")
     @allure.story("中期汇报")
@@ -1363,7 +1373,7 @@ class Test_projectManage:
         dataDict = self.get_projectId(["5"])
         allure.attach(f"项目Id={dataDict['projectId']}")
         data = {
-            "jsonParam": '[{"centerProjectId":"3583136"},{"centerProjectId":"3583139"}]',  # 格式是固定的
+            "jsonParam": '[{"centerProjectId":"3583136"},{"centerProjectId":"3583139"}]',
             "projectId": int(dataDict["projectId"][0]) + 1,
             "projectStage": 1,
             "operatorId": self.authUserId,

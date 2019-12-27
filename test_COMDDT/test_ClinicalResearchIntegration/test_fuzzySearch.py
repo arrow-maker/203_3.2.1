@@ -7,6 +7,16 @@
 """
 from public.overWrite_Assert import *
 from public.Login_Cookies import login_cookies
+#   筛选使用的word
+wordchech = ("白", "咳嗽 or 咯血", "干燥综合征", "咳嗽 and 咯血", "咳嗽 or not 咯血"
+             "CA620FF036544199B056F77D48AEA9BD", "C112EB45E13A346CB982E6A8ABF2D387",
+             "002E00DB360298BA6FF7FD2C5D698BD5", "20159683", "ZY020000625214",
+             "干燥综合征 C112EB45E13A346CB982E6A8ABF2D387")
+
+wordSave = ("白", "咳嗽", "干燥综合征", "咯血",
+            "CA620FF036544199B056F77D48AEA9BD", "C112EB45E13A346CB982E6A8ABF2D387",
+            "002E00DB360298BA6FF7FD2C5D698BD5", "20159683", "ZY020000625214",
+            "干燥综合征 C112EB45E13A346CB982E6A8ABF2D387")
 
 
 @allure.feature("天塔筛选-模糊筛选")
@@ -44,19 +54,17 @@ class Test_TitanFuzzySearh():
 
     @allure.story("筛选-收藏")
     @allure.title("模糊搜索")
-    def test_getDataTemplateList(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDataTemplateList(self, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
         data = dict(groupId=101, collect=1, page=1, size=5,
-                    keyword="", startDate="", endDate="",
+                    keyword="", startDate=start, endDate=end,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, "操作成功")
 
     @allure.story("筛选")
     @allure.title("筛选字段")
-    @pytest.mark.parametrize("keyword", ("白", "咳嗽 or 咯血", "干燥综合征", "咳嗽 and 咯血", "咳嗽 or not 咯血"
-                                         "CA620FF036544199B056F77D48AEA9BD", "C112EB45E13A346CB982E6A8ABF2D387",
-                                         "002E00DB360298BA6FF7FD2C5D698BD5", "20159683", "ZY020000625214",
-                                         "干燥综合征 C112EB45E13A346CB982E6A8ABF2D387"))
+    @pytest.mark.parametrize("keyword", wordchech)
     def test_patientSuggest(self, keyword):
         url = host + port_patient + "/patient/suggest.json"
         data = dict(keyword=keyword,
@@ -78,10 +86,7 @@ class Test_TitanFuzzySearh():
 
     @allure.story("筛选到数据")
     @allure.title("筛选字段")
-    @pytest.mark.parametrize("keyword", ("白", "咳嗽 or 咯血", "干燥综合征", "咳嗽 and 咯血", "咳嗽 or not 咯血",
-                                         "CA620FF036544199B056F77D48AEA9BD", "C112EB45E13A346CB982E6A8ABF2D387",
-                                         "002E00DB360298BA6FF7FD2C5D698BD5", "20159683", "ZY020000625214",
-                                         "干燥综合征 C112EB45E13A346CB982E6A8ABF2D387"))
+    @pytest.mark.parametrize("keyword", wordchech)
     def test_patientSearch21(self, keyword):
         url = host + port_patient + "/patient/search.json"
         data = {"page": 1, "size": 10, "keyword": [{"relation": 1, "keyword": keyword, "nodes": []}],
@@ -148,17 +153,16 @@ class Test_TitanFuzzySearh():
 
     @allure.story("保存数据")
     @allure.title("筛选字段")
-    def test_saveDataTemplate(self):
+    @pytest.mark.parametrize("keyword", wordSave)
+    def test_saveDataTemplate(self, keyword):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
+        yamdata = congyaml["模糊搜索"]["保存筛选数据"]
         data = dict(type=0, collect=0, status=2, version=5, groupId=101, operatorId=self.authUserId,
-                    templateName="模糊搜索1575621761148",
-                    resultVariables='{"baseCondition":{"treeData":[],"show":false,"value":"copd","treeValue":"",'
-                                    '"selected":[],"nodeIds":[],"isDate":false,"dateValue":"Invalid date"},'
-                                    '"otherCondition":[],"patient":{"total":150362,"hit":91962,"percent":"61.16"},'
-                                    '"cases":{"total":617330,"hit":359713,"percent":"58.27"}}',
+                    templateName=f"模糊搜索{time_up}",
+                    resultVariables=yamdata["resultVariables"] % keyword,
                     authUserId=self.authUserId, authToken=self.authToken)
         allure.attach(f"内部参数：url={url}\ndata={data}", name="保存数据")
-        assert_post(url, data, self.cook, "模糊搜索1575621761148")
+        assert_post(url, data, self.cook, self.authToken)
 
     def templateId(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
@@ -174,14 +178,12 @@ class Test_TitanFuzzySearh():
 
     @allure.story("筛选-历史")
     @allure.title("模糊搜索")
-    @pytest.mark.parametrize("keyword", ("白", "咳嗽", "干燥综合征", "咯血",
-                                         "CA620FF036544199B056F77D48AEA9BD", "C112EB45E13A346CB982E6A8ABF2D387",
-                                         "002E00DB360298BA6FF7FD2C5D698BD5", "20159683", "ZY020000625214",
-                                         "干燥综合征 C112EB45E13A346CB982E6A8ABF2D387"))
-    def test_getDataTemplateList1(self, keyword):
+    @pytest.mark.parametrize("keyword", wordSave)
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDataTemplateList1(self, keyword, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
         data = dict(groupId=101, status=2, page=1, size=5, keyword=keyword,
-                    startDate="", endDate="", orderByColumn="createdTime",
+                    startDate=start, endDate=end, orderByColumn="createdTime",
                     orderBy="desc", collect=0,
                     authUserId=self.authUserId, authToken=self.authToken)
         hint = keyword
@@ -196,7 +198,7 @@ class Test_TitanFuzzySearh():
     def test_updateStatus(self, status):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateStatus.json"
         templateId = self.templateId()
-        data = dict(templateId=templateId[0], collect=status,   # 收藏和取消
+        data = dict(templateId=templateId[0], collect=status,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook, "操作成功")
 

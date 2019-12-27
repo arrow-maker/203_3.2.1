@@ -18,9 +18,9 @@ class Test_project_audict:
         response1, cook = login
         url = host + port_project + "/project/check/list.json"
         data = {
-            # "checkType":2,                                         #审核状态，1：待审核，2：审核已通过，3：审核不通过
-            # "projectCenter":"",                                     #研究中心，1：单中心，2：多中心
-            # "projectName":"",                                      #用于查询项目的名称的字段
+            # "checkType":2,
+            # "projectCenter":"",
+            # "projectName":"",
             # "page":  1,
             # "size":10,
             "operatorId": response1["authUserId"],
@@ -34,17 +34,17 @@ class Test_project_audict:
     def test_projectReview(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/save.json"
-        listtemp = auditProjectList(cook, response1["authUserId"], response1["authToken"])  # 待审核的列表
+        listtemp = auditProjectList(cook, response1["authUserId"], response1["authToken"])
         allure.attach(f"内部参数：listtemp={listtemp}")
         data = {
-            "operatorId": response1["authUserId"],  # 操作人员
-            "dataId": listtemp["DATA_ID"][0],  # 3573263 数据只能使用一次
-            "result": 1,  # 检查类型
-            "checkOption": "",  # 审核意见
-            "serviceName": "projectCheckFollowupService",   # 服务名称 固定的
-            "checkId": listtemp["ID"][0],  # 检查ID
+            "operatorId": response1["authUserId"],
+            "dataId": listtemp["DATA_ID"][0],
+            "result": 1,
+            "checkOption": "",
+            "serviceName": "projectCheckFollowupService",
+            "checkId": listtemp["ID"][0],
             "dataType": 10,
-            "operatorFunction": "54826-submitProject",  # 操作方法
+            "operatorFunction": "54826-submitProject",
             "authUserId ": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -55,7 +55,7 @@ class Test_project_audict:
     def test_list_projectCheckBaseInfo(self, login):
         response1, cook = login
         url = host + port_project + "/project/info/base.json"
-        tempdict = auditProjectList(cook, response1["authUserId"], response1["authToken"])  # 这里是项目列表
+        tempdict = auditProjectList(cook, response1["authUserId"], response1["authToken"])
         allure.attach(f"内部参数：tempdic={tempdict}")
         data = dict(projectId=tempdict["DATA_ID"][1],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -80,9 +80,9 @@ class Test_project_audict:
         url = host + port_project + "/project/check/file/list.json"
         data = {
             "operatorId": response1["authUserId"],
-            # "patientName":"",#名字存在还有不存在
-            # "projectName":"",#名字存在还有不存在
-            # "checkType":"", #待审核：2，审核通过：1，审核不通过：0，全部时：空
+            # "patientName":"",
+            # "projectName":"",
+            # "checkType":"",
             # "page":1,
             # "size":10,
             "authUserId": response1["authUserId"],
@@ -125,7 +125,7 @@ class Test_project_audict:
         data = {
             # "keyName":"受试者姓名",
             # "projectName":"项目名称",
-            # "checkType": 1,#待审核：1，审核通过：2，审核不通过：3
+            # "checkType": 1, #待审核：1，审核通过：2，审核不通过：3
             "operatorId": response1["authUserId"],
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
@@ -138,7 +138,8 @@ class Test_project_audict:
         response1, cook = login
         url = host + port_project + "/project/functionList.json"
         data = dict(keyName="ALL_CENTER_CHECK_CRF,CHECK_CRF",
-                    operatorId=response1["authUserId"], authUserId=response1["authUserId"], authToken=response1["authToken"])
+                    operatorId=response1["authUserId"],
+                    authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
     def functionList(self,response1, cook):
@@ -279,13 +280,13 @@ class Test_project_audict:
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_post(url, data, cook, taskId[0])
 
-    def transfer_Start(self, dlogin, response1, cook):  # 传递开始的值
+    def transfer_Start(self, dlogin, response1, cook):
         url = host + portlogin + "/project/review/start.json"
         taskId = self.giveCRFList(response1, cook)["taskId"]
         allure.attach(f"内部参数：taskid={taskId}")
         if len(taskId) > 0:
             header = {"cookie": dlogin}
-            data = dict(taskId=taskId[0],  # 这个只能使用一遍
+            data = dict(taskId=taskId[0],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             result, resultDic = assert_post(url, data, headers=header)
             if "SUCCESS" in resultDic:
@@ -304,9 +305,9 @@ class Test_project_audict:
         patientData = self.giveCRFList(response1, cook)["patientId"]
         allure.attach(f"内部参数：token={token}\n patinetId={patientData}")
         if token is not None:
-            data = dict(token=token[0],  # 这里从开始或者从新开始传递过来的["questionnaire"]
+            data = dict(token=token[0],
                         isFirst=0,
-                        patientId=patientData[0],  # 这里是从CRF列表中传过来的["patientId"]
+                        patientId=patientData[0],
                         index=0,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook)
@@ -314,23 +315,22 @@ class Test_project_audict:
     @allure.title("审核 CRF项目审核 提交")
     @allure.story("CRF")
     def test_list_projectCRFreviewSubmit(self, dlogin, login):
+        """
+                这里的content有问题，请添加修改数据
+        :param dlogin:
+        :param login:
+        :return:
+        """
         response1, cook = login
         url = host + portlogin + "/project/review/submit.json"
         taskId = self.giveCRFList(response1, cook)["taskId"]
         header = {"cookie": dlogin}
         allure.attach(f"内部参数：taskId={taskId}")
+        yamdata = congyaml["科研质控"]["CRF审核提交"]
         if len(taskId) > 0:
             data = dict(taskId=taskId[0],
-                        # 下面的参数是固定的
-                        content='[{"linkId":"1bbfbbc6-ebec-4d1c-8e41-a4f485f9f9b8",'
-                                '"value":["http://gyfyy.com/fhir/inspection-mode|logicality-check",'
-                                '"http://gyfyy.com/fhir/inspection-mode|standard-check",'
-                                '"http://gyfyy.com/fhir/inspection-mode|process-check",'
-                                '"http://gyfyy.com/fhir/inspection-mode|integrality-check",'
-                                '"http://gyfyy.com/fhir/inspection-mode|repeatability-check"]},'
-                                '{"linkId":"349d3bde-40e5-4fd7-99d1-e8882bcca2de","value":["|1"]}]',
+                        content=yamdata["content"],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
-
             assert_post(url, data, headers=header)
 
     @allure.title("项目管理->科研审核->项目汇报")
@@ -374,10 +374,10 @@ class Test_project_audict:
         tempdict = self.transfer_ProjectReportList(response1, cook)
         allure.attach(f"内部参数：tempdict={tempdict}")
         if len(tempdict["checkId"]) > 0:
-            data = dict(checkId=tempdict["checkId"][0],  # 从项目列表中传值过来["CHECK_ID"]6271
+            data = dict(checkId=tempdict["checkId"][0],
                         result=1, checkOption="",
-                        serviceName="projectCheckReportService",  # 项目报告中固定的格式
-                        projectId=tempdict["projectId"][0],  # 从项目列表中传值过来["PROJECT_ID"]3583118
+                        serviceName="projectCheckReportService",
+                        projectId=tempdict["projectId"][0],
                         operatorId=response1["authUserId"], operatorFunction="54826-submitProject",
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_post(url, data, cook, "已审核")

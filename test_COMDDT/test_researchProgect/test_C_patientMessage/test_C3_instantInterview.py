@@ -40,8 +40,8 @@ class Test_instantInterview:
         url = host + portlogin + "/org/orgInfo/getOrgInfoTreeList.json"
         data = dict(listType=2,
                     status=1,
-                    orgTypeIds="35,38,33",  # 这个好像在哪里遇到过
-                    path=400,  # 医院的广医固定的
+                    orgTypeIds="35,38,33",
+                    path=400,
                     orgName="",
                     authUserId=response1["authUserId"],
                     authToken=response1["authToken"])
@@ -54,8 +54,8 @@ class Test_instantInterview:
         url = host + portlogin + "/projectDetail/getProjectPatientAddList.json"
         path = self.transfer_OrgInfoTreeList(response1, cook)["responseData"][0]["children"][0]["path"]
         allure.attach(f"内部参数：path={path}")
-        data = dict(path=path,  # 从前一个接口中传递过来的["responseData"][0]["children"][0]["path"]
-                    page=10, size=10,  # 第10页的数据
+        data = dict(path=path,
+                    page=10, size=10,
                     authUserId=response1["authUserId"],
                     authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
@@ -76,9 +76,9 @@ class Test_instantInterview:
         patientId = self.transfer_ProjectAddlist(response1, cook)["patientId"]
         allure.attach(f"内部参数question={questionnaireId}\n patientId={patientId}")
         for i in range(int(len(patientId)/2)+1):
-            data = dict(questionnaireId=questionnaireId[0],  # 这里是从问卷列表展示中的数据["id"]
-                        patientId=patientId[0],  # 这里是从添加患者信息中提炼的["PATIENT_ID"]
-                        operatorFunction="54926-addInstantPaln",  # 这里是固定的数据
+            data = dict(questionnaireId=questionnaireId[0],
+                        patientId=patientId[0],
+                        operatorFunction="54926-addInstantPaln",
                         operatorId=response1["authUserId"],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             header = {"cookie": dlogin}
@@ -91,7 +91,7 @@ class Test_instantInterview:
         url = host + portlogin + '/projectPatient/getPatientInfo.json'
         patientId = self.transfer_list(dlogin, response1, cook)["patientId"]
         allure.attach(f"内部参数：patientId={patientId}")
-        data = dict(patientId=patientId[0],  # 280301,
+        data = dict(patientId=patientId[0],
                     # operatorId=4709832,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, patientId[0])
@@ -141,7 +141,7 @@ class Test_instantInterview:
         taskId = self.transfer_list(dlogin, response1, cook)["taskId"]
         allure.attach(f"内部参数：taskId={taskId}")
         data = {
-            "taskId": taskId[0],  # 从访视记录中的展示列表中传值过来
+            "taskId": taskId[0],
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -150,14 +150,15 @@ class Test_instantInterview:
 
     @allure.title("即时访视配置 问卷停用或者启用")
     @allure.story("即时访视配置")
-    def test_questionnaireToggle(self, login):
+    @pytest.mark.parametrize("function,enable", (("54926-addStart", "true"), ("54926-addStop", "false")))
+    def test_questionnaireToggle(self, login, function, enable):
         response1, cook = login
         url = host + portlogin + "/record/questionnaire/toggle.json"
         questionnaireId = self.transfer_questionList(response1, cook)["questionnaireId"]
         allure.attach(f"内部参数：questionnaireId={questionnaireId}")
-        data = dict(questionnaireId=questionnaireId[0],  # 从列表中传递过来["responseData"]["content"][2]["id"]
-                    operatorFunction="54926-addStart",  # 这里是固定的格式 启用：54926-addStart，停用：54926-addStop
-                    enabled="true",  # 这里是固定的格式false：停用，true：启用
+        data = dict(questionnaireId=questionnaireId[0],
+                    operatorFunction=function,
+                    enabled=enable,
                     operatorId=response1["authUserId"], authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, questionnaireId[0])
 

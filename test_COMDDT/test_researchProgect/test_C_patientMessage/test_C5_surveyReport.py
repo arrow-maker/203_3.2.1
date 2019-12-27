@@ -7,13 +7,14 @@ class Test_surveyReport:
 
     @allure.title("报告结果列表 数据展示")
     @allure.story("检验报告数据展示")
-    def test_showList(self,login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_showList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/data/getVisitLabList.json"
-        data = dict(packageItem="a",  # 检验组套 ：组套显示
+        data = dict(packageItem="a",
                     patientname="", patientNo="",
-                    startDate="",  # 时间设置
-                    endDate="",
+                    startDate=start,
+                    endDate=end,
                     page=1, size=10, authUserId=response1["authUserId"],
                     authToken=response1["authToken"])
         assert_get(url, data, cook)
@@ -22,9 +23,9 @@ class Test_surveyReport:
     @allure.story("检验报告数据展示")
     def transfer_visitLabList(self, response1, cook):
         url = host + port_es + "/data/getVisitLabList.json"
-        data = dict(packageItem="",  # 检验组套 ：组套显示
+        data = dict(packageItem="",
                     patientname="", patientNo="",
-                    startDate="",  # 时间设置
+                    startDate="",
                     endDate="",
                     page=1, size=10, authUserId=response1["authUserId"],
                     authToken=response1["authToken"])
@@ -46,14 +47,13 @@ class Test_surveyReport:
         dd = self.transfer_visitLabList(response1, cook)
         allure.attach(f"内部参数：数据列表={dd}")
         if len(dd["packageItem"]) > 0:
-            data = dict(labSerialnum=dd["labSerialnum"][0],  # 这里中报告结果列表中传值 ["responseData"]["content"][0]["labSerialnum"]
-                        packageItem=dd["packageItem"][0],  # 这里中报告结果列表中传值 ["responseData"]["content"][0]["packageItem"]
+            data = dict(labSerialnum=dd["labSerialnum"][0],
+                        packageItem=dd["packageItem"][0],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, dd["packageItem"][0])
         else:
             data = dict(labSerialnum=111111111111111,
-                        # 这里中报告结果列表中传值 ["responseData"]["content"][0]["labSerialnum"]
-                        packageItem="诱导痰",  # 这里中报告结果列表中传值 ["responseData"]["content"][0]["packageItem"]
+                        packageItem="诱导痰",
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, "诱导痰")
 
@@ -133,7 +133,7 @@ class Test_surveyReport:
         ids = self.transfer_GroupList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         if len(ids) > 0:
-            data = dict(groupId=ids[0],  # 这里是从套件详情列表中传递过来的 ["responseData"]["content"][0]["id"]
+            data = dict(groupId=ids[0],
                         projectName="",
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, str(ids))
@@ -145,7 +145,7 @@ class Test_surveyReport:
         ids = self.transfer_GroupList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         if len(ids) > 0:
-            data = dict(groupId=ids[0],  # 这里是从套件详情列表中传递过来的 ["responseData"]["content"][0]["id"]
+            data = dict(groupId=ids[0],
                         projectName="",
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             result = requests.get(url, data, cookies=cook)
@@ -166,12 +166,12 @@ class Test_surveyReport:
         allure.attach(f"内部参数：ids={ids}")
         if len(ids) > 0:
             data = dict(groupId=ids[0],  # 从套件序列中传来的Id
-                        sequence="123456",  # 序号 输入的数据
-                        projectName="他依然也让8",  # 输入的数据 项目名称
-                        projectCode="fgsd4",  # 项目的编码
-                        unit="",                # 单位
-                        refer="",               # 参考值
-                        critical="",            # 危急值
+                        sequence=f"123{num}",  # 序号 输入的数据
+                        projectName=f"他依然也让{num}",  # 输入的数据 项目名称
+                        projectCode="fgsd4",
+                        unit="",
+                        refer="",
+                        critical="",
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_post(url, data, cook, str(ids))
 

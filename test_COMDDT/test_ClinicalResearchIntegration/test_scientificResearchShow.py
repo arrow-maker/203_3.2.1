@@ -20,14 +20,15 @@ class Test_scintificShow():
 
     @allure.title("课题列表和-数据展示")
     @allure.story("科研成果-展示")
-    def test_getAllTopicDTO(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getAllTopicDTO(self, start, end):
         url = host + port_sourcedata + "/topic/getAllTopicDTO.json"
         data = {
             "page": 1,
             "size": 10,
             "sort": "desc",
-            "startDate": "2019-01-01",
-            "endDate": "2019-12-31",
+            "startDate": start,
+            "endDate": end,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }

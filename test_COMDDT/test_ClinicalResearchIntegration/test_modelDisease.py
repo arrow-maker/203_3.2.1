@@ -6,9 +6,11 @@
 @Author:Terence
 """
 from public.overWrite_Assert import *
-templateId = 15316              # 典型病例库智能搜索模板Id
-w_Id = "ZY020000507548_238"     # 患者相似权重分析Id
-responseid = [35]                        # 保存相似分析的添加到历史记录的节点Id
+
+templateId = 15316  # 典型病例库智能搜索模板Id
+w_Id = "ZY020000507548_238"  # 患者相似权重分析Id
+responseid = [35]  # 保存相似分析的添加到历史记录的节点Id
+
 
 @allure.feature("临床科研一体化- 典型病例库")
 class Test_modelDisease:
@@ -16,19 +18,22 @@ class Test_modelDisease:
     @allure.title("输入患者流水号-患者列表，数据列表展示")
     @allure.story("典型病例库操作--输入患者流水号")
     @allure.step("参数：login={0}")
-    def test_getPatientList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getPatientList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/similar/data/getPatientList.json"
-        data = {"startDate": "", "endDate": "",
+        data = {"startDate": start, "endDate": end,
                 # "page": 1, "size": 10, "key": "",
-                "userId": response1["authUserId"], "authUserId": response1["authUserId"], "authToken": response1["authToken"]}
+                "userId": response1["authUserId"], "authUserId": response1["authUserId"],
+                "authToken": response1["authToken"]}
         overWrite_assert_get_xls_hint(url, data, cook, clincalPath, "典型病例库-患者列表")
 
     def patientList(self, response1, cook):
         url = host + port_es + "/similar/data/getPatientList.json"
         data = {"key": "", "startDate": "", "endDate": "",
                 "page": 1, "size": 10,
-                "userId": response1["authUserId"], "authUserId": response1["authUserId"], "authToken": response1["authToken"]}
+                "userId": response1["authUserId"], "authUserId": response1["authUserId"],
+                "authToken": response1["authToken"]}
         reslut = requests.get(url, data, cookies=cook)
         ids = {"inpatientNo": [], "patientId": [], "patientName": []}
         reslutdic = json.loads(reslut.text)["responseData"]["content"]
@@ -56,10 +61,11 @@ class Test_modelDisease:
     @allure.title("患者查询记录 记录列表")
     @allure.story("典型病例库操作--患者查询记录")
     @allure.step("参数：login={0}")
-    def test_getSimilarRecordDataValue(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getSimilarRecordDataValue(self, login, start, end):
         response1, cook = login
         url = port_model + "/patient_similar/getSimilarRecordDataValue"
-        data = dict(startDate="", endDate="",
+        data = dict(startDate=start, endDate=end,
                     # page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         overWrite_assert_get_xls_hint(url, data, cook, clincalPath, "分页验证  10")
@@ -156,7 +162,7 @@ class Test_modelDisease:
             "type": 40, "status": 1, "dataScope": 1, "timeScope": 2, "version": 3,
             "indexRule": 1, "resultStore": 2, "operatorId": response1["authUserId"],
             "patientQueryWhere": congyaml["典型病例库"]["保存临时模板"]["patientQueryWhere"],
-            "templateName": "临时版本1577087716583", "dataIds":congyaml["典型病例库"]["保存临时模板"]["dataIds"],
+            "templateName": "临时版本1577087716583", "dataIds": congyaml["典型病例库"]["保存临时模板"]["dataIds"],
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -199,9 +205,11 @@ class Test_modelDisease:
         data = dict(w_id=w_Id,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
+
     """
     下面的数据操作是基于有患者的前提之下。操作
     """
+
     @allure.title("患者分析结果列表")
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
@@ -289,9 +297,11 @@ class Test_modelDisease:
         data = dict(w_Id=w_Id, pt_list=inpatientNo[0])
         result = requests.post(url, data, cookies=cook)
         assert result.status_code == 200
+
     """
         下面的是保存到历史的记录中
     """
+
     @allure.title("添加节点")
     @allure.story("保存到历史记录")
     @allure.step("参数：login={0}")
@@ -310,7 +320,7 @@ class Test_modelDisease:
     def test_resource_findList(self, login):
         response1, cook = login
         url = host + port_resource + "/resource/dir/findList.json"
-        param = dict(moduleType=1, dirType=1, operatorId=4400148,
+        param = dict(moduleType=1, dirType=1, operatorId=response1["authUserId"],
                      authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = assert_get(url, param, cook)
         global responseid
@@ -354,9 +364,11 @@ class Test_modelDisease:
         data = dict(id=responseid, type=1, operatorId=response1["authUserId"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
+
     """
         下面的是对历史记录的操作·····
     """
+
     @allure.title("个人历史记录列表")
     @allure.story("历史记录")
     @allure.step("参数：login={0}")
@@ -387,6 +399,7 @@ class Test_modelDisease:
             "authToken": response1["authToken"]
         }
         assert_get(url, data, cook)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -8,7 +8,7 @@
 from public.overWrite_Assert import *
 replyId = []       # 讨论的Id
 """
-这个模块要使用两个账号登录：
+这个模块要使用两个账号登录：记得你要有两个账号
     一个用于审核，一个是创建者
 """
 @allure.feature("病例讨论")
@@ -73,7 +73,7 @@ class Test_dicussion():
     def test_topicSave2(self, login, resultList):
         response, cook = login
         url = host + port_bbs + "/bbs/topic/save.json"
-        patiId = resultList["patiId"]    # 写道这里，找到筛选的病例的信息
+        patiId = resultList["patiId"]
         patiIds = ""
         for i in patiId:
             patiIds += f"{i},"
@@ -283,7 +283,8 @@ class Test_dicussion():
         topicId = self.topicList_toCheck(response, cook)
         allure.attach(f"内部参数：topicId={topicId}")
         data = dict(serviceName="discussCaseService", submitType=4, updatedUserId=response["authUserId"],
-                    topicId=909, discussingItem='[{"orgUserId":"4400143","content":"整理谈论结论，发表意见","seq":1}]',
+                    topicId=909, discussingItem='[{"orgUserId":"%s","content":"整理谈论结论，发表意见","seq":1}]'
+                                                % response["authUserId"],
                     conclusion="添加讨论意见终结", auditType=3,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook, "添加讨论意见终结")
@@ -408,8 +409,9 @@ class Test_dicussion():
         data = dict(openSign="true", sectionId=185, topicId=909, page=1, size=20,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         result = assert_get(url, data, cook)
-        assert timelocal in result[0]  # 当天的日期
-        assert response["userName"] in result[0]  # 创建人是自己
+        assert timelocal in result[0]                   # 断言-创建的日期是当日
+        assert response["userName"] in result[0]        # 断言-创建者是作者本人
+        global replyId
         for i in result[1]["responseData"]["content"]:
             replyId.append(i["replyId"])
 
@@ -427,11 +429,12 @@ class Test_dicussion():
     @allure.title("患者的就诊信息")
     @allure.story("数据操作-编辑信息")
     @allure.step("参数：login={0}")
-    def test_getAdmissionMrInfoList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getAdmissionMrInfoList(self, login, start, end):
         response, cook = login
         url = host + port_es + "/data/getAdmissionMrInfoList.json"
         data = dict(id="YS00014530b85d-99d2-4824-b288-7690b9b2d3c6",
-                    startDate="", endDate="",
+                    startDate=start, endDate=end,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_get(url, data, cook)
 
@@ -518,9 +521,9 @@ class Test_dicussion():
             "authToken": response["authToken"]
         }
         result = assert_get(url, data, cook, "生成图片")
-        assert timelocal in result[0]               # 验证是当天添加的文件
-        assert response["userName"] in result[0]    # 验证是正确的人添加的文件
-        assert '"STATUS":"1"' in result[0]        # 验证是待审核的状态
+        assert timelocal in result[0]
+        assert response["userName"] in result[0]
+        assert '"STATUS":"1"' in result[0]
 
     def fileId(self, response, cook):
         url = host + port_bbs + "/bbs/file/list.json"

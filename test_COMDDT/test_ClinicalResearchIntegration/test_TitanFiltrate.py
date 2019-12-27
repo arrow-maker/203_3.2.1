@@ -28,9 +28,9 @@ class Test_TitanFiltrateClass():
     这两个是最复杂的设计(第二个有七个for循环：伤心)：是使用的pandas(利用行与行之间的关系，行和列之间的关系)
         设计思路是找到所有的行中的某一列值是给定的，这样逐级的筛选找到需要的那一行
         xlrd 这个行之间没有关系，或者找总的行数，非常的不方便
+    这里的数据经常会变，一定会用的到，希望会对你有用
     """
-
-    def grayAssert(self, datadic, pandas12):  # 置灰数据
+    def grayAssert(self, datadic, pandas12):  # 置灰断言
         if list(pandas12["hint"])[0] == "gray":
             assert datadic["isExclude"] is None and datadic["isExport"] is None \
                    and datadic["isInclude"] is None or \
@@ -44,13 +44,13 @@ class Test_TitanFiltrateClass():
     @allure.story("天塔筛选-通用指标")
     def test_getDataIndexValueTreeList(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
-        data = dict(topCategoryId=15723,  # 这里好像是固定的
+        data = dict(topCategoryId=15723,
                     authUserId=self.authUserId, authToken=self.authToken)
         result, resultdic = assert_get(url, data, self.cook)
-        resultFrame = resultdic["responseData"][0]["children"]  # 这是一个字典
+        resultFrame = resultdic["responseData"][0]["children"]
         ff = pandas_excel("临床指标筛选所有指标.xls", "通用指标")
         for i in resultFrame:
-            assert i["title"] in list(ff["case_name"]), print(f'一级指标:{i["title"]}\n{list(ff["case_name"])}')  # 一级断言，
+            assert i["title"] in list(ff["case_name"]), print(f'一级指标:{i["title"]}\n{list(ff["case_name"])}')  # 一级断言
             ff2 = ff.copy()
             ff2 = ff2[ff2["case_name"].isin([i["title"]])]
             for j in i["children"]:
@@ -192,23 +192,9 @@ class Test_TitanFiltrateClass():
     @allure.story("天塔筛选-通用指标")
     def test_saveDataTemplate(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
+        yamdata = congyaml["天塔筛选"]["保存筛选数据"]
         data = dict(status=2, version=5, groupId=100, dataScope=1, timeScope=0,
-                    patientQueryWhere='{"logicSymbol":"and","whereList":[{"logicSymbol":"or","whereType":1,'
-                                      '"whereList":[{"logicSymbol":"or","whereList":[{"symbol":"=",'
-                                      '"dataValueType":"1","dataId":"462","dataRId":"484","columnValue":"2018-11-25,'
-                                      '2019-11-25","columnName":"VISIT_DATE","columnTitle":"入院时间",'
-                                      '"columnType":"date","dataName":"入院时间"}]}]},{"logicSymbol":"or","whereType":1,'
-                                      '"whereList":[{"logicSymbol":"or","nextLogicSymbol":"or","bracket":"start",'
-                                      '"whereList":[{"symbol":"=","dataValueType":"3","dataId":"248","dataRId":"481",'
-                                      '"columnValue":"男","columnName":"SEX","columnTitle":"男","columnType":"string",'
-                                      '"dataName":"性别"}]},{"logicSymbol":"or","bracket":"end","whereList":[{'
-                                      '"symbol":"=","dataValueType":"3","dataId":"248","dataRId":"481",'
-                                      '"columnValue":"女","columnName":"SEX","columnTitle":"女","columnType":"string",'
-                                      '"dataName":"性别"}]}]},{"logicSymbol":"and","whereType":0,"whereList":[{'
-                                      '"logicSymbol":"and","whereList":[{"symbol":"=","dataValueType":"2",'
-                                      '"dataId":"1518","dataRId":"1432","columnValue":"40岁以下",'
-                                      '"columnName":"AGE_GROUP","columnTitle":"[0,40]","columnType":"string",'
-                                      '"dataName":"年龄段"}]}]}]}',
+                    patientQueryWhere=yamdata["patientQueryWhere"],
                     type=0, operatorId=self.authUserId, templateName=f"初始版本{time_up}", indexRule=0,
                     dataIds="2887,248,249,2884,462,463,15524,15523,",
                     authUserId=self.authUserId, authToken=self.authToken)
@@ -238,7 +224,8 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选收藏")
     @allure.story("天塔筛选-通用指标")
-    def test_getDataTemplateList(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDataTemplateList(self, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
         data = {
             "groupId": 100,
@@ -255,7 +242,8 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选历史")
     @allure.story("天塔筛选-通用指标")
-    def test_getDataTemplateList2(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDataTemplateList2(self, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
         data = {
             "groupId": 100,
@@ -263,8 +251,8 @@ class Test_TitanFiltrateClass():
             "page": 1,
             "size": 5,
             "keyword": "",
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "orderByColumn": "createdTime",
             "orderBy": "desc",
             "collect": 0,
@@ -277,13 +265,13 @@ class Test_TitanFiltrateClass():
     @allure.story("天塔筛选-通用指标")
     def test_saveDataQueryGroup2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataQueryGroup.json"
-        patientQuery = congyaml["天塔筛选收藏指标"]["patientQueryWhere"]
+        patientQuery = congyaml["天塔筛选"]["收藏指标"]["patientQueryWhere"]
         data = {
             "operatorId": self.authUserId,
             "groupName": "性别指标",
             "whereType": 1,
             "patientQueryWhere": patientQuery,
-            "categoryId": 15723,        # 这里是固定的
+            "categoryId": 15723,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }

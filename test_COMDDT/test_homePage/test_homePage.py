@@ -98,7 +98,7 @@ class Test_homePage:
         url = host + portlogin + "/userhome/calendar/datedetail.json"
         data = {
             "orgUserId": response1["authUserId"],
-            "date": "2019-12-22",
+            "date": timelocal,
             "type": 1,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]

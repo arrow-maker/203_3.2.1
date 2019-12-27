@@ -34,15 +34,16 @@ class Test_patientListMessage:
 
     @allure.title("数据列表展示")
     @allure.story("我创建的")
-    def test_findNoticeInfoPage(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findNoticeInfoPage(self, start, end):
         url = host + portlogin + "/notice/findNoticeInfoPage.json"
         data = {
             "page": 1,
             "size": 15,
             "noticeTypeId": "",
             "noticeStatus": "",
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "noticeTitle": "",
             "modularType": 2,
             "authUserId": self.authUserId,
@@ -172,15 +173,16 @@ class Test_patientListMessage:
 
     @allure.title("审核记录-列表展示")
     @allure.story("审核记录")
-    def test_findNoticeExaminetPage(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findNoticeExaminetPage(self, start, end):
         url = host + portlogin + "/notice/findNoticeExaminetPage.json"
         data = {
             "page": 1,
             "size": 15,
             "noticeTypeId": "",
             "noticeStatus": "",
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "noticeTitle": "",
             "modularType": 2,
             "operatorFunction": "51060-viewAutidingRecord",
@@ -192,12 +194,13 @@ class Test_patientListMessage:
 
     @allure.title("审核-不通过")
     @allure.story("审核记录")
-    def test_findNoticeExaminetPage(self):
+    @pytest.mark.parametrize("status", (1, 3))
+    def test_findNoticeExaminetPage(self, status):
         url = host + portlogin + "/notice/updateStatus.json"
         data = {
             "auditOrgUserId": self.authUserId,
             "noticeId": 13817,
-            "status": 3,    # 1：同意， 3：不同意
+            "status": status,    # 1：同意， 3：不同意
             "auditOpinion": "不同意",
             "auditAndRepealFlag": "auditFlag",
             "repealOpinion": "不同意",

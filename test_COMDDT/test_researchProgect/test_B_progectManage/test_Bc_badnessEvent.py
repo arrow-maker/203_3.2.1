@@ -37,4 +37,4 @@ class Test_badnessEvent:
 
 if __name__ == '__main__':
     pytest.main(
-        [r"-v -q ‪D:\code\3.2api\test_COMDDT\test_researchProgect\test_B_progectManage\test_Bc_badnessEvent.py"])
+        [r"-v -q test_Bc_badnessEvent.py"])

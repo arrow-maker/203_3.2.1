@@ -55,7 +55,7 @@ class Test_wordCloudAnalysis:
             timeFilter=0,
             query="",
             queryType="",
-            jourName="BMJ.",    # 期刊
+            jourName="BMJ.",
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 

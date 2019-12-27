@@ -12,15 +12,14 @@ def addVisitProject(dlogin, login,questionId):
     response1, cook = login
     url = host + portlogin + "/projectDetail/saveProjectInfo.json"
     header = {"cookie": dlogin}
+    yamdata = congyaml["临床访视计划"]["添加访视计划"]
     data = {
         "groupFlag": 3,  # 分组标识？？？
         "businessType": 1,  # 业务类型
         "projectName": f"审核新增临床访视计划 + {num}",  # 项目名称
         "projectId": "",
         "defaultFunction": "MANAGE_PATIENT,CREATE_CRF,CHECK_CRF,MANAGE_PRACTITIONER",
-        "followupPlan": '[{"visitOrder":{"start":1,"end":1},"stepCount":1,"stepUnit":{"value":"d","code":"d",'
-                            '"display":"天"},"preThreshold":1,"postThreshold":1,"thresholdType":"d",'
-                            '"questionnaireId":"%s"}]'%questionId[0],
+        "followupPlan": yamdata["followupPlan"] % questionId[0],
         "operatorFunction": "54906-submitProjectInfo",  # 操作方法
         "note": "",  # 笔记
         "status": 1,  # 状态

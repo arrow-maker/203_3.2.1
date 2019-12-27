@@ -33,14 +33,14 @@ class Test_roleBasedAccessControl:
     def test_getOrgPositionList(self):
         url = host + portlogin + "/org/orgPosition/getOrgPositionList.json"
         data = dict(orgId=self.itemOrgId,
-                    status=1, operatorFunction="51054-getRoleList",  # 固定格式
+                    status=1, operatorFunction="51054-getRoleList",
                     operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook)
 
     def transfer_getOrgPositionList(self):
         url = host + portlogin + "/org/orgPosition/getOrgPositionList.json"
         data = dict(orgId=self.itemOrgId,
-                    status=1, operatorFunction="51054-getRoleList",  # 固定格式
+                    status=1, operatorFunction="51054-getRoleList",
                     operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
         result = requests.get(url, data, cookies=self.cook)
         datadic = {"ids": [], "postionIds": [], "token": [], "make": []}
@@ -53,7 +53,7 @@ class Test_roleBasedAccessControl:
                     datadic["token"].append(i["token"])
         return datadic
 
-    def test_getAuthTreeList(self):    # 获取菜单列表
+    def test_getAuthTreeList(self):
         url = host + portlogin + "/auth/function/getAuthTreeList.json"
         ids = self.transfer_getOrgPositionList()["ids"][0]
         allure.attach(f"内部参数：ids={ids}")
@@ -72,15 +72,15 @@ class Test_roleBasedAccessControl:
         resultdic = json.loads(result.text)["responseData"]
         if type(resultdic) is list:
             # transfer = resultdic[0]["children"]
-            for i in resultdic:               # 第一层菜单列表
+            for i in resultdic:  # 第一层菜单列表
                 if len(i["children"]) > 0:
-                    for j in i["children"]:     # 第二层菜单
+                    for j in i["children"]:  # 第二层菜单
                         if j["children"]:
                             if len(j["children"]) > 0:
-                                lastmenu = []       # 以第二层为基组
-                                for k in j["children"]:     # 第三层菜单
+                                lastmenu = []  # 以第二层为基组
+                                for k in j["children"]:  # 第三层菜单
                                     if k["children"]:
-                                        for m in k["children"]:     # 第四层
+                                        for m in k["children"]:  # 第四层
                                             lastmenu.append(m["id"])
                                     else:
                                         lastmenu.append(k["id"])
@@ -140,8 +140,8 @@ class Test_roleBasedAccessControl:
     def test_saveOrUpdateOrgPosition(self, name):
         url = host + portlogin + "/org/orgPosition/saveOrUpdateOrgPosition.json"
         data = dict(
-            positionName=name,  # 新增角色名称
-            positionDesc="由描述",  # 新增角色描述
+            positionName=name,
+            positionDesc="由描述",
             positionStatus=1,
             orgId=self.itemOrgId,
             operatorFunction="51054-addRole",
@@ -189,31 +189,36 @@ class Test_roleBasedAccessControl:
     @allure.story("保存菜单修改")
     @pytest.mark.addrole1
     @pytest.mark.parametrize("deleteids", ("", "G_769598", "G_769598,G_771657", "G_769598,G_771657"))
-    @pytest.mark.parametrize("addids", ("G_769598", "G_769598,G_771657", "G_769598,G_771657",""))
+    @pytest.mark.parametrize("addids", ("G_769598", "G_769598,G_771657", "G_769598,G_771657", ""))
     def test_saveRoleFunctionR(self, addids, deleteids, dlogin):
+        """
+            给的是固定的菜单（可以验证添加和删除固定的菜单 用parametrize）验证了删除，
+                新增，新增两次，新增后删除，删除后新增等多种情况
+            ids = self.transfer_MenuIds()     # 这里是给的动态添加的菜单
+            print(f"\n={ids}")
+        :param addids: 添加是菜单的Id
+        :param deleteids: 删除的菜单的Id
+        :return:
+        """
         url = host + portlogin + "/auth/function/saveRoleFunctionR.json"
         header = {"cookie": dlogin}
         dicdata = self.roleid()
         allure.attach(f"内部参数：dicdata={dicdata}")
-        # 这里没有给动态的菜单（只能添加或者删除菜单不能同时进行 用for），
-        # 给的是固定的菜单（可以验证添加和删除固定的菜单 用parametrize）验证了删除，新增，新增两次，新增后删除，删除后新增等多种情况
-        # ids = self.transfer_MenuIds()     # 这里是给的动态添加的菜单
-        # print(f"\n={ids}")
         data = dict(addIds=addids, deleteIds=deleteids, roleId=dicdata[0][0],
                     operatorId=self.authUserId, operatorFunction="51054-editMenu",
                     authUserId=self.authUserId, authToken=self.authToken)
         result = assert_post(url, data, headers=header)
         # 在右侧菜单栏中验证
         if len(addids) > 0:
-            idmenu = re.findall("\d+",addids)
+            idmenu = re.findall("\d+", addids)
             self.transfer_getMenu(idmenu[-1])  # 这里是右侧菜单栏验证
             assert addids in result[0]
         else:
-            assert "SUCCESS" in result[0]     # 确保操作成功
+            assert "SUCCESS" in result[0]
 
     # -----------新增 用户的删除------------------
     @allure.story("删除 用户")
-    def test_deleteOrgDummyUser(self):  #
+    def test_deleteOrgDummyUser(self):
         url = host + portlogin + "/org/orgDummyUser/deleteOrgDummyUser.json"
         dicdata = self.transfer_getUserList()
         dummyUserId = dicdata["dummyUserId"][0]
@@ -228,7 +233,7 @@ class Test_roleBasedAccessControl:
     # -----------------------------保存修改信息-------------------------------------
     @allure.title("获取系统右侧的菜单列表 关联菜单的正确性")
     @allure.story("保存修改信息")
-    def transfer_getMenu(self,hint):
+    def transfer_getMenu(self, hint):
         url = host + portlogin + "/ext/system/getMenu.json"
         data = {"id": self.ids,
                 "idToken": self.idToken,
@@ -249,6 +254,6 @@ class Test_roleBasedAccessControl:
                         operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
             assert_post(url, data, self.cook)
 
+
 if __name__ == '__main__':
-    pytest.main(["-v", "-q","--count=4","--repeat-scope=class", "-m='addrole1'","test_roleBasedAccessControl.py"])
     pytest.main("test_roleBasedAccessControl.py -vv -reruns=5")

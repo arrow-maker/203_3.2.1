@@ -34,7 +34,7 @@ class Test_userControl:
     def test_getUsersList(self):
         url = host + portlogin + "/projectUser/getUsersList.json"
         data = dict(
-            # keyword="",     # 输入的
+            # keyword="",
             path=f"400,{self.itemOrgId}",
             # page=1, size=15,
             authUserId=self.authUserId, authToken=self.authToken)
@@ -43,7 +43,7 @@ class Test_userControl:
     def transfer_getUsersList(self):
         url = host + portlogin + "/projectUser/getUsersList.json"
         data = dict(
-            keyword="",  # 输入的
+            keyword="",
             path=f"400,{self.itemOrgId}",
             page=1, size=15,
             authUserId=self.authUserId, authToken=self.authToken)
@@ -198,7 +198,7 @@ class Test_userControl:
         url = host + portlogin + "/projectUser/createPractitioner.json"
         positionId = self.transfer_getOrgPositionList3()
         allure.attach(f"内部参数：positionId={positionId}")
-        data = dict(gender="male", positionId=positionId[0],orgId=self.itemOrgId,
+        data = dict(gender="male", positionId=positionId[0], orgId=self.itemOrgId,
                     name="abcdef",  loginname="012345691", telecom="aaa", email="邮箱", companyaccount="职称",
                     direct="true", operatorFunction="51050-addUser",
                     operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)

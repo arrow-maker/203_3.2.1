@@ -13,34 +13,37 @@ class Test_postSturalTreatMent:
 
     @allure.story("数据处理检索")
     @allure.step("参数：login={0}")
-    def test_getPatientInfoPage(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getPatientInfoPage(self, login, start, end):
         response1, cook = login
         url = host + port_sourcedata + "/structuring/tool/getPatientInfoPage.json"
         data = dict(key="",
                     page=1, size=25,
-                    startDate="", endDate="",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
     @allure.story("数据验证检索")
     @allure.step("参数：login={0}")
-    def test_getStructuringPatientList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getStructuringPatientList(self, login, start, end):
         response1, cook = login
         url = host + port_sourcedata + "/structuring/tool/getStructuringPatientList.json"
         data = dict(
-            project=1, type=1, status="-1", key="", startDate="", endDate="",
+            project=1, type=1, status="-1", key="", startDate=start, endDate=end,
             page=1, size=10,
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
     @allure.story("数据展示检索")
     @allure.step("参数：login={0}")
-    def test_getValidatePatientInfoPage(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getValidatePatientInfoPage(self, login, start, end):
         response1, cook = login
         url = host + port_sourcedata + "/structuring/tool/getValidatePatientInfoPage.json"
         data = dict(key="",
                     page=1, size=10,
-                    startDate="2018-10-08", endDate="2019-10-08",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 

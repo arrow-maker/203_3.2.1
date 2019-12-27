@@ -18,7 +18,7 @@ class Test_problemManage:
     def test_systemDefaultProblemMenu(self):
         url = host + port_qt + "/qtItemCategory/findQtItemCategory"
         params = {
-            # "name": "",                      # 当name为空时是所有的题库名称，当有内容时是包含内容的数据  xls
+            # "name": "",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -43,9 +43,9 @@ class Test_problemManage:
     def test_systemDefaultProblemMenuAdd(self):
         url = host + port_qt + "/qtItemCategory/saveQtItemCategory"
         data = {  # （必填项，）
-            # "name":"新增题库1",                          #新增题库名称xls（长度限制）
-            # "parentId": parentId,                          #非必填项xls（有没有限制）
-            # "rank":1,              #1：添加题库没有parentId，2：添加题库里面的分类xls0，3，4，5，6，7，8，9：未知之处
+            # "name":"新增题库1",
+            # "parentId": parentId,
+            # "rank":1,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -58,25 +58,24 @@ class Test_problemManage:
         parentId = self.parentId()
         if len(parentId) > 0:
             data = {
-                "name":"新增题库001-2",                          #新增题库名称xls（长度限制）
+                "name":"新增题库001-2",
                 "parentId": parentId[0],
                 "rank": 2,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
             assert_post(url, data, self.cook, str(parentId[0]))
-            # overWrite_assert_post_xls_hint(url, data, self.cook, researchCatePath, "问题管理-题库查询")
 
     @allure.title("系统预设问题展示")
     @allure.story("问题管理")
     def test_findQtItem(self):
         url = host + port_qt + "/qtItem/findQtItemPage"
         param = {
-            # "categoryId": 10005000900040000901,                                #题库的id 细分支第几个
-            # "rank": 1,                                      #默认是第一个数据，1：默认展示，2：手动修改
-            # "text":"",                                      #这里的text是要添加的查询的“问题名”称 xls
-            # "page":1,                                       #显示的页数xls
-            # "size":15,                                      #显示页数中的数据的个数xls（5，10，15，20，25）
+            # "categoryId": 10005000900040000901,
+            # "rank": 1,
+            # "text":"",
+            # "page":1,
+            # "size":15,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -87,11 +86,11 @@ class Test_problemManage:
     def transfer_QtItem(self):
         url = host + port_qt + "/qtItem/findQtItemPage"
         param = {
-            "categoryId": 0,  # 题库的id 细分支第几个
-            "rank": 1,  # 默认是第一个数据，1：默认展示，2：手动修改
-            "text": "",  # 这里的text是要添加的查询的“问题名”称 xls
-            "page": 1,  # 显示的页数xls
-            "size": 15,  # 显示页数中的数据的个数xls（5，10，15，20，25）
+            "categoryId": 0,
+            "rank": 1,
+            "text": "",
+            "page": 1,
+            "size": 15,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -127,12 +126,9 @@ class Test_problemManage:
     @allure.story("问题管理")
     def test_addquestion(self):
         url = host + port_qt + "/qtItem/saveItem.json"
+        yamdata = congyaml["问题管理"]["添加问题分类"]
         data = {
-            # 注意只有部分的数据时可变的  别的格式是固定
-            "content": '{"showType":"choice","description":"","text":"是否喝酒","customOption":1,"optionList":[{'
-                       '"display":"有酒瘾"},{"display":"偶然喝"},{"display":"从不喝"}],"type":"open-choice","repeats":0,'
-                       '"categoryId":1000034}',
-            # showType选择类型description:备注,text:题目名称,customOption:关联格式，optionList：关联选项min：最小值type：
+            "content": yamdata["content"],
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -156,8 +152,8 @@ class Test_problemManage:
         ids = self.transfer_QtItem()
         allure.attach(f"内部参数：dicdata={dicData}\n ids={ids}")
         data = {
-            "categoryId": dicData["id"][0],  # 这里是题库目标，parentId的id 1000107
-            "id": ids[0],  # 这里是问卷的ID id
+            "categoryId": dicData["id"][0],
+            "id": ids[0],
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -194,7 +190,7 @@ class Test_problemManage:
     def test_manageRule_verifyAddNew(self):
         url = host + port_qt + "/regexCategory/saveRegexCategory"
         data = {
-            # "name":"姥姥拉拉",                          #新增验证规则名称xls
+            # "name":"姥姥拉拉",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -218,8 +214,8 @@ class Test_problemManage:
     def test_ruleName(self):
         url = host + port_qt + "/regexCategory/findRegexCategory"
         data = {
-            # "name":"",                                                  #xls需要参数化，用于查询
-            # "categoryId":1000001,                                       #数据来源不清楚
+            # "name":"",
+            # "categoryId":1000001,
             # "page":1,
             # "size":15,
             "authUserId": self.authUserId,
@@ -250,11 +246,11 @@ class Test_problemManage:
     def test_ruleName_addNew(self):
         url = host + port_qt + "/regexCategory/saveRegexCategory"
         data = {
-            # "name":"热特热他的12343特热他的光和热1",                 #规则名称xls
-            # "description":"描述",              #描述xls
-            # "regex":"正则式",                  #正则式
-            # "msg":"验证不通过弹出文字",        #验证不通过弹出文字
-            # "categoryId":1000001,              #规则的id，从1000 001开始
+            # "name":"热特热他的12343特热他的光和热1",
+            # "description":"描述",
+            # "regex":"正则式",
+            # "msg":"验证不通过弹出文字",
+            # "categoryId":1000001,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -267,7 +263,7 @@ class Test_problemManage:
         ids = self.transfer_QtItem()
         allure.attach(f"内部参数：ids={ids}")
         data = {
-            "id": ids[0],  # 这里是问卷的id 1003016
+            "id": ids[0],
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -299,7 +295,7 @@ class Test_problemManage:
         for i in ids:
             if i > 1000000:
                 data = {
-                    "id": i,  # 指定要删除的是那一条id 1000002
+                    "id": i,
                     "authUserId": self.authUserId,
                     "authToken": self.authToken
                 }

@@ -9,7 +9,7 @@ from public.Login_Cookies import *
 from public.overWrite_Assert import *
 
 
-@allure.feature("患者相似性度量")
+@allure.feature("初始化配置")
 class Test_initalConfiguration:
 
     @classmethod
@@ -23,21 +23,26 @@ class Test_initalConfiguration:
     @allure.story("页面加载信息")
     def test_getParamByCode(self):
         url = host + portlogin + "/param/getParamByCode.json"
-        # 修改codes
-        data = dict(codes="	verification_code_login,password_expired,password_expired_time,"
-                          "password_expired_time_unit,login_error_time,login_error_num,"
-                          "singleton_login,ip_interrupt,initial_password",              # 这里是固定的
+        yamdata = congyaml["初始化配置"]["安全设置"]
+        data = dict(codes=yamdata["codes"],
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, "password_expired")
 
     @allure.title("这里是修改系统设置")
     @allure.story("页面加载信息")
-    def test_updataParam(self):
+    @pytest.mark.parametrize("code", ("login_error_num", "singleton_login", "password_expired"))
+    @pytest.mark.parametrize("values", (1, 0))
+    def test_updataParam(self, code, values):
+        """
+        :param code:    这个是密码过期策略，login_error_num：密码错误次数，singleton_login：单点登录设置"password_expired,
+        :param values:  这个是开启和关闭
+        :return:
+        """
         url = host + portlogin + "/param/updateParam.json"
-        data = dict(paramType="system",         # 这里是系统设置
-                    code="password_expired,",   # 这里是修改的类型，这个是密码过期策略，login_error_num：密码错误次数，singleton_login：单点登录设置
-                    value=1,                    # 这里是修改的值
-                    operatorFunction="51042-saveSafeSetting",   # 这里是安全设置
+        data = dict(paramType="system",
+                    code=code,
+                    value=values,
+                    operatorFunction="51042-saveSafeSetting",
                     operatorId=self.authUserId,authUserId=self.authUserId,authToken=self.authToken)
         assert_get(url, data, self.cook)
 
@@ -45,7 +50,6 @@ class Test_initalConfiguration:
     @allure.story("科研设置")
     def test_getParamByCode_two(self):
         url = host + portlogin + "/param/getParamByCode.json"
-        # 修改codes
         data = dict(codes="hospital_logo,project_name,plat_user_type"
                           "singleton_login,ip_interrupt,initial_password",              # 这里是固定的
                     authUserId=self.authUserId, authToken=self.authToken)

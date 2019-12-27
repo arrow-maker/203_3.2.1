@@ -28,13 +28,14 @@ class Test_medicalPersonnelmessage:
     # -------------------收到的消息---------------------------
     @allure.title("消息列表")
     @allure.story("收到的消息")
-    def test_findNoticeRecipientPage(self, dlogin, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findNoticeRecipientPage(self, dlogin, login, start, end):
         response1, cook = login
         url = host + portlogin + "/notice/findNoticeRecipientPage.json"
         header = {"cookie": dlogin}
         data = dict(
             page=1, size=15,
-            startDate="", endDate="", modularType=1,
+            startDate=start, endDate=end, modularType=1,
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, headers=header)
 
@@ -110,17 +111,17 @@ class Test_medicalPersonnelmessage:
         ids = self.addresseeId(response1, cook)
         allure.attach(f"内部参数：ids={ids}")
         data = {
-                'addresseeId': ids[0],         # 消息对象列表
-                'title': '新增消息2',           #
-                'noticeTypeId': 1,              # 消息类型
-                'content': '<p>新增消息2</p>',  #
+                'addresseeId': ids[0],
+                'title': '新增消息2',
+                'noticeTypeId': 1,
+                'content': '<p>新增消息2</p>',
                 'autoSave': 'false',
                 'recipientAll': 0,
-                'attachmentURL': [],            # 上传问价url
-                'operatorId': response1["authUserId"],          # 发送消息的id
-                'noticeStatus': 2,              # 2：提交，4：草稿
-                'modularType': 1,               # 1： 医疗信息，2：患者信息
-                'operatorFunction': '51058-addMsg',  # 固定的id
+                'attachmentURL': [],
+                'operatorId': response1["authUserId"],
+                'noticeStatus': 2,
+                'modularType': 1,
+                'operatorFunction': '51058-addMsg',
                 'authUserId': response1["authUserId"],
                 'authToken': response1["authToken"]}
         assert_post(url, data, cook)
@@ -138,12 +139,13 @@ class Test_medicalPersonnelmessage:
     @allure.title("审核记录列表")
     @allure.story("审核记录")
     @allure.step("参数： login={0}")
-    def test_findNoticeExaminetPage(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findNoticeExaminetPage(self, login, start, end):
         response1, cook = login
         url = host + portlogin + "/notice/findNoticeExaminetPage.json"
         data = dict(
             page=1, size=15,
-            startDate="", endDate="", modularType=1,
+            startDate=start, endDate=end, modularType=1,
             operatorFuncttest_updateStatusion='51058-viewAuditingRecord', operatorId=response1["authUserId"],
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)

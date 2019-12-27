@@ -50,7 +50,7 @@ class Test_subjectAnalysis:
         url = host + port_sourcedata + "/report/ztfx/templateReports.json"
         templateId = self.transfer_mytemplates(response1, cook)
         allure.attach(f"内部参数：templateId={templateId}")
-        data = dict(orgUserId=response1["authUserId"], templateId=templateId[0],  # 这个应该是ID可变的
+        data = dict(orgUserId=response1["authUserId"], templateId=templateId[0],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, str(templateId[0]))
 
@@ -75,7 +75,8 @@ class Test_subjectAnalysis:
     @allure.title("默认看板 所有框架 的详细 数据显示 的情况")
     @allure.story("看板")
     @allure.step("参数：login={0}")
-    def test_getReportDatas(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getReportDatas(self, login, start, end):
         response1, cook = login
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
         reportNos = self.transfer_template_reports(response1, cook)
@@ -85,7 +86,7 @@ class Test_subjectAnalysis:
             for i in reportNos:
                 reportNosList = re.findall("\\d+", i)  # 这里是 正则表达式 来取出 这一组 中的 数值，用来做断言使用的
                 data = dict(hospitalCode=response1["hospitalCode"], reportNos=i,  # 这里默认的是第一个
-                            indexTimeStart="2018-09-09", indexTimeEnd="2019-09-09", reportIds=templateId[0],
+                            indexTimeStart=start, indexTimeEnd=end, reportIds=templateId[0],
                             authUserId=response1["authUserId"], authToken=response1["authToken"])
                 assert_get(url, data, cook, reportNosList[0])
 

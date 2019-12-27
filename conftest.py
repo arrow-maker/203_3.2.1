@@ -5,13 +5,6 @@
 @time: 2019/9/2  17:37
 @Author:Terence
 """
-'''
-这里时配置文件：
-    每一个test_文件执行前都要走过的文件(相当于一个public只是不用自己导入了)
-    方法：可以配置登录等公共的方法（个人的理解这里是添加public的方法）
-    变量：变量的配置好像在ini文件中（注意这里的ini文件需要解读（readConfig（解读配置文件））
-    
-'''
 import os, sys
 
 sys.path.append(os.path.dirname(__file__))
@@ -74,17 +67,15 @@ def orgPath(login):
 
 # 读取chrome 登录的cookie值
 def transferCookie(host):
-    # cookiepath = os.environ['LOCALAPPDATA'] + r"\Google\Chrome\User Data\Default\Cookies"  # 找到Chrome cookie路径
+    cookiepath = os.environ['LOCALAPPDATA'] + r"\Google\Chrome\User Data\Default\Cookies"  # 找到Chrome cookie路径
     # jenkins不能找到这个路径，所以这里给个固定的（在python中他有两个方法可以得到它os.getenv()和上面的os.environ()）
-
-    cookiepath = r"C:\Users\TP-GZ-A02-050\AppData\Local\Google\Chrome\User Data\Default\Cookies"
+    # cookiepath = r"C:\Users\TP-GZ-A02-050\AppData\Local\Google\Chrome\User Data\Default\Cookies"
     sql = "select host_key,name,encrypted_value from cookies where host_key='%s'" % host  # 找到特定的cookie
     with sqlite3.connect(cookiepath) as conn:
         cu = conn.cursor()
         cookies = {name: win32crypt.CryptUnprotectData(encrypted_value)[1].decode() for host_key, name, encrypted_value
                    in
                    cu.execute(sql).fetchall()}
-        # print(f"\n+++{cookies}")
         return cookies
 
 
@@ -111,10 +102,10 @@ def driverlogin(host):
 def dlogin():
     hostl = get_url("durl")
     host = re.findall("http://(.+?):30", hostl)[0]
-    cookie = transferCookie(host)  # 获取最近登录的cookie
-    if len(cookie.keys()) > 0:  # 如果最近有登录 直接获取
+    cookie = transferCookie(host)
+    if len(cookie.keys()) > 0:
         yield f"JSESSIONID={cookie['JSESSIONID']}"
-    else:  # 获取登录的cookies       # 如果最近没有登录 就去selenium登录并获取cookie值
+    else:
         cookiestr = driverlogin(hostl)
         yield cookiestr
 
@@ -167,21 +158,21 @@ def resultList(login):
         ids["patiId"].append(i["PATI_ID"])
     return ids
 
-#   这两个是用于修改运行时的中文显示
-@pytest.mark.optionalhook
-def pytest_html_results_table_header(cells):
-    cells.insert(1, html.th('Description'))
-    cells.insert(2, html.th('Test_nodeid'))
-    # cells.insert(1, html.th('Time', class_='sortable time', col='time'))
-    cells.pop(2)
-
-#   这两个时用于修改运行时的中文显示
-@pytest.mark.optionalhook
-def pytest_html_results_table_row(report, cells):
-    cells.insert(1, html.td(report.description))
-    cells.insert(2, html.td(report.nodeid))
-    # cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
-    cells.pop(2)
+# #   这两个是用于修改运行时的中文显示
+# @pytest.mark.optionalhook
+# def pytest_html_results_table_header(cells):
+#     cells.insert(1, html.th('Description'))
+#     cells.insert(2, html.th('Test_nodeid'))
+#     # cells.insert(1, html.th('Time', class_='sortable time', col='time'))
+#     cells.pop(2)
+#
+# #   这两个时用于修改运行时的中文显示
+# @pytest.mark.optionalhook
+# def pytest_html_results_table_row(report, cells):
+#     cells.insert(1, html.td(report.description))
+#     cells.insert(2, html.td(report.nodeid))
+#     # cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
+#     cells.pop(2)
 
 
 #   下面两个是用于配置命令行的参数

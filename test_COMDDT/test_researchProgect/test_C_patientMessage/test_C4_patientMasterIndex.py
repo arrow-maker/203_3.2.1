@@ -8,17 +8,18 @@ class Test_patientMasterIndex:
 
     @allure.title("患者主索引 平台主患者 列表")
     @allure.story("平台主患者")
-    def test_findAllPage(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findAllPage(self, login, start, end):
         response1, cook = login
         url = host + port_primaryIndex + "/identifier/findAllPage.json"
         data = dict(page=1, size=15, status=1, idCard="", mobilePhone="", name="",
-                    operatorId=response1["authUserId"], startDate="", endDate="",
+                    operatorId=response1["authUserId"], startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "content")
 
     @allure.title("患者主索引 平台主患者 列表")
     @allure.story("平台主患者")
-    def transfer_AllPage(self, response1, cook):  # 患者主索引 平台主患者 列表
+    def transfer_AllPage(self, response1, cook):
         url = host + port_primaryIndex + "/identifier/findAllPage.json"
         data = dict(page=1, size=15,
                     status=1, idCard="", mobilePhone="", name="",
@@ -40,7 +41,7 @@ class Test_patientMasterIndex:
         url = host + port_primaryIndex + "/identifier/findManualMergeList.json"
         dicdata = self.transfer_AllPage(response1, cook)["ids"]
         allure.attach(f"内部参数：identifierId={dicdata}")
-        data = dict(identifierId=dicdata[1],  # 从患者列表中传值过来
+        data = dict(identifierId=dicdata[1],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, str(dicdata))
 
@@ -100,8 +101,8 @@ class Test_patientMasterIndex:
             identifierId = 1099792
             mergeId = 194045
         allure.attach(f"内部参数：mergeId={mergeId}\n identifierId={identifierId} \n dicdata={dicdata}")
-        data = dict(identifierId=identifierId,  # 从患者列表中读取的数据1099792
-                    mergeId=mergeId,  # 194045
+        data = dict(identifierId=identifierId,
+                    mergeId=mergeId,
                     # page=1, size=15,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "分页验证5")
@@ -121,8 +122,8 @@ class Test_patientMasterIndex:
         allure.attach(f"内部参数：identifierId={identifierId}\n mergeId={mergeId}\n dicdata={dicdata}")
         data = dict(identifierId=identifierId,
                     mergeId=mergeId,
-                    operatorId=response1["userId"],     # 医生的 userId
-                    operatorName=response1["roleName"],  # 角色信息
+                    operatorId=response1["userId"],
+                    operatorName=response1["roleName"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
@@ -158,7 +159,7 @@ class Test_patientMasterIndex:
             identifierId = 1102613
             mergeId = 194045
         allure.attach(f"内部参数：mergeId={mergeId}\n dicdata={dicdata}")
-        data = dict(mergeId=mergeId,  # dicdata["mergeId"][1]
+        data = dict(mergeId=mergeId,
                     operatorId=response1["userId"],
                     operatorName=response1["roleName"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -166,13 +167,14 @@ class Test_patientMasterIndex:
 
     @allure.title("患者主索引 近似记录")
     @allure.story("近似记录")
-    def test_findProcessPage(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_findProcessPage(self, login, start, end):
         response1, cook = login
         url = host + port_primaryIndex + "/identifier/findProcessPage.json"
         data = dict(status=1,
-                    operatorId=response1["authUserId"],  # 操作人id
-                    idCard="", name="",  # 手机号码，名称
-                    startDate="", endDate="",
+                    operatorId=response1["authUserId"],
+                    idCard="", name="",
+                    startDate=start, endDate=end,
                     # page=1, size=15,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "分页验证5")

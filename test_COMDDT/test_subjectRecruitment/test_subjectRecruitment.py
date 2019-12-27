@@ -7,7 +7,7 @@
 """
 from public.Login_Cookies import *
 from public.overWrite_Assert import *
-
+potoPath = ""       # 添加图片的路径
 
 @allure.feature("受试者招募")
 class Test_subjectRecruitment:
@@ -48,14 +48,16 @@ class Test_subjectRecruitment:
     def test_uploadFileattachment(self):
         url = host + portlogin + "/common/fileattachment/uploadFileattachment.json"
         file = {'file': open(uploadpath1,'rb')}
-        assert_post(url, files=file, cook=self.cook)
+        result = assert_post(url, files=file, cook=self.cook)
+        global potoPath
+        potoPath = result[1]["responseData"]["path"] + result[1]["responseData"]["name"]
 
     @allure.story('新增招募系统')
     def test_save(self):
         url = host + port_project + "/recruit/project/save.json"
         data = {
-            # "companyName": "awerwaer",      # 公司名称
-            # "projectName": "阿尔瓦若",      # 项目名称
+            # "companyName": "awerwaer",
+            # "projectName": "阿尔瓦若",
             "undefined": "",
             # "projectBeginDate": "2019-09-30",   # 项目的时间
             # "projectEndDate": "2019-10-10",
@@ -80,24 +82,25 @@ class Test_subjectRecruitment:
             "drugMemberState": "",               # 人员
             # "drugTotalMember": 50000,           # 总人数
             # "projectIntroduction": "确认项目",   # 项目简介
-            "agreementTemplate": "/attachment/fileattachment/20190930134856-641587.png",    # 上传参数
+            "agreementTemplate": potoPath,    # 上传参数
             "agreementFileName": "生成图片.png",
             # "includeRule": "鹅鹅鹅",           # 纳入规则说明
             "excludeRule": "",                 # 排除规则说明
-            "createUserId": 4638901,
+            "createUserId": self.authUserId,
             "id": "",                           # 当最后两个存在时是修改项目
             "createUserName": ""}
         overWrite_assert_post_xls_hint(url, data, self.cook, recrutmentPath, "新增招募系统")
 
     @allure.story("项目修改")
-    def test_projectChange(self):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_projectChange(self, start, end):
         url = host + port_project + "/recruit/project/save.json"
         data = {
             "companyName": "awerwaer",
             "projectName": "阿尔瓦若",
             "undefined": "",
-            "projectBeginDate": "2019-09-30",
-            "projectEndDate": "2019-10-10",
+            "projectBeginDate": start,
+            "projectEndDate": end,
             "cndaNo": "",
             "mobilePhone": 13324245544,
             "qq": "",
@@ -108,10 +111,10 @@ class Test_subjectRecruitment:
             "patientCity": "",
             "patientCounty": "",
             "drugName": "3凤飞飞",
-            "drugAdr": "",  # 不良反应
-            "drugIndication": "",  # 适应症
-            "drugUsageDosage": "",  # 用法用量
-            "drugContraindication": "",  # 禁忌
+            "drugAdr": "",
+            "drugIndication": "",
+            "drugUsageDosage": "",
+            "drugContraindication": "",
             "drugSupplier": "",  # 厂商
             "drugIngredient": "",  # 成分
             "projectSubsidy": "法撒旦3432",      # 项目补助情况
@@ -119,7 +122,7 @@ class Test_subjectRecruitment:
             "drugMemberState": "",  # 人员
             "drugTotalMember": 50000,           # 总人数
             "projectIntroduction": "确认项目",   # 项目简介
-            "agreementTemplate": "/attachment/fileattachment/20190930134856-641587.png",  # 上传参数
+            "agreementTemplate": potoPath,  # 上传参数
             "agreementFileName": "生成图片.png",
             "includeRule": "鹅鹅鹅",           # 纳入规则说明
             "excludeRule": "",  # 排除规则说明

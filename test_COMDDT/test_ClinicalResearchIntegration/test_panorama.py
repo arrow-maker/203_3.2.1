@@ -31,7 +31,6 @@ class Test_patientPanorama:
         result = requests.get(url, data, cookies=cook)
         dicdata = {"orgPath": [], "orgId": [], "orgType": []}
         if "SUCCESS" in result.text:
-            # 这里是广医的数据
             resultDic = json.loads(result.text)["responseData"][0]["children"][0]["children"]
             if len(resultDic) > 0:
                 for i in resultDic:
@@ -64,7 +63,7 @@ class Test_patientPanorama:
             orgType=35, orgId=response1["orgId"],
             authUserId=response1["authUserId"], authToken=response1["authToken"]
         )
-        result = requests.get(url, data, cookies=cook)  # 这里没有cookies值也可以成功
+        result = requests.get(url, data, cookies=cook)
         resultDic = json.loads(result.text)["responseData"]["content"]
         datadic = {"id": [], "patientId": []}
         if len(resultDic) > 0:
@@ -100,14 +99,15 @@ class Test_patientPanorama:
     @allure.title("获取仓库患者门诊住院统计信息")
     @allure.story("首页数据的显示")
     @pytest.mark.parametrize("sourceType", ("clinical", "project"))
-    def test_wareHousePatientDataList(self, login, sourceType):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_wareHousePatientDataList(self, login, sourceType, start, end):
         response1, cook = login
         ids = self.transfer_patientList(response1, cook)
         patientId = ids["patientId"]
         patiId = ids["id"]
         allure.attach(f"内部参数：ids={ids}")
         url = host + port_es + f"/panorama/data/homePage/{patientId[0]}/warehousePatientDataList.json"
-        data = dict(startDate="2019-01-01", endDate="2019-12-31", sourceType=sourceType,
+        data = dict(startDate=start, endDate=end, sourceType=sourceType,
                     patiId=patiId[0],
                     authToken=response1["authToken"], authUserId=response1["authUserId"])
         assert_get(url, data, cook)
@@ -166,46 +166,50 @@ class Test_patientPanorama:
     @allure.title("查询主要诊断比率数据")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_getMainDiagRatio(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getMainDiagRatio(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getMainDiagRatio.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=ids[0],
-                    startDate="2014-09-05", endDate="2019-09-04",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "查询门诊和住院主要诊断比率数据操作成功")
 
     @allure.title("查询门诊和住院主要诊断类型的比率数据操作")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_getMainDiagTypeRatio(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getMainDiagTypeRatio(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getMainDiagTypeRatio.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=ids[0],
-                    startDate="2014-09-05", endDate="2019-09-04",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "查询门诊和住院主要诊断类型的比率数据操作成功")
 
     @allure.title("查询住院费用和天数据操作")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_getTotalCosts(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getTotalCosts(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getTotalCosts.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=ids[0],
-                    startDate="2014-09-05", endDate="2019-09-04",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "查询住院费用和天数据操作成功")
 
     @allure.title("仓库患者详情")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_warehousePatientDataList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_warehousePatientDataList(self, login, start, end):
         response1, cook = login
         ids = self.transfer_patientList(response1, cook)
         patientId = ids["patientId"]
@@ -220,27 +224,29 @@ class Test_patientPanorama:
     @allure.title("查询时间轴数据【住院诊断，门诊诊断，吸烟，临床主要诊断，胸部影像学】数据操作")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_getTimeAxisList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getTimeAxisList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getTimeAxisList.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=ids[0],
-                    startDate="2019-09-01", endDate="2019-09-30",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data,  cook, "查询时间轴数据【住院诊断，门诊诊断，吸烟，临床主要诊断，胸部影像学】数据操作成功")
 
     @allure.title("查询检验预警指标趋势分析数据操作")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_eosinophilCountList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_eosinophilCountList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/eosinophilCountList.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=ids[0],
                     testItem="嗜酸性粒细胞数", itemCode="",
-                    startDate="2018-09-01", endDate="2019-12-30",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "查询检验预警指标趋势分析数据操作成功")
 
@@ -261,7 +267,8 @@ class Test_patientPanorama:
     @allure.title("访视页数的列表展示")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_visitPageList(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_visitPageList(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/visitPageList.json"
         ids = self.transfer_patientList(response1, cook)
@@ -269,7 +276,7 @@ class Test_patientPanorama:
         patiId = ids["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(patiId=patiId[0], patientId=patientId[0],
-                    startDate="2019-09-01", endDate="2019-09-30",
+                    startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
@@ -302,21 +309,22 @@ class Test_patientPanorama:
     def test_getValue(self, login):
         response1, cook = login
         url = host + portlogin + "/param/getValue.json"
-        data = dict(code="show_iconography_data",  # 这里是固定的格式
+        data = dict(code="show_iconography_data",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
     @allure.title("显示页面的门诊的信息")
     @allure.story("门诊信息页面操作")
     @allure.step("参数：login={0}")
-    def test_getClinicDiagnosisAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getClinicDiagnosisAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/data/getClinicDiagnosisAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
-        data = dict(reportName="clinicDiagnosis",  # 这里是固定的格式
+        data = dict(reportName="clinicDiagnosis",
                     id=ids[0],
-                    startDate="", endDate="",
+                    startDate=start, endDate=end,
                     page=1, size=20,  # 这里没有可选的页数的按钮
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
@@ -326,12 +334,12 @@ class Test_patientPanorama:
     def transfer_outPatientNo(self, response1, cook):
         url = host + port_es + "/data/getClinicDiagnosisAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
-        data = dict(reportName="clinicDiagnosis",  # 这里是固定的格式
+        data = dict(reportName="clinicDiagnosis",
                     id=ids[0],
                     startDate="", endDate="",
                     page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
-        result = requests.get(url, data, cookies=cook)  # 没有cookies值
+        result = requests.get(url, data, cookies=cook)
         resultDic = json.loads(result.text)["responseData"]["content"]
         dicdata = {"outPatientNo": []}
         if len(resultDic) > 0:
@@ -392,7 +400,7 @@ class Test_patientPanorama:
             "startDate": "",
             "endDate": "",
             "page": 1,
-            "size": 10,  # 这里是固定的格式
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -402,7 +410,7 @@ class Test_patientPanorama:
             resultDic = json.loads(result.text)["responseData"]["content"]
             for i in resultDic:
                 dicdata["inpatientNo"].append(i["inpatientNo"])
-        else:  # 这里没有就给一个固定的值
+        else:
             dicdata["inpatientNo"].append("ZY090000619374")
         return dicdata
 
@@ -415,7 +423,7 @@ class Test_patientPanorama:
         inpatientNo = self.transfer_front_assistMaster(response1, cook)["inpatientNo"]
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
         data = {
-            "reportName": "inpMrFrontSheet",  # 固定格式
+            "reportName": "inpMrFrontSheet",
             "inpatientNo": inpatientNo[0],
             "hospitalCode": response1["hospitalCode"],
             "authUserId": response1["authUserId"],
@@ -426,7 +434,8 @@ class Test_patientPanorama:
     @allure.title("入院记录列表")
     @allure.story("住院信息-入院记录")
     @allure.step("参数：login={0}")
-    def test_getAdmissionMrAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getAdmissionMrAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getAdmissionMrAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
@@ -436,7 +445,7 @@ class Test_patientPanorama:
             "startDate": "",
             "endDate": "",
             "page": 1,
-            "size": 10,  # 这里没有可选择的页数
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -450,7 +459,7 @@ class Test_patientPanorama:
             "startDate": "",
             "endDate": "",
             "page": 1,
-            "size": 10,  # 这里没有可选择的页数
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -483,15 +492,16 @@ class Test_patientPanorama:
     @allure.title("出院记录列表")
     @allure.story("住院信息-出院记录")
     @allure.step("参数：login={0}")
-    def test_getDischgedMrAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDischgedMrAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getDischgedMrAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -508,7 +518,7 @@ class Test_patientPanorama:
             "startDate": "",
             "endDate": "",
             "page": 1,
-            "size": 10,  # 这里没有可选择的页数
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -542,15 +552,16 @@ class Test_patientPanorama:
     @allure.title("首次病程记录列表")
     @allure.story("住院信息-病程记录")
     @allure.step("参数：login={0}")
-    def test_getProgressRecMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getProgressRecMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/progressRec/getProgressRecMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -581,15 +592,21 @@ class Test_patientPanorama:
     @allure.title("首页病程信息详情")
     @allure.story("住院信息-病程记录")
     @allure.step("参数：login={0}")
-    def test_getProgressRecDetail(self, login):
+    @pytest.mark.parametrize("type", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
+    def test_getProgressRecDetail(self, login, type):
+        """
+        type=1,  1：首次病程记录，2：日常查房记录，3：上级医师查房记录，4：抢救记录，5：转入记录
+                 5：转入记录，6：转出记录，7：操作记录，8：会诊记录，9：输血记录，10阶段小结，11：疑难病例讨论记录，12：死亡病例讨论记录
+        :param login:
+        :return:
+        """
         response1, cook = login
         url = host + port_es + "/progressRec/getProgressRecDetail.json"
         inpatientNo = self.transfer_progress_recMaster(response1, cook)["inpatientNo"]
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
         if len(inpatientNo) > 0:
             data = dict(size=1, inpatientNo=inpatientNo[0],
-                        type=1,  # 1：首次病程记录，2：日常查房记录，3：上级医师查房记录，4：抢救记录，5：转入记录
-                        # 5：转入记录，6：转出记录，7：操作记录，8：会诊记录，9：输血记录，10阶段小结，11：疑难病例讨论记录，12：死亡病例讨论记录
+                        type=type,
                         hospitalCode=response1["hospitalCode"],
                         page=1, authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, inpatientNo[0])
@@ -597,15 +614,16 @@ class Test_patientPanorama:
     @allure.title("手术记录列表")
     @allure.story("住院信息-围手术期记录--手术记录")
     @allure.step("参数：login={0}")
-    def test_perioperativeRecordMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_perioperativeRecordMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/hospitalization/perioperativeRecordMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -637,14 +655,20 @@ class Test_patientPanorama:
     @allure.title("手术记录信息详情")
     @allure.story("住院信息-围手术期记录--手术记录")
     @allure.step("参数：login={0}")
-    def test_perioperativeRecordDetail(self, login):
+    @pytest.mark.parametrize("reqType", (1, 2, 3, 4))
+    def test_perioperativeRecordDetail(self, login, reqType):
+        """
+        reqType=1,   1：手术记录，2：术前小结，3：术前讨论，4：术后首次病程记录
+        :param login:
+        :return:
+        """
         response1, cook = login
         url = host + port_es + "/hospitalization/perioperativeRecordDetail.json"
         inpatientNo = self.transfer_perioperative_recMaster(response1, cook)["inpatientNo"]
         allure.attach(f"内部参数：inpatientNO={inpatientNo}")
         if len(inpatientNo) > 0:
             data = dict(size=1, inpatientNo=inpatientNo[0],
-                        reqType=1,  # 1：手术记录，2：术前小结，3：术前讨论，4：术后首次病程记录
+                        reqType=reqType,
                         hospitalCode=response1["hospitalCode"],
                         page=1, authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, inpatientNo[0])
@@ -652,15 +676,16 @@ class Test_patientPanorama:
     @allure.title("24小时出入院记录列表")
     @allure.story("住院信息-24小时出入院记录")
     @allure.step("参数：login={0}")
-    def test_inAndOutHospitalForOneDayMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_inAndOutHospitalForOneDayMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/hospitalization/inAndOutHospitalForOneDayMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -709,15 +734,16 @@ class Test_patientPanorama:
     @allure.title("急诊留观的列表信息")
     @allure.story("住院信息-急诊留观记录")
     @allure.step("参数：login={0}")
-    def test_observationMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_observationMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/hospitalization/observationMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -756,7 +782,7 @@ class Test_patientPanorama:
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
         if len(inpatientNo) > 0:
             data = {
-                "inpatientNo": inpatientNo[0],  # ZY010008031671 这个有数据
+                "inpatientNo": inpatientNo[0],
                 "hospitalCode": response1["hospitalCode"],
                 "authUserId": response1["authUserId"],
                 "authToken": response1["authToken"]
@@ -766,15 +792,16 @@ class Test_patientPanorama:
     @allure.title("医嘱列表")
     @allure.story("住院信息-医嘱")
     @allure.step("参数：login={0}")
-    def test_hospitalizationInAndOutHospitalForOneDayMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_hospitalization_InAndOutHospitalForOneDayMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/hospitalization/inAndOutHospitalForOneDayMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = {
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
             "size": 10,  # 这里没有可选择的页数
             "authUserId": response1["authUserId"],
@@ -806,13 +833,14 @@ class Test_patientPanorama:
     @allure.title("医嘱信息详情")
     @allure.story("住院信息-医嘱")
     @allure.step("参数：login={0}")
-    def test_getVisitOrderAssistDetail(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getVisitOrderAssistDetail(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getVisitOrderAssistDetail.json"
         inpatientNo = self.transfer_inAndOutHospital_OneDayMaster(response1, cook)["inpatientNo"]
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
         if len(inpatientNo) > 0:
-            data = dict(reportName="visitOrder",  # 在这里是固定的格式
+            data = dict(reportName="visitOrder",
                         inpatientNo=inpatientNo[0],
                         # typeName="临时医嘱",
                         startDate="", endDate="",
@@ -825,7 +853,8 @@ class Test_patientPanorama:
     @allure.title("诊断记录列表")
     @allure.story("全景-诊断")
     @allure.step("参数：login={0}")
-    def test_getDiagnosisAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDiagnosisAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/data/getDiagnosisAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
@@ -871,7 +900,7 @@ class Test_patientPanorama:
         dataId = self.transfer_Diagnosis_recMaster(response1, cook)["dataId"]
         allure.attach(f"内部参数：dataId={dataId}")
         if len(dataId) > 0:
-            data = dict(dataId=dataId[0],  # 19764184
+            data = dict(dataId=dataId[0],
                         type=2,
                         hospitalCode=response1["hospitalCode"],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -880,14 +909,15 @@ class Test_patientPanorama:
     @allure.title("肺功能检查列表")
     @allure.story("全景-肺功能检查")
     @allure.step("参数：login={0}")
-    def test_getExamReportMasterAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getExamReportMasterAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getExamReportMasterAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(reportName="examReportMaster",
                     id=ids[0],
-                    startDate="", endDate="", page=1, size=10,
+                    startDate=start, endDate=end, page=1, size=10,
                     sort="desc",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, ids[0])
@@ -896,7 +926,7 @@ class Test_patientPanorama:
         url = host + port_es + "/panorama/data/getExamReportMasterAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         data = dict(reportName="examReportMaster",
-                    id="20ccec4f-39ab-41a1-b6ae-3ab3a435010d",  # 20ccec4f-39ab-41a1-b6ae-3ab3a435010d
+                    id="20ccec4f-39ab-41a1-b6ae-3ab3a435010d",
                     startDate="", endDate="", page=1, size=10,
                     sort="desc",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -968,30 +998,31 @@ class Test_patientPanorama:
         if dicdata is not None:
             if len(dicdata["reportId"]) > 0:
                 print(dicdata["reportId"])
-                data = dict(id=ids[0],  # 20ccec4f-39ab-41a1-b6ae-3ab3a435010d
-                            tagNames="预计值--FVC",  # 这里是预填参数
-                            reportIds=dicdata["reportId"][0],  # 990eb2864ff4447086808949a386ec4b
+                data = dict(id=ids[0],
+                            tagNames="预计值--FVC",
+                            reportIds=dicdata["reportId"][0],
                             authUserId=response1["authUserId"], authToken=response1["authToken"])
                 assert_get(url, data, cook, dicdata["reportId"][0])
 
     @allure.title("全部医嘱用药列表")
     @allure.story("全景-用药")
     @allure.step("参数：login={0}")
-    def test_getDrugAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDrugAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getDrugAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
-        data = dict(sort="desc", id=ids[0],  # "20ccec4f-39ab-41a1-b6ae-3ab3a435010d"
-                    startDate="", endDate="", page=1, size=10,  # 这几个参数没有必要使用xls
+        data = dict(sort="desc", id=ids[0],
+                    startDate=start, endDate=end, page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, ids[0])
 
     def transfer_Drug_AssistMaster(self, response1, cook):
         url = host + port_es + "/panorama/data/getDrugAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
-        data = dict(sort="desc", id=ids[0],  # "20ccec4f-39ab-41a1-b6ae-3ab3a435010d"
-                    startDate="", endDate="", page=1, size=10,  # 这几个参数没有必要使用xls
+        data = dict(sort="desc", id=ids[0],
+                    startDate="", endDate="", page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
         resultdic = json.loads(result.text)["responseData"]["content"]
@@ -1004,15 +1035,16 @@ class Test_patientPanorama:
     @allure.title("医嘱用药详情")
     @allure.story("全景-用药")
     @allure.step("参数：login={0}")
-    def test_getDrugAssistDetail(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getDrugAssistDetail(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getDrugAssistDetail.json"
         inpatientNo = self.transfer_Drug_AssistMaster(response1, cook)["inpatientNo"]
         allure.attach(f"内部参数：inpatientNO={inpatientNo}")
-        if len(inpatientNo) > 0:  # 当有数据的时候
+        if len(inpatientNo) > 0:
             data = dict(reportName="visitOrder",
                         inpatientNo=inpatientNo[0],
-                        startDate="", endDate="",
+                        startDate=start, endDate=end,
                         # page=1, size=10,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             overWrite_assert_get_xls_hint(url, data, cook, clincalPath, "分页验证10")
@@ -1020,21 +1052,22 @@ class Test_patientPanorama:
     @allure.title("全部检验记录")
     @allure.story("全景-检验")
     @allure.step("参数：login={0}")
-    def test_getVisitLabAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getVisitLabAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getVisitLabAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
-        data = dict(reportName="visitLab", sort="desc", id=ids[0],  # "20ccec4f-39ab-41a1-b6ae-3ab3a435010d"
-                    startDate="", endDate="", page=1, size=10,  # 这几个参数没有必要使用xls
+        data = dict(reportName="visitLab", sort="desc", id=ids[0],
+                    startDate=start, endDate=end, page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, ids[0])
 
     def transfer_VisitLab_AssistMaster(self, response1, cook):
         url = host + port_es + "/panorama/data/getVisitLabAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
-        data = dict(reportName="visitLab", sort="desc", id=ids[0],  # "20ccec4f-39ab-41a1-b6ae-3ab3a435010d"
-                    startDate="", endDate="", page=1, size=10,  # 这几个参数没有必要使用xls
+        data = dict(reportName="visitLab", sort="desc", id=ids[0],
+                    startDate="", endDate="", page=1, size=10,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
         dicdata = {"labSerialNum": [], "packageItem": []}
@@ -1050,17 +1083,17 @@ class Test_patientPanorama:
     @allure.title("检验信息详情")
     @allure.story("全景-检验")
     @allure.step("参数：login={0}")
-    def test_getVisitLabPageAssistDetail(self, login):  # 检验信息详情
+    def test_getVisitLabPageAssistDetail(self, login):
         response1, cook = login
         url = host + port_es + "/data/getVisitLabPageAssistDetail.json"
         dicdata = self.transfer_VisitLab_AssistMaster(response1, cook)
         labSerialNum = dicdata["labSerialNum"]
         packageItem = dicdata["packageItem"]
         allure.attach(f"内部参数：dicdata={dicdata}")
-        if len(packageItem) > 0:  # 当有数据的时候
+        if len(packageItem) > 0:
             data = dict(reportName="visitLab",
-                        labSerialNum=labSerialNum[0],  # "20180919XJ_KSTPT10"
-                        packageItem=packageItem[0],  # "结核菌涂片检查"
+                        labSerialNum=labSerialNum[0],
+                        packageItem=packageItem[0],
                         hospitalCode=response1["hospitalCode"],
                         # page=1, size=10,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -1072,10 +1105,10 @@ class Test_patientPanorama:
         labSerialNum = dicdata["labSerialNum"]
         packageItem = dicdata["packageItem"]
         dicdata2 = {"itemCode": [], "testItem": [], "patientNo": []}
-        if len(packageItem) > 0:  # 当有数据的时候
+        if len(packageItem) > 0:
             data = dict(reportName="visitLab",
-                        labSerialNum=labSerialNum[0],  # "20180919XJ_KSTPT10"
-                        packageItem=packageItem[0],  # "结核菌涂片检查"
+                        labSerialNum=labSerialNum[0],
+                        packageItem=packageItem[0],
                         hospitalCode=response1["hospitalCode"],
                         page=1, size=10,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -1101,9 +1134,9 @@ class Test_patientPanorama:
         allure.attach(f"内部参数：itemCode={itemCode}\ntestItem={testItem}\npatientNo={patientNo}")
         if len(testItem) > 0:
             data = dict(reportName="visitLab",
-                        itemCode=itemCode[0],  # 17930
-                        testItem=testItem[0],  # "TOTAL^AREA"
-                        patientNo=patientNo[0],  # "4162A522F3F11A18A679A5A39205C1B2"
+                        itemCode=itemCode[0],
+                        testItem=testItem[0],
+                        patientNo=patientNo[0],
                         clinicId="",
                         hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"],
                         authToken=response1["authToken"])
@@ -1112,14 +1145,15 @@ class Test_patientPanorama:
     @allure.title("全景-检查列表")
     @allure.story("全景-检验")
     @allure.step("参数：login={0}")
-    def test_getVisitCheckAssistMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getVisitCheckAssistMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getVisitCheckAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         allure.attach(f"内部参数：ids={ids}")
         data = dict(reportName="visitCheck",
                     id=ids[0],
-                    startDate="", endDate="", page=1, size=10,
+                    startDate=start, endDate=end, page=1, size=10,
                     sort="desc",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
@@ -1128,7 +1162,7 @@ class Test_patientPanorama:
         url = host + port_es + "/panorama/data/getVisitCheckAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
         data = dict(reportName="visitCheck",
-                    id=ids[0],  # 20ccec4f-39ab-41a1-b6ae-3ab3a435010d
+                    id=ids[0],
                     startDate="", endDate="", page=1, size=10,
                     sort="desc",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
@@ -1152,7 +1186,7 @@ class Test_patientPanorama:
         allure.attach(f"内部参数：checkserialnum={checkserialnum}")
         if len(checkserialnum) > 0:
             data = dict(reportName="visitCheck",
-                        checkserialnum=checkserialnum[0],  # 20160426001091
+                        checkserialnum=checkserialnum[0],
                         hospitalCode=response1["hospitalCode"],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             assert_get(url, data, cook, checkserialnum[0])
@@ -1160,7 +1194,8 @@ class Test_patientPanorama:
     @allure.title("全部住院记录列表信息")
     @allure.story("全景-治疗时间轴")
     @allure.step("参数：login={0}")
-    def test_getTreatmentTimeAxisMaster(self, login):
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getTreatmentTimeAxisMaster(self, login, start, end):
         response1, cook = login
         url = host + port_es + "/panorama/data/getTreatmentTimeAxisMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
@@ -1168,10 +1203,10 @@ class Test_patientPanorama:
         data = {
             "sort": "desc",
             "id": ids[0],
-            "startDate": "",
-            "endDate": "",
+            "startDate": start,
+            "endDate": end,
             "page": 1,
-            "size": 10,  # 这里没有可选择的页数
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -1186,7 +1221,7 @@ class Test_patientPanorama:
             "startDate": "",
             "endDate": "",
             "page": 1,
-            "size": 10,  # 这里没有可选择的页数
+            "size": 10,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -1208,7 +1243,7 @@ class Test_patientPanorama:
         allure.attach(f"内部参数：inpatientNo={inpatientNo}")
         if len(inpatientNo) > 0:
             data = {
-                "inpatientNo": inpatientNo[0],  # ZY010008031671 这个有数据
+                "inpatientNo": inpatientNo[0],
                 "hospitalCode": response1["hospitalCode"],
                 "authUserId": response1["authUserId"],
                 "authToken": response1["authToken"]

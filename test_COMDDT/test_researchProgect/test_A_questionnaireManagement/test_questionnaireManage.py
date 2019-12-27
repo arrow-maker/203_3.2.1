@@ -51,8 +51,8 @@ class Test_questionManage:
     def test_questionList_addNewMy(self):
         url = host + port_qt + "/qtInfoCategory/saveQtInfoCategory"
         data = {
-            # "name":"系统预设模块三",                                               #新增模块的名称
-            "hospitalCode": self.hospitalCode,  # 所在医院的code
+            # "name":"系统预设模块三",
+            "hospitalCode": self.hospitalCode,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -64,8 +64,8 @@ class Test_questionManage:
         url = host + port_qt + "/qtInfo/saveQtInfo.json"
         data = {
             "orgId": self.orgId,
-            # "categoryId":1000048,                                #所在的模块的id
-            # "title":"天热一天给电饭锅韩国123452",                                  #新增的问卷名称xls
+            # "categoryId":1000048,
+            # "title":"天热一天给电饭锅韩国123452",
             "operatorId": self.authUserId,
             "hospitalCode": self.hospitalCode,
             "authUserId": self.authUserId,
@@ -75,20 +75,14 @@ class Test_questionManage:
 
     @allure.title("问卷列表->新增问卷->问卷新增题库 保存")
     @allure.story("问卷管理")
-    def tes1t001_questionList_addNewQuestionnaire_addQuestionModel(self):
+    def test001_questionList_addNewQuestionnaire_addQuestionModel(self):
         url = host + port_qt + "/qtInfo/saveQtContent.json"
         ids = self.transfer_questionlist()["myself"]
         allure.attach(f"内部参数：ids={ids}")
+        yamdata = congyaml["问卷管理"]["新增题库保存"]
         data = {
-            "id": ids[0][0],  # 这个是问卷的id id的删除时delect而不是truacate id没有清空
-            # 这个数据 是来自 题库    列表中的托进来的
-            "serialize": '[{"text":"","type":"group","item":[{"repeats":0,"optionRepeats":"0","itemId":16,'
-                         '"required":"0","readOnly":"0","text":"吸烟状况","type":"choice","scale":"0","profile":null,'
-                         '"itemControl":null,"preId":"4239","prefix":"1","description":null,"max":null,"enableWhen":['
-                         '],"option":[{"value":{"code":"never","display":"从不吸烟","system":null,"optionId":10,'
-                         '"optionExclusive":null}},{"value":{"code":"current","display":"现吸烟","system":null,'
-                         '"optionId":11,"optionExclusive":null}},{"value":{"code":"past","display":"已戒烟",'
-                         '"system":null,"optionId":12,"optionExclusive":null}}]}]}]',
+            "id": ids[0][0],
+            "serialize": yamdata["serialize"],
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -103,8 +97,8 @@ class Test_questionManage:
         if len(ids) > 0:
             data = {
                 "id": ids[0][0],
-                "reason": "发布原因",  # 输入的数据  发布的原因xls
-                "userName": self.userName,  #
+                "reason": "发布原因",
+                "userName": self.userName,
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -119,8 +113,7 @@ class Test_questionManage:
         if len(ids) > 0:
             data = {
                 "qtId": ids[0],
-                "shareScope": 3,  # 1：仅本人可见，2：指定的平台可见，3：全平台可见
-                # 用户的orgId的属性和orgPath这个属性 （括号中的时平台的用户）
+                "shareScope": 3,
                 "shareOrg": '[]',
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
@@ -145,7 +138,7 @@ class Test_questionManage:
         allure.attach(f"内部参数：ids={ids}")
         if len(ids) > 0:
             data = {
-                "id": ids[0],  # ？我定义的问卷的id
+                "id": ids[0],
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -158,7 +151,7 @@ class Test_questionManage:
         ids = self.transfer_questionlist()["share"]
         if len(ids) > 0:
             data = {
-                "qtId": ids[0],  # ？我定义的问卷的id
+                "qtId": ids[0],
                 "authUserId": self.authUserId,
                 "authToken": self.authToken
             }
@@ -174,7 +167,7 @@ class Test_questionManage:
             for i in ids:
                 if type(i) is not list:
                     data = {
-                        "id": i,  # ？我定义的问卷的id
+                        "id": i,
                         "authUserId": self.authUserId,
                         "authToken": self.authToken
                     }

@@ -18,10 +18,12 @@ class Test_editLog:
         self.authToken = response1["responseData"]["roleList"][0]["orgUserIdToken"]
         self.userName = response1["responseData"]["loginName"]
 
-    def test_getOpLogBusinessPage(self):
+    @allure.title("日志操作")
+    @pytest.mark.parametrize("start,end", searchdate)
+    def test_getOpLogBusinessPage(self, start, end):
         url = host + portlogin + "/log/opLogBusiness/getOpLogBusinessPage.json"
         data = dict(
-            keyword="", opUserName="", ip="", opResult="", startDate="", endDate="",
+            keyword="", opUserName="", ip="", opResult="", startDate=start, endDate=end,
             page=1, size=10, operatorFunction="51046-viewLog",
             operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
         result = requests.get(url, data, cookies=self.cook)

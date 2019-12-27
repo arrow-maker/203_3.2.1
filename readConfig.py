@@ -11,10 +11,6 @@ from public.Regular_frist import *
 
 
 def get_sysPath():
-    '''这里还可以使用
-    os.getcwd()  但是会随着运行的文件的位置而变动
-    os.path.dirname() 这个是使用父类的文件位置
-    '''
     path12 = os.path.split(os.path.realpath(__file__))[0]
     return path12
 
@@ -25,11 +21,6 @@ config_path = os.path.join(syspath, 'pytest.ini')
 # 读取文件
 config = configparser.ConfigParser()
 config.read(config_path)
-
-"""
-下面使用的相当于在public中的变量使用get_组名(变量名)再读取一遍
-强制性关系：减少了定义的变量名（以防重复）没有直接使用public简单好用
-"""
 
 
 # -----------------读取ini配置文件信息-----------------
@@ -64,6 +55,7 @@ def readyamlload(yamlName):
     fileY1 = yamlfile1.read()
     conyaml1 = yaml.full_load(fileY1)
     return conyaml1
+
 
 # ----------变量---------
 host = get_url("host")
@@ -115,14 +107,22 @@ timelocal = time.strftime("%Y-%m-%d", time.localtime())
 time_up = int(str(time.time())[:10] + str(time.time())[11:14])
 # ----------随机数------
 num = random.randint(1, 999)
+# -------日期--所有日期，五年，三年，一年，半年，季节，一个月-----
+searchdate = (("2019-01-01", "2019-12-31"), ("2000-01-01", "2019-12-31"),
+              ("2017-01-01", "2019-12-31"), ("2018-01-01", "2019-12-31"),
+              ("2019-01-01", "2019-06-30"), ("2019-01-01", "2019-03-31"),
+              ("2019-01-01", "2019-01-31"), ("", ""))
 
 
 # 对json数据的分行加工
 def print_json_multi_row(resultDic):
     print(json.dumps(resultDic, sort_keys=True, indent=1, ensure_ascii=False))
+
+
 # ----*--写入yaml数据--*----
 def writhyaml():
-    dd = [["05001,05005", "肺功能检查率"], ("02001,02002", "COPD抗菌药物使用率"), ("01006,01003", "CD率"), ("01004,01005", "48小时再入院率"), ("01001,01002", "COPD急性加重期住院死亡率")]
+    dd = [["05001,05005", "肺功能检查率"], ("02001,02002", "COPD抗菌药物使用率"), ("01006,01003", "CD率"),
+          ("01004,01005", "48小时再入院率"), ("01001,01002", "COPD急性加重期住院死亡率")]
     try:
         with open(yamlPath, "a+", encoding="utf-8") as file:
             yaml.dump(data=dd, stream=file, allow_unicode=True)
@@ -131,14 +131,10 @@ def writhyaml():
     else:
         print(f"写入yaml文件成功")
 
+
 if __name__ == '__main__':  # 测试一下，我们读取配置文件的方法是否可用
     # print('HTTP中的baseurl值为：', get_url("loginurl"))
     # print('EMAIL中的开关on_off值为：', get_port('python'))
     # print(time_up)
     # writhyaml()
-    print(congyaml["质控首页_患者基本指标"],"\n",f'type={type(congyaml["质控首页_患者基本指标"][0])}')
-    # data1234 = [("05001,05005", "肺功能检查率"), ("02001,02002", "COPD抗菌药物使用率"), ("01006,01003", "CD率"),
-    #             ("01004,01005", "48小时再入院率"), ("01001,01002", "COPD急性加重期住院死亡率")]
-    # data12345 = data1234 + [pytest.param('01006,01003', "肺功能检查率", marks=pytest.mark.xfail)]
-    # print(f"\ndata1234={data1234}\ndata12345={data12345}")
-
+    print(congyaml["质控首页_患者基本指标"], "\n", f'type={type(congyaml["质控首页_患者基本指标"][0])}')

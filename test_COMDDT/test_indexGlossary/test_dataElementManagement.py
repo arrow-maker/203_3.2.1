@@ -74,12 +74,12 @@ class Test_dataElementManagement:
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/dataCategory/saveDataCategory.json"
         data = dict(
-            categoryName="",  # 分类名称
-            categoryNameEng="news",  # 英文名称
+            categoryName="",
+            categoryNameEng="news",
             type=2,
-            note="实验使用",  # 说明
-            status=0,  # 状态
-            parentCategoryId="",  # 上级
+            note="实验使用",
+            status=0,
+            parentCategoryId="",
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
@@ -111,21 +111,23 @@ class Test_dataElementManagement:
     @allure.title("新增")
     @allure.story("数据元对应的数据")
     @allure.step("参数：login={0}")
-    def test_saveDataSchema(self, login):
+    @pytest.mark.parametrize("dataType", (1, 3))
+    @pytest.mark.parametrize("status", (0, 1))
+    def test_saveDataSchema(self, login, dataType, status):
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/dataSchema/saveDataSchema.json"
         dataCategory = self.transfer_getDataSchemalList(response1, cook)["dataCategory"]
         allure.attach(f"内部参数：dataCategory={dataCategory}")
         data = dict(
-            dataId=1,  # 用于修改
-            dataName="数据元名称",  # 数据元名称
-            dataNameEng="324",  # 英文名
-            dataType=1,  # 1：修改，3：新增
-            dataSource="国家卫生行业标准WS 445.1-2014 电子病历基本数据集　第1部分：病历概要",  # 数据来源
+            dataId=1,
+            dataName="数据元名称",
+            dataNameEng="324",
+            dataType=dataType,
+            dataSource="国家卫生行业标准WS 445.1-2014 电子病历基本数据集　第1部分：病历概要",
             dataCategory=3099,
-            status=1,  # 无效：0，有效：1
+            status=status,
             dataValueType=3,
-            valueRange=100,  # 数值范围
+            valueRange=100,
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 

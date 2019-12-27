@@ -59,14 +59,15 @@ class Test_helpCenterManagement:
 
     @allure.title("关键字更改权限-可见度")
     @allure.story("首页管理")
-    def test_updateKeyword(self):
+    @pytest.mark.parametrize("show", (0, 1))
+    def test_updateKeyword(self, show):
         url = host + port_help + "/help/updateKeyword.json"
         ids = self.ids()
         data = {
             "id": ids[0],
             "operatorId": self.authUserId,
             "operatorName": self.userName,
-            "isShow": 0,  # 这里是改的可见度 0 不可见 1 可见
+            "isShow": show,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -74,14 +75,15 @@ class Test_helpCenterManagement:
 
     @allure.title("关键字置顶")
     @allure.story("首页管理")
-    def test_doTopKeyword(self):
+    @pytest.mark.parametrize("top", (1, 0))
+    def test_doTopKeyword(self, top):
         url = host + port_help + "/help/doTopKeyword.json"
         ids = self.ids()
         data = {
             "id": ids[-1],
             "operatorId": self.authUserId,
             "operatorName": self.userName,
-            "isTop": 1,  # 这个字段是置顶 1表示置顶 0表示取消置顶
+            "isTop": top,
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -305,8 +307,8 @@ class Test_helpCenterManagement:
     @allure.story("问题管理")
     def test_createArticle2(self):
         url = host + port_help + "/help/createArticle.json"
-        data = dict(title="新增问题管理1.0", moduleName="首页-首页", moduleData="home_id",
-                    content="<p>新增内容11111111</p>", category=2, operatorId=self.authUserId,
+        data = dict(title=f"新增问题管理1.0+{num}", moduleName="首页-首页", moduleData="home_id",
+                    content=f"<p>新增内容1{num}1</p>", category=2, operatorId=self.authUserId,
                     operatorName=self.userName, menuId=21, otherIds="", articleIds="", status=1,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook, hint=self.userName)
@@ -350,6 +352,10 @@ class Test_helpCenterManagement:
     @allure.story("问题管理")
     @pytest.mark.parametrize("status", ("", 1, 2))
     def test_findArticleList2(self, status):
+        """
+        :param status: 表示状态， 空的为全部， 1表示已发布，2表示已保存
+        :return:
+        """
         url = host + port_help + "/help/findArticleList.json"
         data = {
             "category": 1,
@@ -358,7 +364,7 @@ class Test_helpCenterManagement:
             "operatorName": self.userName,
             "page": 1,
             "size": 10,
-            "status": status,  # 表示状态， 空的为全部， 1表示已发布，2表示已保存
+            "status": status,
             "title": "",
             "orderby": "",
             "authUserId": self.authUserId,
@@ -416,7 +422,7 @@ class Test_helpCenterManagement:
     @allure.story("版本更新管理")
     def test_createArticle4(self):
         url = host + port_help + "/help/createArticle.json"
-        data = dict(title="验证可行性版本", content="<p><br></p><p>这里填写数据</p><p><br></p>",
+        data = dict(title=f"验证可行性版本{num}", content=f"<p><br></p><p>这里填写{num}数据</p><p><br></p>",
                     category=4, status=1, operatorId=self.authUserId, operatorName=self.userName,
                     authUserId=self.authUserId, authToken=self.authToken)
         result = assert_post(url, data, self.cook, hint=self.userName)
@@ -442,4 +448,5 @@ class Test_helpCenterManagement:
 
 
 if __name__ == '__main__':
-    pytest.main()
+    # pytest.main()
+    print(dir(Test_helpCenterManagement))

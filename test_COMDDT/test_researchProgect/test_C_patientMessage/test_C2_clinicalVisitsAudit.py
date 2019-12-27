@@ -12,17 +12,18 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("临床访视计划数据展示")
     @allure.story("临床访视计划")
-    def test_show(self, login):
+    @pytest.mark.parametrize("check", (1, 2))
+    @pytest.mark.parametrize("business", (1, 0))
+    def test_show(self, login, check, business):
         allure.title("time")
         response1, cook = login
         url = host + portlogin + "/project/check/list.json"
         data = {
-            "dataType": 20,  # 数据的类型
-
+            "dataType": 20,
             "page": 1,
             "size": 15,
-            "checkType":1,             #待审核：1，审核通过：2，审核不通过：3
-            "businessType":"1",        #申请类型 新增：1，终止：0
+            "checkType": check,
+            "businessType": business,
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
@@ -31,7 +32,7 @@ class Test_clinicalInterviewAudit:
     def giveProjectCheckList(self, response1, cook):
         url = host + portlogin + "/project/check/list.json"
         data = {
-            "dataType": 20,  # 数据的类型 ??
+            "dataType": 20,
             "page": 1,
             "size": 15,
             "authUserId": response1["authUserId"],
@@ -53,14 +54,15 @@ class Test_clinicalInterviewAudit:
         url = host + portlogin + "/project/check/submit.json"
         dicData = self.giveProjectCheckList(response1, cook)
         allure.attach(f"内部参数：dicdata={dicData}")
-        data = dict(dataId=dicData["dataId"][0],  # 从患者列表中传值过来的    ["responseData"]["page"]["content"][0]["DATA_ID"]
-                    checkId=dicData["checkId"][0],  # 从患者列表中传值过来的    ["responseData"]["page"]["content"][0]["ID"]
+        data = dict(dataId=dicData["dataId"][0],
+                    checkId=dicData["checkId"][0],
                     result=1,
-                    dataType=20,                    # ??
+                    dataType=20,
                     checkOption="",
-                    serviceName="projectCheckFollowupService",  # 固定的格式
-                    operatorFunction="54946-submitPlan",  # 固定的格式
-                    operatorId=response1["authUserId"], authUserId=response1["authUserId"], authToken=response1["authToken"])
+                    serviceName="projectCheckFollowupService",
+                    operatorFunction="54946-submitPlan",
+                    operatorId=response1["authUserId"], authUserId=response1["authUserId"],
+                    authToken=response1["authToken"])
         header = {"cookie": dlogin}
         assert_post(url, data, headers=header, hint=dicData["dataId"][0])
 
@@ -70,7 +72,7 @@ class Test_clinicalInterviewAudit:
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectDetail.json"
         projectId = self.giveProjectCheckList(response1, cook)["dataId"][0]
-        data = dict(projectId=projectId,  # 从患者列表中传值过来的    ["responseData"]["page"]["content"][0]["DATA_ID"]
+        data = dict(projectId=projectId,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, projectId)
 
@@ -80,12 +82,11 @@ class Test_clinicalInterviewAudit:
         response1, cook = login
         url = host + portlogin + "/interview/crflist.json"
         data = dict(
-            page=1, pageSize=15,  # 这里可以添加到xls中
+            page=1, pageSize=15,
             viewType="review", taskCode="clinical",
             commitStatus="已提交", orderNo="", isCheck="true",
             authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, headers={"cookie": dlogin})
-        # overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "分页验证  5")
 
     @allure.title("CRF展示列表详情")
     @allure.story("CRF审核")
@@ -104,16 +105,16 @@ class Test_clinicalInterviewAudit:
                     dicData["patientId"].append(i["patientId"])
         return dicData
 
-    # @allure.title("CRF开始审核")
-    # @allure.story("CRF审核")
-    # def test_CRF_reviewStart(self,dlogin, login):
-    #     response1, cook = login
-    #     url = host + portlogin + "/clinical/review/start.json"
-    #     taskId = self.transfer_crfList(dlogin, response1, cook)["taskId"]
-    #     if len(taskId) > 0:
-    #         data = dict(taskId=taskId[0],  # 从CRF列表中传值过来 ["responseData"]["content"][0]["reviewTaskId"]
-    #                     authUserId=response1["authUserId"], authToken=response1["authToken"])
-    #         assert_post_header_hint(url, data, {"cookie": dlogin}, taskId)
+    @allure.title("CRF开始审核")
+    @allure.story("CRF审核")
+    def test_CRF_reviewStart(self,dlogin, login):
+        response1, cook = login
+        url = host + portlogin + "/clinical/review/start.json"
+        taskId = self.transfer_crfList(dlogin, response1, cook)["taskId"]
+        if len(taskId) > 0:
+            data = dict(taskId=taskId[0],
+                        authUserId=response1["authUserId"], authToken=response1["authToken"])
+            assert_post(url, data, headers={"cookie": dlogin}, hint=taskId)
 
     def start123(self, dlogin, login):
         response1, cook = login
@@ -122,7 +123,7 @@ class Test_clinicalInterviewAudit:
         token = "6a6ca623-d160-4e41-9eaa-f8246937a8f9"
         allure.attach(f"内部参数：taskId={taskId}\n token={token}")
         if len(taskId) > 0:
-            data = dict(taskId=taskId,  # 从CRF列表中传值过来 ["responseData"]["content"][0]["reviewTaskId"]
+            data = dict(taskId=taskId,
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
             result = requests.post(url, data, {"cookie": dlogin})
             if "token" in result.text:
@@ -138,8 +139,8 @@ class Test_clinicalInterviewAudit:
         patientId = self.transfer_crfList(dlogin, login[0], login[1])["patientId"]
         token = self.start123(dlogin, login)
         allure.attach(f"内部参数：patiendId={patientId}\n token={token}")
-        data = dict(token=token,  # 从start中传值过来
-                    isFirst=0, patientId=patientId[0],  # ？？ 从CRF列表中传值过来["responseData"]["content"][0]["patientId"]
+        data = dict(token=token,
+                    isFirst=0, patientId=patientId[0],
                     index=0,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
@@ -150,8 +151,8 @@ class Test_clinicalInterviewAudit:
         patientId = self.transfer_crfList(dlogin, login[0], login[1])["patientId"]
         url = host + portlogin + "/record/item.json"
         allure.attach(f"内部参数:token={token}\n patientId={patientId}")
-        data = dict(token=token,  # 从start中传值过来
-                    isFirst=0, patientId=patientId[0],  # ？？ 从CRF列表中传值过来["responseData"]["content"][0]["patientId"]
+        data = dict(token=token,
+                    isFirst=0, patientId=patientId[0],
                     index=0,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         linkId = "685b70ff-26c9-4df0-9c6b-2e8d7124e269"
@@ -168,12 +169,12 @@ class Test_clinicalInterviewAudit:
         url = host + port_project + "/project/check/save.json"
         dataId = self.transfer_crfList(dlogin, response1, cook)["taskId"][0]
         allure.attach(f"内部参数：dataId={dataId}")
-        data = dict(serviceName="projectCheckCrfService",  # 固定的格式
-                    dataType=23,  # 固定的
+        data = dict(serviceName="projectCheckCrfService",
+                    dataType=23,
                     operatorId=response1["authUserId"],
-                    dataId=dataId,  # 从CRF列表中传值过来 ["responseData"]["content"][0]["reviewTaskId"]
+                    dataId=dataId,
                     optionType="", result=0,
-                    operatorFunction="54826-submitProject",  # 固定的格式
+                    operatorFunction="54826-submitProject",
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, dataId)
 
@@ -185,8 +186,7 @@ class Test_clinicalInterviewAudit:
         taskId = self.transfer_crfList(dlogin, response1, cook)["taskId"][1]
         linkId = self.linkId123(dlogin, login)
         allure.attach(f"内部参数：taskId={taskId}\n linkId={linkId}")
-        data = dict(taskId=taskId,  # 从CRF列表中传值过来 ["responseData"]["content"][0]["reviewTaskId"]
-                    # 这里传值 传一半 ？？
+        data = dict(taskId=taskId,
                     content='[{"linkId":"%s","value":["|never"]}]' % linkId,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, headers={"cookie": dlogin}, hint=taskId)
@@ -201,26 +201,25 @@ class Test_clinicalInterviewAudit:
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, taskId[1])
 
-
     @allure.title("终止患者访视列表审核通过查看结果")
     @allure.story("终止患者访视")
     def test_UserList(self, login):
         response1, cook = login
         url = host + portlogin + "/project/check/userList.json"
-        data = dict(dataType=21,            # 这里没有传值 ？？
+        data = dict(dataType=21,
                     # page=1, size=15,
                     operatorId=response1["authUserId"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
-        overWrite_assert_get_xls_hint(url, data, cook, researchCatePath,"分页验证5")
+        overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "分页验证5")
 
-    def transfer_UserList(self, response1, cook):  # 终止患者访视列表审核通过查看结果
+    def transfer_UserList(self, response1, cook):
         url = host + portlogin + "/project/check/userList.json"
-        data = dict(dataType=21,        # ??
+        data = dict(dataType=21,  # ??
                     page=1, size=15,
                     operatorId=response1["authUserId"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         result = requests.get(url, data, cookies=cook)
-        dicData = {"dataId": [], "checkId": [], "projectName":[]}
+        dicData = {"dataId": [], "checkId": [], "projectName": []}
         if "SUCCESS" in result.text:
             resultCount = json.loads(result.text)["responseData"]["page"]["content"]
             for i in resultCount:
@@ -238,12 +237,12 @@ class Test_clinicalInterviewAudit:
         url = host + portlogin + "/project/check/submit.json"
         dicData = self.transfer_UserList(response1, cook)
         allure.attach(f"内部参数：dicdata={dicData}")
-        data = dict(dataId=dicData["dataId"][0],  # 从终止患者列表中传过来 ["responseData"]["page"]["content"][0]["DATA_ID"]
-                    checkId=dicData["checkId"][0],  # 从终止患者列表中传过来 ["responseData"]["page"]["content"][0]["ID"]
-                    result=1, dataType=21,  # ??
+        data = dict(dataId=dicData["dataId"][0],
+                    checkId=dicData["checkId"][0],
+                    result=1, dataType=21,
                     checkOption="",
-                    serviceName="projectCheckTerminatePatientService",  # 固定值
-                    operatorFunction="54946-submitPlan",  # 固定值
+                    serviceName="projectCheckTerminatePatientService",
+                    operatorFunction="54946-submitPlan",
                     operatorId=response1["authUserId"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, "无效状态")
@@ -255,7 +254,7 @@ class Test_clinicalInterviewAudit:
         url = host + portlogin + "/projectDetail/findProjectPlanInfoVo.json"
         dataId = self.transfer_UserList(response1, cook)["dataId"][0]
         allure.attach(f"内部参数：dataId={dataId}")
-        data = dict(dummyUserId=dataId,  # 从终止患者列表中传过来 ["responseData"]["page"]["content"][0]["DATA_ID"]
+        data = dict(dummyUserId=dataId,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         header = {"cookie": dlogin}
         assert_get(url, data, headers=header, hint=dataId)
@@ -265,7 +264,7 @@ class Test_clinicalInterviewAudit:
         url = host + portlogin + "/projectDetail/findProjectPlanInfoVo.json"
         dataId = self.transfer_UserList(response1, cook)["dataId"][0]
         allure.attach(f"内部参数：dataId={dataId}")
-        data = dict(dummyUserId=dataId,  # 从终止患者列表中传过来 ["responseData"]["page"]["content"][0]["DATA_ID"]
+        data = dict(dummyUserId=dataId,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         header = {"cookie": dlogin}
         resutl = requests.get(url, data, headers=header)
@@ -284,11 +283,9 @@ class Test_clinicalInterviewAudit:
         projectName = self.transfer_UserList(login[0], login[1])["projectName"]
         allure.attach(f"内部参数：patiId={patiId}\n projectName={projectName}")
         data = dict(patiId=patiId,
-                    # 从查看结果中传值过来 ["responseData"]["userInfoVo"]["patiId"]
                     projectName=projectName[0],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
-
 
 
 if __name__ == '__main__':

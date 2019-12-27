@@ -155,8 +155,9 @@ class Test_indexDataManege:
     def test_save_merge_template(self, login):
         response1, cook = login
         url = host + ":5100/patient_similar/save_merge_template"
-        data = dict(value='[{"cn_name":"指标名称","en_name":"data_name","weight":8,"status":0},{"cn_name":"名称定义","en_name":"data_definition","weight":8,"status":0},{"cn_name":"取值范围","en_name":"value_range","weight":9,"status":0},{"cn_name":"计算公式","en_name":"formulas","weight":1,"status":0},{"cn_name":"一级分类","en_name":"category_one","weight":1,"status":1},{"cn_name":"二级分类","en_name":"category_two","weight":9,"status":0},{"cn_name":"三级分类","en_name":"category_three","weight":1,"status":0},{"cn_name":"四级分类","en_name":"category_four","weight":1,"status":0},{"cn_name":"筛选重复指标判定值阈设定不能超过100%","en_name":"max_value","weight":1,"status":1},{"en_name":"max_value","cn_name":"筛选重复指标判定值阈设定不能超过100%","weight":1,"status":1}]',
-                     authUserId=response1["authUserId"], authToken=response1["authToken"])
+        yamdata = congyaml["指标数据管理"]["配置权重"]
+        data = dict(value=yamdata["value"],
+                    authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
     @allure.title("所有的指标数据")
