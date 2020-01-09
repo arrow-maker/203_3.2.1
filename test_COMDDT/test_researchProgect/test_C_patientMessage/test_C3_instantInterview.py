@@ -181,7 +181,7 @@ class Test_instantInterview:
         transferV = self.transfer_FhirQsList(response1, cook)
         allure.attach(f"内部参数：transferV={transferV}")
         data = dict(questionnaireId=f"Questionnaire/{transferV}",
-                    operatorFunction="54926-addInstant",  # 这里是固定的
+                    operatorFunction="54926-addInstant",
                     operatorId=response1["authUserId"], authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook, transferV)
 

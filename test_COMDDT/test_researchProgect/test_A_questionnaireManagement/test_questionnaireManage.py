@@ -48,7 +48,7 @@ class Test_questionManage:
 
     @allure.title("问卷列表->新增模块")
     @allure.story("问卷管理")
-    def test_questionList_addNewMy(self):
+    def test_addNewMy(self):
         url = host + port_qt + "/qtInfoCategory/saveQtInfoCategory"
         data = {
             # "name":"系统预设模块三",
@@ -60,7 +60,7 @@ class Test_questionManage:
 
     @allure.title("问卷列表->新增问卷")
     @allure.story("问卷管理")
-    def test_questionList_addNewQuestionnaire(self):
+    def test_addNewQuestionnaire(self):
         url = host + port_qt + "/qtInfo/saveQtInfo.json"
         data = {
             "orgId": self.orgId,
@@ -75,7 +75,7 @@ class Test_questionManage:
 
     @allure.title("问卷列表->新增问卷->问卷新增题库 保存")
     @allure.story("问卷管理")
-    def test001_questionList_addNewQuestionnaire_addQuestionModel(self):
+    def test001_addQuestionModel(self):
         url = host + port_qt + "/qtInfo/saveQtContent.json"
         ids = self.transfer_questionlist()["myself"]
         allure.attach(f"内部参数：ids={ids}")
@@ -90,7 +90,7 @@ class Test_questionManage:
 
     @allure.title("问卷列表->新增问卷->问卷新增题库 发布")
     @allure.story("问卷管理")
-    def test_questionList_addNewQuestionnaire_releaseQuestionModel(self):
+    def test_releaseQuestionModel(self):
         url = host + port_qt + "/qtInfo/release.json"
         ids = self.transfer_questionlist()["myself"]
         allure.attach(f"内部参数：ids={ids}")
@@ -106,7 +106,7 @@ class Test_questionManage:
 
     @allure.title("问卷设置  适应App的没有做 -点击分享")
     @allure.story("问卷管理")
-    def test_questionList_share(self):
+    def test_share(self):
         url = host + port_qt + "/qt/share/saveInfo.json"
         ids = self.transfer_questionlist()["share"]
         allure.attach(f"内部参数：ids={ids}")
@@ -159,7 +159,7 @@ class Test_questionManage:
 
     @allure.title("问卷模板->问卷列表->删除")
     @allure.story("问卷管理")
-    def test_questionList_deleteNewMy(self):
+    def test_deleteNewMy(self):
         url = host + port_qt + "/qtInfoCategory/removeQtInfoCategory"
         ids = self.transfer_questionlist()["myself"]
         allure.attach(f"内部参数：ids={ids}")

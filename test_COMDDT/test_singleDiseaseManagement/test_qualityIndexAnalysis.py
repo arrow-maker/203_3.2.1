@@ -79,7 +79,7 @@ class Test_qualityIndexAnalysis:
     @allure.story("首次加载的接口加载")
     @pytest.mark.parametrize("slice,start,end", (("年", "2019-01-01", "2019-12-31"), ("年", "2018-01-01", "2018-12-31"),
                                                  ("季", "2018-01-01", "2019-3-30"),
-                                           ("半年", "2019-01-01", "2019-06-30"), ("月", "2019-04-01", "2019-04-30")))
+                                                 ("半年", "2019-01-01", "2019-06-30"), ("月", "2019-04-01", "2019-04-30")))
     def test_getReportData(self, slice, start, end):
         url = host + port_sourcedata + "/quality/control/getReportData.json"
         data = dict(hospitalCode=self.hospitalCode, reportNo=21003, timeSlice=slice,

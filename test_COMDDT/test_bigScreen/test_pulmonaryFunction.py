@@ -138,10 +138,7 @@ class Test_pulmonartFunction:
     @allure.story("所有展示数据的数据来源")
     @pytest.mark.parametrize("groupNo", ('zkdp', 'fdp01', 'fdp02', 'nzzdp',
                                          'ipf01', 'AECOPD-01', 'acodp', 'AECOPD-01'))
-    @pytest.mark.parametrize("start,end", (("2019-01-01", "2019-12-31"), ("2000-01-01", "2019-12-31"),
-                                           ("2017-01-01", "2019-12-31"), ("2018-01-01", "2019-12-31"),
-                                           ("2019-01-01", "2019-06-30"), ("2019-01-01", "2019-03-31"),
-                                           ("2019-01-01", "2019-01-31"), ("", "")))
+    @pytest.mark.parametrize("start,end", searchdate)
     def test_getReportDatas(self, login, groupNo, start, end):
         response1, cook = login
         orgdata = self.database()
@@ -207,7 +204,7 @@ class Test_pulmonartFunction:
 
     @allure.story("顶部显示的区域范围")
     @allure.step("传入的参数：login={0}")
-    def test_getAnalItemConfigList(self, login):
+    def test_getAnalItemConfigList1(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/analItem/getAnalItemConfigList.json"
         data = dict(hospitalCode=response1["hospitalCode"],

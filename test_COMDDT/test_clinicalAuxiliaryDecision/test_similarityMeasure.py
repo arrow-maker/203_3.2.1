@@ -143,7 +143,7 @@ class Test_similarityMeasure:
             "authUserId": response1["authUserId"],
             "authToken": response1["authToken"]
         }
-        assert_post(url, data, cook)
+        assert_post(url, data, cook, hint=str(size))
 
     @allure.title("导出相似患者列表")
     @allure.story("数据库患者列表")

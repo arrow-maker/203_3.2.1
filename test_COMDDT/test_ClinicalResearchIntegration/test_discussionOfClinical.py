@@ -120,7 +120,7 @@ class Test_dicussion():
 
     def userList(self, response, cook):
         url = host + port_bbs + "/bbs/user/getUserList.json"
-        data = dict(keyword="arrow3", size=10, sectionId=sectionId,
+        data = dict(keyword=useName2, size=10, sectionId=sectionId,
                     operatorId=response["authUserId"], page=1,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         result = requests.get(url, data, cookies=cook)
@@ -283,7 +283,7 @@ class Test_dicussion():
         topicId = self.topicList_toCheck(response, cook)
         allure.attach(f"内部参数：topicId={topicId}")
         data = dict(serviceName="discussCaseService", submitType=4, updatedUserId=response["authUserId"],
-                    topicId=909, discussingItem='[{"orgUserId":"%s","content":"整理谈论结论，发表意见","seq":1}]'
+                    topicId=topicId[0], discussingItem='[{"orgUserId":"%s","content":"整理谈论结论，发表意见","seq":1}]'
                                                 % response["authUserId"],
                     conclusion="添加讨论意见终结", auditType=3,
                     authUserId=response["authUserId"], authToken=response["authToken"])
@@ -377,6 +377,7 @@ class Test_dicussion():
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook)
 
+
     @allure.title("关键字删除")
     @allure.story("数据操作-查看详情")
     @allure.step("参数：login={0}")
@@ -395,8 +396,9 @@ class Test_dicussion():
     def test_replysave(self, login):
         response, cook = login
         url = host + port_bbs + "/bbs/reply/save.json"
-        data = dict(replyContent="<p>表示没有见过患者，不发表意见</p><p><br></p>",
-                    topicId=909, createdUserId=response["authUserId"], sectionId=185,
+        topicId = self.topicList(response, cook)
+        data = dict(replyContent="<p>表示没有见过患者,添加讨论</p><p><br></p>",
+                    topicId=topicId[0], createdUserId=response["authUserId"], sectionId=sectionId,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook)
 
@@ -406,14 +408,15 @@ class Test_dicussion():
     def test_replygetList(self, login):
         response, cook = login
         url = host + port_bbs + "/bbs/reply/getList.json"
-        data = dict(openSign="true", sectionId=185, topicId=909, page=1, size=20,
+        topicId = self.topicList(response, cook)
+        data = dict(openSign="true", sectionId=sectionId, topicId=topicId[0], page=1, size=20,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         result = assert_get(url, data, cook)
-        assert timelocal in result[0]                   # 断言-创建的日期是当日
-        assert response["userName"] in result[0]        # 断言-创建者是作者本人
         global replyId
         for i in result[1]["responseData"]["content"]:
             replyId.append(i["replyId"])
+        # assert timelocal in result[0]               # 断言-创建的日期是当日
+        assert response["userName"] in result[0]    # 断言-创建者是作者本人
 
     @allure.title("讨论意见的回复")
     @allure.story("数据操作-查看详情")
@@ -421,8 +424,9 @@ class Test_dicussion():
     def test_replysave1(self, login):
         response, cook = login
         url = host + port_bbs + "/bbs/reply/save.json"
-        data = dict(replyId=replyId[0], replyContent="没意见", topicId=909,
-                    createdUserId=response["authUserId"], sectionId=185,
+        topicId = self.topicList(response, cook)
+        data = dict(replyId=replyId[0], replyContent="没意见", topicId=topicId[0],
+                    createdUserId=response["authUserId"], sectionId=sectionId,
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook)
 
@@ -457,7 +461,7 @@ class Test_dicussion():
     @allure.story("审核")
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("audittype", (4, 5))
-    def test_topicList4(self, login, audittype):
+    def test_topicList3(self, login, audittype):
         response, cook = login
         url = host + port_bbs + "/bbs/topic/list.json"
         data = dict(serviceName="discussCaseService", timeStamp=time_up,
@@ -593,7 +597,7 @@ class Test_dicussion():
     @allure.title("上传文件删除")
     @allure.story("组共享")
     @allure.step("参数：login={0}")
-    def test_fileUpdataStatus2(self, login):
+    def test_fileUpdataDelete(self, login):
         response, cook = login
         url = host + port_bbs + "/bbs/file/delete.json"
         fileId = self.fileId(response, cook)

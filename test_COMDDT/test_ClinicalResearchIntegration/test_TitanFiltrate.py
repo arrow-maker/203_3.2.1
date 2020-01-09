@@ -89,16 +89,18 @@ class Test_TitanFiltrateClass():
                                 self.grayAssert(k["children"][m], ff3[m:m + 1])
                 else:
                     ff3 = ff3[ff3["data"].isin([j["title"]])]
-                    for k in range(len(j["children"])):
-                        assert j["children"][k]["title"] in list(ff3["assert"]), \
-                            print(f'{j["children"][k]["title"]}\n三级指标目录断言失误\n{list(ff3["assert"])[k]}', ff3[k:k + 1])  # 三级断言
-                        self.grayAssert(j["children"][k], ff3[k:k + 1])
+                    if len(j["children"]) > 0:
+                        for k in range(len(j["children"])):
+                            assert j["children"][k]["title"] in list(ff3["assert"]), \
+                                print(f'{j["children"][k]["title"]}\n三级指标目录断言失误'
+                                      f'\n{list(ff3["assert"])[k]}', ff3[k:k + 1])  # 三级断言
+                            self.grayAssert(j["children"][k], ff3[k:k + 1])
 
     @allure.title("天塔筛选的专病指标数据")
     @allure.story("天塔筛选-通用指标")
     def test_getDataIndexValueTreeList2(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
-        data = dict(type=6,  # 这里好像是固定的
+        data = dict(topCategoryIds="15393,15535,63327,63514,63777,63553,15782,",  # 这里好像是固定的
                     authUserId=self.authUserId, authToken=self.authToken)
         result = assert_get(url, data, self.cook)
         resultdic = result[1]["responseData"]
@@ -174,7 +176,7 @@ class Test_TitanFiltrateClass():
     @allure.title("查看疾病ICD编码")
     @allure.story("天塔筛选-通用指标")
     @pytest.mark.parametrize("dataId", (4162, 3294, 1565))
-    def test_saveDataTemplate(self, dataId):
+    def test_geSynonymTreeList(self, dataId):
         url = host + port_dataindex + "/dataIndex/synonym/geSynonymTreeList.json"
         data = {
             "dataId": dataId,
@@ -263,7 +265,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选添加收藏指标")
     @allure.story("天塔筛选-通用指标")
-    def test_saveDataQueryGroup2(self):
+    def test_saveDataQueryGroup(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataQueryGroup.json"
         patientQuery = congyaml["天塔筛选"]["收藏指标"]["patientQueryWhere"]
         data = {

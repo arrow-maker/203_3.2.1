@@ -204,7 +204,6 @@ class Test_diseaseManage:
 
     @allure.title("删除病种数据")
     @allure.story("病种数据操作")
-    # @pytest.mark.skip("")
     def test_updateStatusBatch2(self):
         url = host + port_resource + "/disease/updateStatusBatch.json"
         data = {

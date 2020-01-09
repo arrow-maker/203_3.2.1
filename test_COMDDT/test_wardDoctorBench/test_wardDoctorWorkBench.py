@@ -39,7 +39,6 @@ class Test_WorkBench:
     @pytest.mark.parametrize("start,end", searchdate)
     def test_statisticsRange(self, module1, type1, login, start, end):
         """
-
         :param module1:  1：病种排行，2：检验排行，3：检查排行，4:药品排行
         :param type1:   1：ICD4位，2：ICD3位 这里是子菜单
         :param login:   前置条件
@@ -312,7 +311,7 @@ class Test_WorkBench:
     def test_workbenchGroupList2(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/workbench/group/list"
-        data = dict(path=75635,
+        data = dict(path=response1["itemOrgId"],
                     operatorId=response1["authUserId"],
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)

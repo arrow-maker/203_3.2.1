@@ -140,7 +140,7 @@ class Test_scintificShow():
             "authToken": self.authToken
         }
         param = {"templateId": ids[0][1]}
-        assert_post(url, data, self.cook, params=param)
+        assert_post(url, data, self.cook, hint="columns", params=param)
 
     def variableId(self):
         url = host + port_python + "/NewVariableView"
@@ -173,7 +173,7 @@ class Test_scintificShow():
             "method": 11,
             "templateId": ids1[0][1],
         }
-        assert_post(url, data, self.cook, params=param)
+        assert_post(url, data, self.cook, "BarPlot", params=param)
 
     @allure.title("数据视图-数据处理")
     @allure.story("课题数据操作")
@@ -278,7 +278,7 @@ class Test_scintificShow():
 
     @allure.title("课题详情-删除课题")
     @allure.story("课题数据操作")
-    @pytest.mark.skip("这里没有创建，所以关闭了删除")
+    # @pytest.mark.skip("这里没有创建，所以关闭了删除")
     def test_deleteByMainInfoId(self):
         url = host + port_sourcedata + "/topic/deleteByMainInfoId.json"
         ids = self.DTOList()

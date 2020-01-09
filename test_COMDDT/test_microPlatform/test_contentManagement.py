@@ -44,14 +44,14 @@ class Test_management:
 
     @allure.title("患教知识新增图片")
     @allure.story("患教知识")
-    def test_findListInfo(self):
+    def test_uploadImageAttachment(self):
         url = host + portlogin + "/common/fileattachment/uploadImageAttachment.json"
         file = {"file": open(uploadpath1, "rb")}
-        assert_post(url, files=file, cookies=self.cook)
+        assert_post(url, files=file, cook=self.cook)
 
     @allure.title("患教知识新增图片")
     @allure.story("患教知识")
-    def test_findListInfo(self):
+    def test_saveAndFlushInfo(self):
         url = host + portlogin + "/info/info/saveAndFlushInfo.json"
         infoTypeId = self.infoTypeId()
         allure.attach(f"传值参数：infoTypeId={infoTypeId}")

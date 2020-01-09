@@ -25,7 +25,7 @@ class Test_Assop():
         self.authUserId = response["responseData"]["roleList"][0]["orgUserId"]  # 获取用户登录的id
         self.authToken = response["responseData"]["roleList"][0]["orgUserIdToken"]
 
-    @allure.title("codeItem")
+    @allure.title("python统计")
     @allure.story("数据集管理")
     def test_findCodeItem(self):
         url = host + portlogin + "/code/codeItem/findCodeItem.json"
@@ -43,7 +43,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("显示Titan筛选")
-    @allure.story("创建数据集")
+    @allure.story("创建数据集-筛选患者")
     def test_getDataIndexValueTreeList(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
         data = dict(authUserId=self.authUserId, authToken=self.authToken)
@@ -54,7 +54,7 @@ class Test_Assop():
         下面的是添加数据集的功能
     """
     @allure.title("天塔筛选-最开始的模板Id")
-    @allure.story("创建数据集")
+    @allure.story("创建数据集-筛选患者")
     @allure.step("这里的是添加数据集-先筛选用户-来添加数据集")
     def test_saveDataTemplate_1(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
@@ -70,7 +70,7 @@ class Test_Assop():
         allure.attach(f"输出数据templateId={TitanId}", name="天塔筛选中创建的模板的Id")
 
     @allure.title("保存数据到数据库")
-    @allure.story("创建数据集")
+    @allure.story("创建数据集-筛选患者")
     def test_updateDataTemplate(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateDataTemplate.json"
         yamdata = congyaml["医索分析"]["保存数据到数据库"]
@@ -81,14 +81,14 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("保存数据临模板")
-    @allure.story("创建数据集")
-    def test_saveDataTemplate(self):
+    @allure.story("创建数据集-保存数据集")
+    def test_saveDataTemplate2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
         yamdata = congyaml["医索分析"]["天塔筛选"]
-        data = dict(version=5, templateName="新增数据集3.0",
+        data = dict(version=5, templateName=f"新增数据集3.0+{num}",
                     dataIds="2887,248,249,2884,462,463,15524,15523,", dataScope=1,
                     patientQueryWhere=yamdata["patientQueryWhere"],
-                    operatorId=self.authUserId, type=20, status=1, remark="实验添加数据", timeScope=0, indexRule=0,
+                    operatorId=self.authUserId, type=20, status=1, remark=f"测试流程{num}", timeScope=0, indexRule=0,
                     authUserId=self.authUserId, authToken=self.authToken)
         result = assert_post(url, data=data, cook=self.cook)
         global templateId
@@ -96,8 +96,8 @@ class Test_Assop():
         allure.attach(f"传出的数据Id{templateId}")
 
     @allure.title("保存数据分析结果")
-    @allure.story("创建数据集")
-    def test_saveDataAnalysisResult2(self):
+    @allure.story("创建数据集-保存数据集")
+    def test_saveDataAnalysisResult(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataAnalysisResult.json"
         allure.attach(f"内部传参：tmplateId={templateId}")
         data = dict(templateId=templateId,
@@ -105,12 +105,12 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("修改数据库中的模板Id")
-    @allure.story("创建数据集")
+    @allure.story("创建数据集-保存数据集")
     def test_updateDataTemplate2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateDataTemplate.json"
+        yamdata = congyaml["医索分析"]["保存数据到数据库"]
         data = dict(templateId=templateId,
-                    resultVariables='{"includeDescribe":"入院时间=2018-12-12 至 2019-12-12","excludeDescribe":"",'
-                                    '"dataDescribe":"患者姓名,性别,年龄,唯一标识,住院流水号,入院时间,出院时间,主诊断,全部诊断"}',
+                    resultVariables=yamdata["resultVariables"],
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook)
 
@@ -192,7 +192,7 @@ class Test_Assop():
 
     @allure.title("缺失个案统计")
     @allure.story("探索性分析")
-    def test_getDataAnalysisResultList2(self):
+    def test_deal_with_null(self):
         url = host + port_python + "/deal_with_null"
         allure.attach(f"内部传参：tmplateId={tempId}")
         data = dict(templateId=tempId, stats_na="True",
@@ -332,3 +332,7 @@ class Test_Assop():
         data = dict(status=9, templateIds=templateId,
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook)
+
+
+if __name__ == '__main__':
+    pytest.main()

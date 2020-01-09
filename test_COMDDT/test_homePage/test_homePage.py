@@ -93,7 +93,7 @@ class Test_homePage:
     @allure.title("点击日期显示的数据")
     @allure.story("首页显示")
     @allure.step("参数：login={0}")
-    def test_calendarCount(self, login):
+    def test_calendarDatedetail(self, login):
         response1, cook = login
         url = host + portlogin + "/userhome/calendar/datedetail.json"
         data = {
@@ -136,7 +136,7 @@ class Test_homePage:
 
     @allure.title("审核情况-跳转")
     @allure.story("首页显示")
-    def test_getAudit(self, login):
+    def test_functionList(self, login):
         response1, cook = login
         url = host + port_project + "/project/functionList.json"
         data = {

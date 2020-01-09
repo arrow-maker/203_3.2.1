@@ -93,7 +93,7 @@ class Test_patientList:
 
     @allure.title("信息详情-密码修改设置")
     @allure.story("随访患者信息")
-    def test_findPatientPageByInterview(self):
+    def test_getParamByCode(self):
         url = host + portlogin + "/param/getParamByCode.json"
         data = dict(codes="initial_password",
                     authUserId=self.authUserId, authToken=self.authToken)
@@ -223,7 +223,7 @@ class Test_patientList:
     @allure.story("患者数据权限")
     @pytest.mark.parametrize("code", ("sms_inform_invited", "medicine_remind_sms"))
     @pytest.mark.parametrize("value", (1, 0))
-    def test_changeEnable(self, code, value):
+    def test_updateParam(self, code, value):
         url = host + portlogin + "/param/updateParam.json"
         data = dict(paramType="environment", code=code, value=value,
                     operatorFunction="51042-saveScienceSetting", operatorId=self.authUserId,

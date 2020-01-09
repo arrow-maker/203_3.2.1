@@ -79,7 +79,7 @@ class Test_surveyReport:
 
     @allure.title("报告配置 套件详情列表")
     @allure.story("报告配置")
-    def test_dictItemGroup_findByDictItemGroup(self, login):
+    def test_findByDictItemGroup(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemGroup/findByDictItemGroup.json"
         data = dict(itemName="",
@@ -104,7 +104,7 @@ class Test_surveyReport:
 
     @allure.title("报告配置 套件详情 新增套件")
     @allure.story("报告配置")
-    def test_dictItemGroup_saveOrUpdateDictItemGroup(self, login):
+    def test_saveOrUpdateDictItemGroup(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemGroup/saveOrUpdateDictItemGroup.json"
         data = dict(id="",
@@ -115,7 +115,7 @@ class Test_surveyReport:
 
     @allure.title("套件详情 删除套件")
     @allure.story("报告配置")
-    def test_dictItemGroup_deleteById(self, login):
+    def test_deleteById(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemGroup/deleteById.json"
         ids = self.transfer_GroupList(response1, cook)["id"]
@@ -127,7 +127,7 @@ class Test_surveyReport:
 
     @allure.title("套件详情 套件里面的项目")
     @allure.story("报告配置")
-    def test_dictItemGroup_findGroupIdandProjectName(self, login):
+    def test_findGroupIdandProjectName(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemProject/findGroupIdandProjectName.json"
         ids = self.transfer_GroupList(response1, cook)["id"]
@@ -159,7 +159,7 @@ class Test_surveyReport:
 
     @allure.title("报告配置 套件详情 套件里面的项目新增项目")
     @allure.story("报告配置")
-    def test_dictItemGroup_addsaveOrUpDictItemProject(self, login):
+    def test_addsaveOrUpDictItemProject(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemProject/saveOrUpdateDictItemProject.json"
         ids = self.transfer_GroupList(response1, cook)["id"]
@@ -177,7 +177,7 @@ class Test_surveyReport:
 
     @allure.title("报告配置 套件详情 删除套件 里面的项目")
     @allure.story("报告配置")
-    def test_dictItemGroup_dictItemProjectDeleteById(self, login):
+    def test_dictItemProjectDeleteById(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/dictItemProject/deleteById.json"
         ids = self.transfer_GroupList(response1, cook)["id"]

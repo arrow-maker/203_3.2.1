@@ -3,7 +3,6 @@ from public.overWrite_Assert import *
 from public.auditProject import auditCheckSave as aduit1
 
 
-
 @allure.feature("科研项目管理->项目管理类")
 class Test_projectManage:
     def setup_class(self):
@@ -23,12 +22,12 @@ class Test_projectManage:
         data = {
             # "ProjectName":"",
             # "projectCenter":"",
-            # "projectStatus":"",  #10：待提交,1:待审核，7：审核不通过，11：启动中，3进行中，8：已终止，5：已结束
+            # "projectStatus":"",
             # "page":1,
             # "size":15,
             "operatorId": self.authUserId,
             # "projectUserStatus":1,
-            # "joinType": "1",          #1：我加入的，2：邀请我的，3：其他公开的
+            # "joinType": "1",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
@@ -46,18 +45,19 @@ class Test_projectManage:
         """
         url = host + port_project + "/project/list.json"
         data = {
-            "ProjectName":"",
-            "projectCenter":"",
-            "projectStatus":"",
-            "page":1,
-            "size":15,
+            "ProjectName": "",
+            "projectCenter": "",
+            "projectStatus": "",
+            "page": 1,
+            "size": 15,
             "operatorId": self.authUserId,
-            "projectUserStatus":1,
+            "projectUserStatus": 1,
             "joinType": "1",
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
         assert_get(url, data, self.cook)
+
     @allure.title("我的项目->申请项目->（字典数据）中的下拉菜单")
     @allure.story("我加入的")
     def test_apply_for_project(self):
@@ -178,7 +178,7 @@ class Test_projectManage:
 
     @allure.title("我的项目->申请项目：筛选期")
     @allure.story("我加入的")
-    def test_apply_save_screen(self,questionId):
+    def test_apply_save_screen(self, questionId):
         url = host + port_project + "/project/info/start-up-period/save.json"
         dataDict = self.get_projectId(["10"])
         allure.attach(f"项目Id={dataDict['projectId']}")
@@ -187,9 +187,9 @@ class Test_projectManage:
             "operatorId": self.authUserId,
             # "unInGroupDeadline":22,
             # "deadlineType":1,
-            "followupPlan":'[{"visitOrder":{"start":1,"end":2},"stepCount":2,"stepUnit":{"value":"d","code":"d",'
+            "followupPlan": '[{"visitOrder":{"start":1,"end":2},"stepCount":2,"stepUnit":{"value":"d","code":"d",'
                             '"display":"天"},"preThreshold":1,"postThreshold":4,"thresholdType":"d",'
-                            '"questionnaireId":"%s"}]'%questionId[0],
+                            '"questionnaireId":"%s"}]' % questionId[0],
             # '[{"visitOrder":{"start":1,"end":1},"stepCount":1,"stepUnit":{"value":"d","code":"d","display":"天"},
             # "preThreshold":1,"postThreshold":1,"thresholdType":"d","questionnaireId":"Questionnaire/117087"}]'
             # "startUpPeriodRule":1,
@@ -218,7 +218,7 @@ class Test_projectManage:
             "allowScaleOver": 0,
             "followupPlan": '[{"visitOrder":{"start":1,"end":2},"stepCount":2,"stepUnit":{"value":"d","code":"d",'
                             '"display":"天"},"preThreshold":1,"postThreshold":3,"thresholdType":"d",'
-                            '"questionnaireId":"%s"}]'%questionId[0],
+                            '"questionnaireId":"%s"}]' % questionId[0],
             "dataIds": dataDict["dataId"][0],
             "authUserId": self.authUserId,
             "authToken": self.authToken
@@ -317,12 +317,13 @@ class Test_projectManage:
 
     @allure.title("我的项目->申请项目：共享文件列表 上传文件")
     @allure.story("我加入的")
-    def test_apply__share_uploading(self):
+    @pytest.mark.parametrize("files", (uploadpath1, uploadpath2, uploadpath3))
+    def test_apply__share_uploading(self, files):
         try:
             url = host + port_project + "/project/file/save.json"
             dataDict = self.get_projectId(["10"])
             allure.attach(f"项目Id={dataDict['projectId']}")
-            file = {"file": r"C:\Users\TP-GZ-A02-050\Desktop\数据库表关系.png"}
+            file = {"file": files}
             # file = open(r"C:\Users\TP-GZ-A02-050\Desktop\数据库表关系.png","rb")
             data = {
                 "file": "(binary)",
@@ -559,6 +560,7 @@ class Test_projectManage:
     #                 authToken=self.authToken)
     #     requests.post(url, data, cookies=self.cook)
     #     assert "true" in result.text
+
     @allure.title("获取审核过后的 参与研究者的信息 参与医生列表")
     @allure.story("项目审核后的操作")
     def get_practitionerList(self):
@@ -761,18 +763,18 @@ class Test_projectManage:
         header = {"cookie": dlogin}
         assert_post(url, data, headers=header, hint=taskId[0])
 
-    # @allure.title("标记访视记录")
-    # @allure.story("项目审核后的操作")
+    @allure.title("标记访视记录")
+    @allure.story("项目审核后的操作")
     # @pytest.mark.skip("这个版本没有看见这个规则")
-    # def test_startStatus_appoint(self):
-    #     url = host + portlogin + "/appointment/expire.json"
-    #     taskId = self.getcarePlanId_ID()["taskId"]
-    #     data = {
-    #         "taskId": taskId[0],
-    #         "authUserId": self.authUserId,
-    #         "authToken": self.authToken
-    #     }
-    #     assert_post_hint(url, data, self.cook, taskId[0])
+    def test_startStatus_expire(self):
+        url = host + portlogin + "/appointment/expire.json"
+        taskId = self.getcarePlanId_ID()["taskId"]
+        data = {
+            "taskId": taskId[0],
+            "authUserId": self.authUserId,
+            "authToken": self.authToken
+        }
+        assert_post(url, data, self.cook, "INVALID_REQUEST")
 
     @allure.title("开始对CRF记录操作")
     @allure.story("项目审核后的操作")
@@ -931,7 +933,7 @@ class Test_projectManage:
         url = host + port_project + "/project/user/patient/update.json"
         datadic = self.getcarePlanId_ID()
         ids = datadic["ID"]
-        allure.attach(f"内部参数：dataDic={datadic}\n    ids={ids}")
+        allure.attach(f"内部参数：dataDic={datadic}\nids={ids}")
         data = {
             "id": ids[0],
             "dataCode": 123456789,
@@ -943,7 +945,7 @@ class Test_projectManage:
 
     @allure.title("添加AE不良事件")
     @allure.story("不良事件")
-    def test_startStatus_event_eventToSavaGroup(self):
+    def test_startStatus_eventToSavaGroup(self):
         url = host + port_project + "/project/event/toSaveGroup.json"
         listProject = self.getcarePlanId_ID()
         allure.attach(f"内部参数：listProject={listProject}")
@@ -987,10 +989,14 @@ class Test_projectManage:
 
     @allure.title("不良事件AE-实验相关资料显示")
     @allure.story("不良事件")
-    @pytest.mark.parametrize(("code", "hint"), [("TEST_CLINICAL_TRIALS", "临床验证"), ("TEST_DRUG_DOSAGE","注射剂"), ("TEST_DRUG_REGIST_CATEGORY", "境内外均未上市的创新药"),
-                                            ("TEST_DRUG_CATEGORY", "治疗用生物制品"), ("TEST_REPORT_SITUATION", "已在规定时限内完成上报"), ("SAE_SEVERITY1", "严重"), ("SAE_SEVERITY2", "4级（危及生命；需要紧急治疗"),
-                                            ("SAE_DRUG_TEST_METHOD", "继续用药"), ("SAE_OUTCOME", "症状持续"), ("SAE_PATIENT_RELATED", "调整研究用药剂量"), ("PROJECT_EVENT_UNIT", "mg"),
-                                            ("PROJECT_EVENT_USED", "Q6H"), ("SAE_DRUG_RELATED", "肯定有关")])
+    @pytest.mark.parametrize(("code", "hint"), [("TEST_CLINICAL_TRIALS", "临床验证"), ("TEST_DRUG_DOSAGE", "注射剂"),
+                                                ("TEST_DRUG_REGIST_CATEGORY", "境内外均未上市的创新药"),
+                                                ("TEST_DRUG_CATEGORY", "治疗用生物制品"),
+                                                ("TEST_REPORT_SITUATION", "已在规定时限内完成上报"), ("SAE_SEVERITY1", "严重"),
+                                                ("SAE_SEVERITY2", "4级（危及生命；需要紧急治疗"),
+                                                ("SAE_DRUG_TEST_METHOD", "继续用药"), ("SAE_OUTCOME", "症状持续"),
+                                                ("SAE_PATIENT_RELATED", "调整研究用药剂量"), ("PROJECT_EVENT_UNIT", "mg"),
+                                                ("PROJECT_EVENT_USED", "Q6H"), ("SAE_DRUG_RELATED", "肯定有关")])
     def test_getCodeItemList(self, code, hint):
         url = host + portlogin + "/code/codeItem/getCodeItemList.json"
         data = dict(code=code, t=time_up,
@@ -1000,7 +1006,7 @@ class Test_projectManage:
     @allure.title("不良事件AE-实验相关资料保存")
     @allure.story("不良事件")
     @pytest.mark.parametrize("start,end", searchdate)
-    def test_startStatus_event_SaveTestAE(self, start, end):
+    def test_startStatus_SaveTestAE(self, start, end):
         url = host + port_project + "/project/event/saveTest.json"
         datadic = self.getcarePlanId_ID()
         projectName = datadic["PROJECT_NAME"]
@@ -1014,7 +1020,7 @@ class Test_projectManage:
 
     @allure.title("不良事件AE-实验相关资料修改保存")
     @allure.story("不良事件")
-    def test_startStatus_event_updateTestAE(self):
+    def test_startStatus_updateTestAE(self):
         url = host + port_project + "/project/event/updateTest.json"
         datadic = self.getcarePlanId_ID()
         projectName = datadic["PROJECT_NAME"]
@@ -1032,7 +1038,7 @@ class Test_projectManage:
 
     @allure.title("不良事件AE-受试者情况-保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveSubjectAE(self):
+    def test_startStatus_saveSubjectAE(self):
         url = host + port_project + "/project/event/saveSubjects.json"
         datadic = self.getcarePlanId_ID()
         birthDay = datadic["birthDay"]
@@ -1050,7 +1056,7 @@ class Test_projectManage:
 
     @allure.title("不良事件AE情况详情保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveSaeAE(self):
+    def test_startStatus_saveSaeAE(self):
         url = host + port_project + "/project/event/saveSae.json"
         datadic = self.getcarePlanId_ID()
         projectId = datadic["PROJECT_ID"]
@@ -1069,21 +1075,24 @@ class Test_projectManage:
 
     @allure.title("不良事件SAE-实验相关资料保存")
     @allure.story("不良事件")
-    def test_startStatus_event_SaveTestSAE(self):
+    def test_startStatus_SaveTestSAE(self):
         url = host + port_project + "/project/event/saveTest.json"
         datadic = self.getcarePlanId_ID()
         projectName = datadic["PROJECT_NAME"]
         code = self.getCode()
         allure.attach(f"内部参数：datadic={datadic}\n projectName={projectName}\n code={code}")
-        data = dict(reportFirst=1, reportSummary="", reportDate="2019-11-07 00:00", reportSituation=1, orgName=self.hospital,
-                    centerNo=444444, dept=self.hospital, deptPhone="", projectName=projectName[0], projectStartdate="2019-11-07",
-                    projectEnddate="2019-12-31", drugCategory="", drugRegistCategory="", drugDosage="", clinicalTrialsCategory="",
+        data = dict(reportFirst=1, reportSummary="", reportDate="2019-11-07 00:00", reportSituation=1,
+                    orgName=self.hospital,
+                    centerNo=444444, dept=self.hospital, deptPhone="", projectName=projectName[0],
+                    projectStartdate="2019-11-07",
+                    projectEnddate="2019-12-31", drugCategory="", drugRegistCategory="", drugDosage="",
+                    clinicalTrialsCategory="",
                     code=code, operatorId=self.authUserId, authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook)
 
     @allure.title("不良事件SAE-实验相关资料修改保存")
     @allure.story("不良事件")
-    def test_startStatus_event_updateTestSAE(self):
+    def test_startStatus_updateTestSAE(self):
         url = host + port_project + "/project/event/updateTest.json"
         datadic = self.getcarePlanId_ID()
         projectName = datadic["PROJECT_NAME"]
@@ -1101,7 +1110,7 @@ class Test_projectManage:
 
     @allure.title("不良事件SAE-受试者情况-保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveSubjectSAE(self):
+    def test_startStatus_saveSubjectSAE(self):
         url = host + port_project + "/project/event/saveSubjects.json"
         datadic = self.getcarePlanId_ID()
         birthDay = datadic["birthDay"]
@@ -1120,7 +1129,7 @@ class Test_projectManage:
 
     @allure.title("不良事件SAE情况详情保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveSaeSAE(self):
+    def test_startStatus_saveSaeSAE(self):
         url = host + port_project + "/project/event/saveSae.json"
         datadic = self.getcarePlanId_ID()
         projectId = datadic["PROJECT_ID"]
@@ -1135,10 +1144,9 @@ class Test_projectManage:
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_post(url, data, self.cook, projectId[0])
 
-
     @allure.title("不良事件SAE-发生及处理详情保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveProce(self):
+    def test_startStatus_saveProce(self):
         url = host + port_project + "/project/event/saveProce.json"
         datadic = self.getcarePlanId_ID()
         projectId = datadic["PROJECT_ID"]
@@ -1171,7 +1179,7 @@ class Test_projectManage:
 
     @allure.title("不良事件SAE-合并疾病详情保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveComplic(self):
+    def test_startStatus_saveComplic(self):
         url = host + port_project + "/project/event/saveComplic.json"
         datadic = self.getcarePlanId_ID()
         projectId = datadic["PROJECT_ID"]
@@ -1200,7 +1208,7 @@ class Test_projectManage:
 
     @allure.title("不良事件SAE-单位以及报告人详情保存")
     @allure.story("不良事件")
-    def test_startStatus_event_saveReport(self):
+    def test_startStatus_saveReport(self):
         url = host + port_project + "/project/event/saveReport.json"
         datadic = self.getcarePlanId_ID()
         projectId = datadic["PROJECT_ID"]
@@ -1226,17 +1234,17 @@ class Test_projectManage:
         }
         assert_post(url, data, self.cook, projectId[0])
 
-    # @allure.title("不良事件SAE-单位以及报告人详情保存")
-    # @allure.story("不良事件")
-    # @pytest.mark.skip("这个版本没有这个功能")
-    # def test_startStatus_event_updateProjectEvent(self):
-    #     url = host + port_project + "/project/event/updateProjectEvent.json"
-    #     datadic = self.getcarePlanId_ID()
-    #     ids = datadic["ID"]
-    #     data = dict(id=ids[0],  # 注意ID
-    #                 authUserId=self.authUserId,
-    #                 authToken=self.authToken)
-    #     assert_post(url, data, self.cook)
+    @allure.title("不良事件SAE-单位以及报告人详情保存")
+    @allure.story("不良事件")
+    def test_startStatus_updateProjectEvent(self):
+        url = host + port_project + "/project/event/updateProjectEvent.json"
+        datadic = self.getcarePlanId_ID()
+        ids = datadic["ID"]
+        # print(f"\ndatadic={datadic}\nids={ids}")
+        data = dict(id=ids[0],  # 注意ID
+                    authUserId=self.authUserId,
+                    authToken=self.authToken)
+        assert_post(url, data, self.cook)
 
     @allure.title("发起中期汇报")
     @allure.story("中期汇报")
@@ -1265,8 +1273,8 @@ class Test_projectManage:
 
     @allure.title("发起中期汇报-发起汇报-进行中")
     @allure.story("中期汇报")
-    @pytest.mark.parametrize("jsonparam",('[{"paymentType":""}]','[{"fromTime":"","endTime":""}]',
-                                          '[{"centerProjectId":"5569"}]'))
+    @pytest.mark.parametrize("jsonparam", ('[{"paymentType":""}]', '[{"fromTime":"","endTime":""}]',
+                                           '[{"centerProjectId":"5569"}]'))
     def test_startStatus_reportreSultModel(self, jsonparam):
         url = host + port_project + "/project/result/save.json"
         projectId = self.get_projectId(["3"])["projectId"]
@@ -1294,7 +1302,7 @@ class Test_projectManage:
 
     @allure.title("锁库结题-项目分中心列表")
     @allure.story("中期汇报")
-    def test_myProgect_startStatus_report_infolist(self):
+    def test_startStatus_infolist(self):
         url = host + port_project + "/project/info/minute-center/list.json"
         projectId = self.get_projectId(["5"])["projectId"]
         allure.attach(f"项目Id={projectId}")
@@ -1364,7 +1372,7 @@ class Test_projectManage:
             "authUserId": self.authUserId,
             "authToken": self.authToken
         }
-        assert_post(url, data,self.cook)
+        assert_post(url, data, self.cook)
 
     @allure.title("项目进度-汇报-保存项目汇报数据情况")
     @allure.story("中期汇报")

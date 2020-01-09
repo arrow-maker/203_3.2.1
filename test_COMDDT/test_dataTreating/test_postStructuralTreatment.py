@@ -73,7 +73,7 @@ class Test_postSturalTreatMent:
     @allure.title("鼻窦CT")
     @allure.story("结果统计")
     @allure.step("参数：login={0}")
-    def test_getReportDatas(self, login):
+    def test_getCtCheckReport(self, login):
         response1, cook = login
         url = host + port_sourcedata + "/structuredReport/getCtCheckReport.json"
         data = dict(

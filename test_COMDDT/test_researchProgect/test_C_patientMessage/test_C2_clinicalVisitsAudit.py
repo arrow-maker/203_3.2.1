@@ -107,14 +107,14 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF开始审核")
     @allure.story("CRF审核")
-    def test_CRF_reviewStart(self,dlogin, login):
+    def test_CRF_reviewStart(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/review/start.json"
         taskId = self.transfer_crfList(dlogin, response1, cook)["taskId"]
         if len(taskId) > 0:
             data = dict(taskId=taskId[0],
                         authUserId=response1["authUserId"], authToken=response1["authToken"])
-            assert_post(url, data, headers={"cookie": dlogin}, hint=taskId)
+            assert_post(url, data, headers={"cookie": dlogin}, hint=taskId[0])
 
     def start123(self, dlogin, login):
         response1, cook = login
@@ -133,7 +133,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("给CRF审核提交传值")
     @allure.story("CRF审核")
-    def testtransfer_modelSubmit(self, dlogin, login):
+    def test_modelSubmit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/record/item.json"
         patientId = self.transfer_crfList(dlogin, login[0], login[1])["patientId"]
@@ -249,7 +249,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("终止患者访视--审核通过查看结果")
     @allure.story("终止患者访视")
-    def test_projectDetail_projectPlanInfo(self, dlogin, login):
+    def test_projectPlanInfo(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectPlanInfoVo.json"
         dataId = self.transfer_UserList(response1, cook)["dataId"][0]

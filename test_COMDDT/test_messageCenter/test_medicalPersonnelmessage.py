@@ -82,7 +82,7 @@ class Test_medicalPersonnelmessage:
     @allure.title("医院的医生的列表-医生列表")
     @allure.story("我创建的")
     @allure.step("参数：login={0}")
-    def test_getOrgInfoTreeList(self, login):
+    def test_findUserBasePage(self, login):
         response1, cook = login
         url = host + portlogin + "/users/users/findUserBasePage.json"
         data = dict(positionIds=2202,   # 这里是固定的

@@ -82,6 +82,13 @@ class Test_pulmonaryTrendAnalysis:
     @allure.story("肺功能检查")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getExamReportMasterAssistMaster(self, login, orgPath, start, end):
+        """
+        :param login:   cookie值和token值
+        :param orgPath: 科室的路径
+        :param start:   启动日期
+        :param end:     结束日期
+        :return:
+        """
         response1, cook = login
         url = host + port_es + "/panorama/data/getExamReportMasterAssistMaster.json"
         path = self.patild(response1, cook, orgPath)
@@ -115,7 +122,7 @@ class Test_pulmonaryTrendAnalysis:
 
     @allure.title("报告详情-报告列表-详情")
     @allure.story("肺功能检查")
-    def test_getExamReportDetailPageAssistDetail(self, login, orgPath):
+    def test_getExamReportDetail(self, login, orgPath):
         response1, cook = login
         url = host + port_es + "/data/getExamReportDetailPageAssistDetail.json"
         ids = self.fhirList(response1, cook, orgPath)

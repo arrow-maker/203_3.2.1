@@ -289,7 +289,7 @@ class Test_modelDisease:
     @allure.title("患者相似分析后得到的数据导出")
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
-    def test_patient_similar_patient_contrast(self, login):
+    def test_patient_similar_download_file(self, login):
         response1, cook = login
         url = host + port_python + "/patient_similar/download_file"
         inpatientNo = self.patientList(response1, cook)["inpatientNo"]

@@ -55,7 +55,7 @@ class Test_AKSO:
 
     @allure.title("可选指标数据-得到筛选的结果")
     @allure.story("临床诊断决策支持")
-    def test_getSearchRecord(self):
+    def test_getSearchRecord1(self):
         url = host + port_sourcedata + "/diagPredict/getSearchRecord.json"
         data = dict(authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook, hint="咳嗽")

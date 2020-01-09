@@ -108,7 +108,7 @@ class Test_patientListMessage:
 
     @allure.title("创建消息")
     @allure.story("我创建的-创建消息")
-    def test_patientSearch(self):
+    def test_createNotice(self):
         url = host + portlogin + "/notice/createNotice.json"
         addresseeId = self.addresseeId()
         allure.attach(f"内部参数：addresseeId={addresseeId}")
@@ -195,12 +195,16 @@ class Test_patientListMessage:
     @allure.title("审核-不通过")
     @allure.story("审核记录")
     @pytest.mark.parametrize("status", (1, 3))
-    def test_findNoticeExaminetPage(self, status):
+    def test_updateStatus(self, status):
+        """
+        :param status: 表示审核的状态 1：通过；3：不通过
+        :return:
+        """
         url = host + portlogin + "/notice/updateStatus.json"
         data = {
             "auditOrgUserId": self.authUserId,
             "noticeId": 13817,
-            "status": status,    # 1：同意， 3：不同意
+            "status": status,
             "auditOpinion": "不同意",
             "auditAndRepealFlag": "auditFlag",
             "repealOpinion": "不同意",

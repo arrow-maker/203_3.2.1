@@ -3,14 +3,13 @@ from public.overWrite_Assert import *
 from public.auditProject import auditProjectList,submitProject
 
 
-
 @allure.feature("科研项目管理->科研审核")
 class Test_project_audict:
 
-    @allure.title("我的项目->项目申请 ->提交到审核-用于审核")
-    @allure.story("项目审核")
-    def test_AudictProject_addProject(self, login, questionId):
-        submitProject(login, questionId)
+    # @allure.title("我的项目->项目申请 ->提交到审核-用于审核")
+    # @allure.story("项目审核")
+    # def test_AudictProject_addProject(self, login, questionId):
+    #     submitProject(login, questionId)
 
     @allure.title("项目管理->科研审核->项目申请 项目展示")
     @allure.story("项目审核")
@@ -94,28 +93,27 @@ class Test_project_audict:
     下面的所有的审核的详情是一致的，这里就统一的说明一下。
     这里的审核通过的审核详情和项目申请的审核详情一致，项目详情和项目申请通过的是一致的，这里就不另外添加了
     '''
-    # @allure.title("项目管理->科研审核->不良事件-列表展示")
-    # @allure.title("这里的不良事件和项目管理中的不良事件是一样的")
-    # @allure.story("不良事件")
-    # @pytest.mark.skip("太影响i性能")
-    # def test_AdverseEevent(self, login):
-    #     response1, cook = login
-    #     url = host + port_project + "/project/event/findGroupList.json"
-    #     data = {
-    #         "keyword": "",
-    #         # "projectName":"",#项目名称
-    #         # "category":"",  #SAE:1,AE:2
-    #         # "status":"",    #待审核：2，通过考核：1，不通过：0
-    #         # "patientName":"",#受试者姓名
-    #         # "reportName":"",#报告名称
-    #         # "page": 1,
-    #         # "size":10,
-    #         "isEventList": "true",
-    #         "operatorId": response1["authUserId"],
-    #         "authUserId": response1["authUserId"],
-    #         "authToken": response1["authToken"]
-    #     }
-    #     overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "科研审核-不良事件列表")
+    @allure.title("项目管理->科研审核->不良事件-列表展示")
+    @allure.title("这里的不良事件和项目管理中的不良事件是一样的")
+    @allure.story("不良事件")
+    def test_AdverseEevent(self, login):
+        response1, cook = login
+        url = host + port_project + "/project/event/findGroupList.json"
+        data = {
+            "keyword": "",
+            # "projectName":"",#项目名称
+            # "category":"",  #SAE:1,AE:2
+            # "status":"",    #待审核：2，通过考核：1，不通过：0
+            # "patientName":"",#受试者姓名
+            # "reportName":"",#报告名称
+            # "page": 1,
+            # "size":10,
+            "isEventList": "true",
+            "operatorId": response1["authUserId"],
+            "authUserId": response1["authUserId"],
+            "authToken": response1["authToken"]
+        }
+        overWrite_assert_get_xls_hint(url, data, cook, researchCatePath, "科研审核-不良事件列表")
 
     @allure.title("项目管理->科研审核->受试者终止")
     @allure.story("受试者终止")

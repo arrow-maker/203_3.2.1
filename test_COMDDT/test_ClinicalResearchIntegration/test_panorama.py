@@ -153,7 +153,7 @@ class Test_patientPanorama:
     @allure.title("获取住院时间")
     @allure.story("首页数据的显示")
     @allure.step("参数：login={0}")
-    def test_warnIndicatorList(self, login):
+    def test_getHospitalizationTime(self, login):
         response1, cook = login
         url = host + port_es + "/panorama/data/getHospitalizationTime.json"
         ids = self.transfer_patientList(response1, cook)["id"]
@@ -204,22 +204,6 @@ class Test_patientPanorama:
                     startDate=start, endDate=end,
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook, "查询住院费用和天数据操作成功")
-
-    @allure.title("仓库患者详情")
-    @allure.story("首页数据的显示")
-    @allure.step("参数：login={0}")
-    @pytest.mark.parametrize("start,end", searchdate)
-    def test_warehousePatientDataList(self, login, start, end):
-        response1, cook = login
-        ids = self.transfer_patientList(response1, cook)
-        patientId = ids["patientId"]
-        url = host + port_es + f"/panorama/data/homePage/{patientId}/warehousePatientDataList.json"
-        patiId = ids["id"]
-        allure.attach(f"内部参数：ids={ids}")
-        data = dict(patiId=patiId[0],
-                    startDate="2014-09-05", endDate="2019-09-04",
-                    authUserId=response1["authUserId"], authToken=response1["authToken"])
-        assert_get(url, data, cook)
 
     @allure.title("查询时间轴数据【住院诊断，门诊诊断，吸烟，临床主要诊断，胸部影像学】数据操作")
     @allure.story("首页数据的显示")

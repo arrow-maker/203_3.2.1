@@ -133,7 +133,7 @@ class Test_subjectRecruitment:
         assert_post(url, data, self.cook, "更新成功1条数据")
 
     @allure.story("查看项目的进度条")
-    def test_findPage(self):
+    def test_findPage1(self):
         url = host + port_project + "/recruit/patient/findPage.json"
         data = dict(projectId=7,  # 这里是固定的，别的数据没有进度条
                     # page=1, size=10,

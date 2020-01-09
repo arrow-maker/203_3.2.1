@@ -35,6 +35,13 @@ class Test_clinicalVisits:
     @pytest.mark.smoke1
     @pytest.mark.parametrize("pname",("新增访视计划2.0", "新增访视计划2.0@+"))
     def test_saveProject(self, pname, login, dlogin, questionId):
+        """
+        :param pname:       访视计划的名称
+        :param login:       登录的token
+        :param dlogin:      登录的cookie
+        :param questionId:  添加的问卷的Id
+        :return:
+        """
         response1, cook = login
         url = host + portlogin + "/projectDetail/saveProjectInfo.json"
         header = {"cookie": dlogin}
@@ -58,12 +65,15 @@ class Test_clinicalVisits:
     @allure.title("临床访视计划-添加的临床访视计划审核")
     @allure.story("访视计划")
     def test_clinicalVisitsAudit(self, submitVisits):
-            dd = submitVisits
-
+        """
+        :param submitVisits:     这个是审核的的过程
+        :return:
+        """
+        dd = submitVisits
 
     @allure.title("临床访视计划-查询访视计划")
     @allure.story("访视计划")
-    def test_PatientList_findProjectDetail(self, login):
+    def test_findProjectDetail(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectDetail.json"
         projectId = self.transfer_ProjectList(response1, cook)["projectId"][0]
@@ -86,7 +96,7 @@ class Test_clinicalVisits:
 
     @allure.title("从科室添加患者-获取患者列表")
     @allure.story("参与患者")
-    def test_PatientList_save_projectUserList(self, login):
+    def test_save_projectUserList(self, login):
         response1, cook = login
         url = host + port_project + "/project/user/list.json"
         projectId = self.transfer_ProjectList(response1, cook)["projectId"][0]
@@ -364,7 +374,6 @@ class Test_clinicalVisits:
                             content='[{"linkId":"%s","value":["|2"]}]' % linkId,
                             authUserId=response1["authUserId"], authToken=response1["authToken"])
                 assert_post(url, data, headers=header, hint=taskId[i])
-
 
     @allure.title("申请终止参与临床访视计划")
     @allure.story("添加失访记录")

@@ -114,7 +114,7 @@ class Test_indexDataManege:
     @allure.title("新增-指标分类-子分类")
     @allure.story("指标数据操作")
     @allure.step("参数：login={0}")
-    def test_saveDataCategory(self, login):
+    def test_saveDataCategory2(self, login):
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/dataCategory/saveDataCategory.json"
         path = self.indexList(response1, cook)["id"]
@@ -183,7 +183,7 @@ class Test_indexDataManege:
     @allure.title("删除-指标")
     @allure.story("指标操作")
     @allure.step("参数：login={0}")
-    def test_updateStatus(self, login):
+    def test_updateStatusBatch(self, login):
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/updateStatusBatch.json"
         dataIds = self.dataids(response1, cook)
@@ -209,7 +209,7 @@ class Test_indexDataManege:
     @allure.title("删除-指标分类-主分类")
     @allure.story("数据加载显示-指标分类列表")
     @allure.step("参数： login={0}")
-    def test_updateStatus(self, login):
+    def test_updateStatus1(self, login):
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/dataCategory/updateStatus.json"
         path = self.indexList(response1, cook)["id"]
@@ -222,7 +222,7 @@ class Test_indexDataManege:
     @allure.title("修改指定的指标")
     @allure.story("指标分类列表")
     @allure.step("参数：login={0}")
-    def test_updateStatus(self, login):
+    def test_saveDataIndex1(self, login):
         response1, cook = login
         url = host + port_dataindex + "/dataIndex/saveDataIndex.json"
         path = self.dataIndexList(response1, cook)

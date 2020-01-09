@@ -13,7 +13,7 @@ functionIds = "F_8000010,F_8000009,F_8000008,F_8000007,F_8000006,F_8000005,F_800
               "G_8000012,F_8000025,F_8000013,F_8000012,F_8000011,F_8000024,F_8000014,G_8000013,G_8000002,G_8000001",
 
 
-@allure.feature("病种管理")
+@allure.feature("全景配置")
 class Test_viewsConfigure:
 
     @classmethod
@@ -25,7 +25,7 @@ class Test_viewsConfigure:
         self.orgId = response1["responseData"]["roleList"][0]["orgId"]
 
     @pytest.fixture(scope="class")
-    def orgId(self):
+    def orgId(self, request):
         url = host + portlogin + "/org/orgInfo/getOrgInfoTreeList.json"
         data = dict(listType=2, status=1, orgTypeIds="35,38",
                     path="400", orgName="",
@@ -34,7 +34,7 @@ class Test_viewsConfigure:
         patientId = ["75722"]     # 科室的Id
         for i in result[1]["responseData"][0]['children'][0]["children"]:
             patientId.append(i["id"])
-        return patientId
+        return patientId[request.param]
 
     @allure.title("科室选择列表")
     @allure.story("全景配置")
@@ -45,28 +45,33 @@ class Test_viewsConfigure:
                     authUserId=self.authUserId, authToken=self.authToken)
         assert_get(url, data, self.cook)
 
-    @pytest.fixture(scope="class", params=[pytest.lazy_fixture("orgId")])
-    def param_orgId(self, request):
-        print(f"\nparam_orgId={request.param}")
-        return request.param
-
     @allure.title("按照科室的菜单列表")
     @allure.story("全景配置")
-    @pytest.mark.parametrize("orgIds", [pytest.lazy_fixture("param_orgId")], indirect=True)
+    @pytest.mark.parametrize("orgId", [0, 1, 2], indirect=True)
     @pytest.mark.parametrize("Name", ("", "首页"))
-    def test_getAuthTreeList(self, orgIds, Name):
+    def test_getAuthTreeList(self, orgId, Name):
+        """
+        :param orgId: 这里的是点击不同的科室
+        :param Name:    这里是搜索不同的菜单
+        :return:
+        """
         url = host + portlogin + "/auth/function/getAuthTreeList.json"
-        data = dict(type=1, orgId=orgIds, roleId=0, groupName=Name,
+        data = dict(type=1, orgId=orgId, roleId=0, groupName=Name,
                     path=8000001, operatorId=self.authUserId, operatorFunction="51054-getMenu",
                     authUserId=self.authUserId, authToken=self.authToken)
-        print(f"\norgIds={orgIds}")
-        # assert_get(url, data, self.cook)
+        assert_get(url, data, self.cook)
 
     @allure.title("添加/删除菜单列表")
     @allure.story("菜单列表操作")
     @pytest.mark.parametrize("adds", ("", functionIds))
     @pytest.mark.parametrize("deleIds", (functionIds, ""))
     def test_saveRoleFunctionR(self, dlogin, adds, deleIds):
+        """
+        :param dlogin:  登录的cookie
+        :param adds:    添加的菜单的Id
+        :param deleIds: 删除的菜单的Id
+        :return:
+        """
         url = host + portlogin + "/auth/function/saveRoleFunctionR.json"
         header = {"cookie": dlogin}
         data = dict(addIds=adds,
@@ -77,10 +82,17 @@ class Test_viewsConfigure:
 
     @allure.title("用户列表")
     @allure.story("全景配置")
-    def test_getUsersList(self):
+    @pytest.mark.parametrize("orgId", [0], indirect=True)
+    @pytest.mark.parametrize("word", ("", "a", "1"))
+    def test_getUsersList(self, orgId, word):
+        """
+        :param orgId:   用户所在的科室
+        :param word:    搜索配置的关键字
+        :return:
+        """
         url = host + portlogin + "/projectUser/getUsersList.json"
-        # print(f"\norgId={self.orgId}")
-        data = dict(keyword="", path="400,75722,75726",
+        print(f"\norgId={orgId}")
+        data = dict(keyword=word, path=f"400,{orgId}",
                     page=1, size=15,
                     authUserId=self.authUserId, authToken=self.authToken)
-        assert_get(url, data, self.cook)
+        assert_get(url, data, self.cook, word)

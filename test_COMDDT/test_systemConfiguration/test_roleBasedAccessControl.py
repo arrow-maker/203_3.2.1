@@ -30,6 +30,7 @@ class Test_roleBasedAccessControl:
         header = {"cookie": dlogin}
         assert_get(url, data, headers=header, hint=str(self.itemOrgId))
 
+    @allure.title("获取患者列表")
     def test_getOrgPositionList(self):
         url = host + portlogin + "/org/orgPosition/getOrgPositionList.json"
         data = dict(orgId=self.itemOrgId,
@@ -53,6 +54,7 @@ class Test_roleBasedAccessControl:
                     datadic["token"].append(i["token"])
         return datadic
 
+    @allure.title("菜单列表")
     def test_getAuthTreeList(self):
         url = host + portlogin + "/auth/function/getAuthTreeList.json"
         ids = self.transfer_getOrgPositionList()["ids"][0]
@@ -87,6 +89,7 @@ class Test_roleBasedAccessControl:
                                 ids.append(lastmenu)  # 以最底层的id分组
         return tuple(ids)
 
+    @allure.title("项目中的用户列表")
     def test_getUsersList(self):
         url = host + portlogin + "/projectUser/getUsersList.json"
         postionIds = self.transfer_getOrgPositionList()["postionIds"][0]
@@ -112,6 +115,7 @@ class Test_roleBasedAccessControl:
                 dicdata["tokenId"].append(i["USERID"])
         return dicdata
 
+    @allure.title("患者医院的数据")
     def test_getPositionHospitalByPositionId(self):
         url = host + portlogin + "/common/positionHospitalData/getPositionHospitalByPositionId.json"
         postionIds = self.transfer_getOrgPositionList()["postionIds"][0]
@@ -244,7 +248,7 @@ class Test_roleBasedAccessControl:
 
     @allure.title("删除角色信息")
     @allure.story("保存修改信息")
-    def test_saveOrUpdateOrgPosition(self):
+    def test_saveOrUpdateOrgPosition1(self):
         url = host + portlogin + "/org/orgPosition/saveOrUpdateOrgPosition.json"
         dicdata = self.roleid()
         allure.attach(f"内部参数：dicdata={dicdata}")
