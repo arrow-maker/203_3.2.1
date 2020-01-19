@@ -26,6 +26,7 @@ class Test_Assop():
         self.authToken = response["responseData"]["roleList"][0]["orgUserIdToken"]
 
     @allure.title("python统计")
+    @allure.severity(A3)
     @allure.story("数据集管理")
     def test_findCodeItem(self):
         url = host + portlogin + "/code/codeItem/findCodeItem.json"
@@ -34,6 +35,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("查询数据")
+    @allure.severity(A3)
     @allure.story("数据集管理")
     def test_getDataTemplateList(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
@@ -43,6 +45,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("显示Titan筛选")
+    @allure.severity(A3)
     @allure.story("创建数据集-筛选患者")
     def test_getDataIndexValueTreeList(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
@@ -54,6 +57,7 @@ class Test_Assop():
         下面的是添加数据集的功能
     """
     @allure.title("天塔筛选-最开始的模板Id")
+    @allure.severity(A3)
     @allure.story("创建数据集-筛选患者")
     @allure.step("这里的是添加数据集-先筛选用户-来添加数据集")
     def test_saveDataTemplate_1(self):
@@ -70,6 +74,7 @@ class Test_Assop():
         allure.attach(f"输出数据templateId={TitanId}", name="天塔筛选中创建的模板的Id")
 
     @allure.title("保存数据到数据库")
+    @allure.severity(A2)
     @allure.story("创建数据集-筛选患者")
     def test_updateDataTemplate(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateDataTemplate.json"
@@ -81,6 +86,7 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("保存数据临模板")
+    @allure.severity(A2)
     @allure.story("创建数据集-保存数据集")
     def test_saveDataTemplate2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
@@ -96,6 +102,7 @@ class Test_Assop():
         allure.attach(f"传出的数据Id{templateId}")
 
     @allure.title("保存数据分析结果")
+    @allure.severity(A2)
     @allure.story("创建数据集-保存数据集")
     def test_saveDataAnalysisResult(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataAnalysisResult.json"
@@ -105,6 +112,7 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("修改数据库中的模板Id")
+    @allure.severity(A3)
     @allure.story("创建数据集-保存数据集")
     def test_updateDataTemplate2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateDataTemplate.json"
@@ -115,6 +123,7 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("修改数据集名称")
+    @allure.severity(A3)
     @allure.story("创建数据集")
     def test_saveDataTemplate3(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
@@ -134,6 +143,7 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("数据集详情")
+    @allure.severity(A3)
     @allure.story("创建数据集")
     def test_getDataAnalysisResultList(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataAnalysisResultList.json"
@@ -152,18 +162,21 @@ class Test_Assop():
         return tempId
 
     @allure.title("保存原始数据集")
+    @allure.severity(A2)
     @allure.story("探索性分析")
     def test_saveDataTemplate5(self):
         global tempId
         tempId = self.keyId(f"原始数据{time_up}")
 
     @allure.title("帮助菜单")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     def test_helpManual(self):
         url = host + port_python + "/Algorithm/helpManual"
         assert_get(url, cook=self.cook)
 
     @allure.title("保存Oracle数据到mongo")
+    @allure.severity(A2)
     @allure.story("探索性分析")
     def test_save_oracle_to_mongo(self):
         url = host + port_python + "/save_oracle_to_mongo"
@@ -173,6 +186,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("数据结构-菜单")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     def test_getDataTemplateResultColumnList(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateResultColumnList.json"
@@ -182,6 +196,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("显示患者数据详情")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     def test_getDataAnalysisResultList2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataAnalysisResultList.json"
@@ -191,6 +206,7 @@ class Test_Assop():
         assert_get(url, data, self.cook)
 
     @allure.title("缺失个案统计")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     def test_deal_with_null(self):
         url = host + port_python + "/deal_with_null"
@@ -200,6 +216,7 @@ class Test_Assop():
         assert_get(url, data, self.cook, "normal_table")
 
     @allure.title("数据分类分析")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     def test_Perspective_data(self):
         url = host + port_python + "/Perspective_data"
@@ -222,6 +239,7 @@ class Test_Assop():
     """
     @allure.title("患者病例")
     @allure.story("探索性分析")
+    @allure.severity(A3)
     @allure.step("患者病例跳转到患者全景")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getTimeAxisList(self, start, end):
@@ -248,6 +266,7 @@ class Test_Assop():
         return resultId
 
     @allure.title("异常值处理-处理结果")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     @allure.step("探索性分析中-修改菜单的选择、")
     def test_deal_with_outliers(self):
@@ -269,6 +288,7 @@ class Test_Assop():
         tempId = keyId
 
     @allure.title("数据转换-处理结果")
+    @allure.severity(A3)
     @allure.story("探索性分析")
     @allure.step("探索性分析中-修改菜单的选择、")
     def test_Descriptive_analysis_continuous_cut_data(self):
@@ -293,6 +313,7 @@ class Test_Assop():
     这里只写了两个的数据的选择，没有写别的，这个模块没有开发完全，别的数据还不能选取(只能看，不能操作)，
     """
     @allure.title("可选的主题")
+    @allure.severity(A2)
     @allure.story("探索-主题分析保存")
     def test_getAllValueByCate(self):
         url = host + port_sourcedata + "/topic/getAllValueByCate.json"
@@ -304,6 +325,7 @@ class Test_Assop():
         assert_get(url, data, self.cook, "研究目的")
 
     @allure.title("主题刷新并保存")
+    @allure.severity(A2)
     @allure.story("探索-主题分析保存")
     def test_saveAndFlush(self):
         url = host + port_sourcedata + "/topic/saveAndFlush.json"
@@ -315,6 +337,7 @@ class Test_Assop():
         responseData = result[1]["responseData"]
 
     @allure.title("主题扩大保存")
+    @allure.severity(A3)
     @allure.story("探索-主题分析保存")
     def test_ktExtendInfoSave(self):
         url = host + port_sourcedata + "/topic/ktExtendInfoSave.json"
@@ -325,6 +348,7 @@ class Test_Assop():
         assert_post(url, data, self.cook)
 
     @allure.title("数据集删除")
+    @allure.severity(A3)
     @allure.story("创建数据集")
     def test_updateStatusBatch(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateStatusBatch.json"

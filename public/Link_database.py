@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
+# from readConfig import OracleDataurl
+
 
 import cx_Oracle
+import sys
+import importlib
+importlib.reload(sys)
+import os
+os.environ['NLS_LANG'] = 'Simplified Chinese_CHINA.ZHS16GBK'
+
 
 def conOracle(conOracleStr, oracleSQL):
+    # connect = cx_Oracle.cx
     connect = cx_Oracle.connect(conOracleStr)
     cur = connect.cursor()
     cur.execute(oracleSQL)  # "select table_name from user_tables" 用户的所有的表名

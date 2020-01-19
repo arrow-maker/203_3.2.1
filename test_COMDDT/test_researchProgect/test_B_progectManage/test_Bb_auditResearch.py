@@ -13,6 +13,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->项目申请 项目展示")
     @allure.story("项目审核")
+    @allure.severity(A3)
     def test_Apply(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/list.json"
@@ -30,6 +31,7 @@ class Test_project_audict:
 
     @allure.title("科研项目-项目审核-通过（所有的审核都是这个接口）")
     @allure.story("项目审核")
+    @allure.severity(A2)
     def test_projectReview(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/save.json"
@@ -51,6 +53,7 @@ class Test_project_audict:
 
     @allure.title("项目审核通过基本详情")
     @allure.story("项目审核")
+    @allure.severity(A3)
     def test_list_projectCheckBaseInfo(self, login):
         response1, cook = login
         url = host + port_project + "/project/info/base.json"
@@ -62,6 +65,7 @@ class Test_project_audict:
 
     @allure.title("项目审核通过基本详情")
     @allure.story("项目审核")
+    @allure.severity(A3)
     def test_list_projectCheckLastInfo(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/lastInfo.json"
@@ -74,6 +78,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->知情同意书")
     @allure.story("知情同意书")
+    @allure.severity(A3)
     def test_InformedConsent(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/file/list.json"
@@ -96,6 +101,7 @@ class Test_project_audict:
     @allure.title("项目管理->科研审核->不良事件-列表展示")
     @allure.title("这里的不良事件和项目管理中的不良事件是一样的")
     @allure.story("不良事件")
+    @allure.severity(A3)
     def test_AdverseEevent(self, login):
         response1, cook = login
         url = host + port_project + "/project/event/findGroupList.json"
@@ -117,6 +123,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->受试者终止")
     @allure.story("受试者终止")
+    @allure.severity(A3)
     def test_SubjecSstop(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/patient/list.json"
@@ -132,6 +139,7 @@ class Test_project_audict:
 
     @allure.title("科研审核-CRF审核-可选项目列表")
     @allure.story("科研质控-CRF审核")
+    @allure.severity(A3)
     def test_auditResearch_function(self, login):
         response1, cook = login
         url = host + port_project + "/project/functionList.json"
@@ -152,9 +160,9 @@ class Test_project_audict:
             ids.append(i["PROJECT_ID"])
         return ids
 
-
     @allure.title("项目管理->科研审核->CRF分组信息")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_CRFGroup(self, login):
         response1, cook = login
         url = host + port_project + "/project/report/group.json"
@@ -170,6 +178,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->CRF默认团队信息")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_CRFOrgInfoTree(self, login):
         response1, cook = login
         url = host + port_project + "/project/user/orgInfo/tree.json"
@@ -185,6 +194,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->CRF默认团队信息")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_CRFlist(self, login):
         response1, cook = login
         url = host + portlogin + "/interview/crflist.json"
@@ -197,6 +207,7 @@ class Test_project_audict:
 
     @allure.title("这里是获取CRF列表，用于审核传参")
     @allure.story("CRF")
+    @allure.severity(A3)
     def giveCRFList(self, response1, cook):
         url = host + portlogin + "/interview/crflist.json"
         ids = self.functionList(response1, cook)
@@ -215,6 +226,7 @@ class Test_project_audict:
 
     @allure.title("审核 导入FHIR")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_importFhirtaskBypatient(self, login):
         response1, cook = login
         url = host + portlogin + "/newDataImport/importFHIRTaskByPatients.json"
@@ -227,6 +239,7 @@ class Test_project_audict:
 
     @allure.title("获取患者的详细的信息")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_patientInfoFHIR(self, login):
         response1, cook = login
         url = host + portlogin + "/projectPatient/getPatientInfo.json"
@@ -239,6 +252,7 @@ class Test_project_audict:
 
     @allure.title("审核 CRF项目审核 开始提交")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_list_projectCRFreviewStart(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/project/review/start.json"
@@ -252,6 +266,7 @@ class Test_project_audict:
 
     @allure.title("审核 CRF项目重新开始")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_list_projectCRFreviewResume(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/project/review/resume.json"
@@ -296,6 +311,7 @@ class Test_project_audict:
 
     @allure.title("获取提交中要用到的linkId，和url")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_list_projectCRFRecordItem(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/record/item.json"
@@ -312,6 +328,7 @@ class Test_project_audict:
 
     @allure.title("审核 CRF项目审核 提交")
     @allure.story("CRF")
+    @allure.severity(A3)
     def test_list_projectCRFreviewSubmit(self, dlogin, login):
         """
                 这里的content有问题，请添加修改数据
@@ -333,6 +350,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->项目汇报")
     @allure.story("项目汇报")
+    @allure.severity(A3)
     def test_ProjectReportList(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/report/list.json"
@@ -347,6 +365,7 @@ class Test_project_audict:
 
     @allure.title("项目管理->科研审核->项目汇报")
     @allure.story("项目汇报")
+    @allure.severity(A3)
     def transfer_ProjectReportList(self, response1, cook):
         url = host + port_project + "/project/check/report/list.json"
         data = {
@@ -366,6 +385,7 @@ class Test_project_audict:
 
     @allure.title("项目汇报审核提交")
     @allure.story("项目汇报")
+    @allure.severity(A3)
     def test_ProjectReportSave(self, login):
         response1, cook = login
         url = host + port_project + "/project/check/save.json"

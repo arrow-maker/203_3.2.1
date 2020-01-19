@@ -5,6 +5,7 @@
 @time: 2019/9/2  17:37
 @Author:Terence
 """
+import html
 import os, sys
 
 sys.path.append(os.path.dirname(__file__))
@@ -16,6 +17,7 @@ import win32crypt
 # from py.xml import html
 
 # --------------------登录------------------
+
 @pytest.fixture(scope="session")
 def login():
     result = requests.post(url=loginurl, data=logindata)
@@ -82,12 +84,19 @@ def transferCookie(host):
 def driverlogin(host):
     driver = webdriver.Chrome()
     driver.get(host)
-    time.sleep(1)
+    time.sleep(5)
+    try:            # 这里是出现重复登录
+        restart = driver.find_elements_by_css_selector('[type="button"]')
+    except Exception as e:
+        print(f"不存在重新登录:{e}")
+    else:
+        print(restart[-1].click())
+    time.sleep(5)
     driver.find_element_by_xpath("//*[@class='ivu-select-selection']").click()
     time.sleep(1)
-    driver.find_element_by_xpath("//li[text()='广州医科大学附属第一医院']").click()
-    driver.find_element_by_xpath("//*[@placeholder='请输入用户名']").send_keys("arrow")
-    driver.find_element_by_xpath("//*[@placeholder='请输入密码']").send_keys("tP123456@")
+    driver.find_element_by_xpath(f"//li[text()='{HospitaiName}']").click()
+    driver.find_element_by_xpath("//*[@placeholder='请输入用户名']").send_keys(useName)
+    driver.find_element_by_xpath("//*[@placeholder='请输入密码']").send_keys(password)
     driver.find_element_by_xpath("//*[@type='button']").click()
     time.sleep(1)
     cookie = driver.get_cookies()
@@ -100,13 +109,11 @@ def driverlogin(host):
 # 浏览器登录，确保cookie值的可用
 @pytest.fixture(scope="session")
 def dlogin():
-    hostl = get_url("durl")
-    host = re.findall("http://(.+?):30", hostl)[0]
-    cookie = transferCookie(host)
+    cookie = transferCookie(host_1)
     if len(cookie.keys()) > 0:
         yield f"JSESSIONID={cookie['JSESSIONID']}"
     else:
-        cookiestr = driverlogin(hostl)
+        cookiestr = driverlogin(host_1)
         yield cookiestr
 
 
@@ -158,35 +165,35 @@ def resultList(login):
         ids["patiId"].append(i["PATI_ID"])
     return ids
 
-# #   这两个是用于修改运行时的中文显示
-# @pytest.mark.optionalhook
-# def pytest_html_results_table_header(cells):
-#     cells.insert(1, html.th('Description'))
-#     cells.insert(2, html.th('Test_nodeid'))
-#     # cells.insert(1, html.th('Time', class_='sortable time', col='time'))
-#     cells.pop(2)
+#   这两个是用于修改运行时的中文显示
+@pytest.mark.optionalhook
+def pytest_html_results_table_header(cells):
+    cells.insert(1, html.th('Description'))
+    cells.insert(2, html.th('Test_nodeid'))
+    # cells.insert(1, html.th('Time', class_='sortable time', col='time'))
+    cells.pop(2)
+
+#   这两个时用于修改运行时的中文显示
+@pytest.mark.optionalhook
+def pytest_html_results_table_row(report, cells):
+    cells.insert(1, html.td(report.description))
+    cells.insert(2, html.td(report.nodeid))
+    # cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
+    cells.pop(2)
+
+
+# #   下面两个是用于配置命令行的参数
+# def pytest_addoption(parser):
+#     """
+#     default: this is a transfrom variable , if you needing
+#     :param parser:
+#     :return:
+#     """
+#     parser.addoption(
+#         "--cmdopt", action="store", default=None, help="my option: type1 or type2"
+#     )
 #
-# #   这两个时用于修改运行时的中文显示
-# @pytest.mark.optionalhook
-# def pytest_html_results_table_row(report, cells):
-#     cells.insert(1, html.td(report.description))
-#     cells.insert(2, html.td(report.nodeid))
-#     # cells.insert(1, html.td(datetime.utcnow(), class_='col-time'))
-#     cells.pop(2)
-
-
-#   下面两个是用于配置命令行的参数
-def pytest_addoption(parser):
-    """
-    default: this is a transfrom variable , if you needing
-    :param parser:
-    :return:
-    """
-    parser.addoption(
-        "--cmdopt", action="store", default=None, help="my option: type1 or type2"
-    )
-
-#   这里是配置命令行的参数
-@pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("--cmdopt")
+# #   这里是配置命令行的参数
+# @pytest.fixture
+# def cmdopt(request):
+#     return request.config.getoption("--cmdopt")

@@ -12,6 +12,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("临床访视计划数据展示")
     @allure.story("临床访视计划")
+    @allure.severity(A3)
     @pytest.mark.parametrize("check", (1, 2))
     @pytest.mark.parametrize("business", (1, 0))
     def test_show(self, login, check, business):
@@ -49,6 +50,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("临床访视计划审核")
     @allure.story("临床访视计划")
+    @allure.severity(A2)
     def test_viewAudit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/project/check/submit.json"
@@ -68,6 +70,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("查看审核详情")
     @allure.story("临床访视计划")
+    @allure.severity(A3)
     def test_viewAuditDetails(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectDetail.json"
@@ -78,6 +81,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF展示列表详情")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_CRF_crfList(self, login, dlogin):
         response1, cook = login
         url = host + portlogin + "/interview/crflist.json"
@@ -90,6 +94,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF展示列表详情")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def transfer_crfList(self, dlogin, response1, cook):
         url = host + portlogin + "/interview/crflist.json"
         data = dict(page=1, pageSize=15, viewType="review", taskCode="clinical",
@@ -107,6 +112,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF开始审核")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_CRF_reviewStart(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/review/start.json"
@@ -133,6 +139,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("给CRF审核提交传值")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_modelSubmit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/record/item.json"
@@ -164,6 +171,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF审核保存")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_CRF_checkSave(self, dlogin, login):
         response1, cook = login
         url = host + port_project + "/project/check/save.json"
@@ -180,6 +188,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF审核提交")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_CRF_reviewSubmit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/review/submit.json"
@@ -193,6 +202,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("CRF审核通过查看结果")
     @allure.story("CRF审核")
+    @allure.severity(A3)
     def test_CRF_findCheck(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectPatient/findCheck.json"
@@ -203,6 +213,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("终止患者访视列表审核通过查看结果")
     @allure.story("终止患者访视")
+    @allure.severity(A3)
     def test_UserList(self, login):
         response1, cook = login
         url = host + portlogin + "/project/check/userList.json"
@@ -230,6 +241,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("终止患者访视审核")
     @allure.story("终止患者访视")
+    @allure.severity(A3)
     def test_project_checkSubmit(self, login):
         allure.dynamic.title("time-1")
         allure.dynamic.description("")
@@ -249,6 +261,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("终止患者访视--审核通过查看结果")
     @allure.story("终止患者访视")
+    @allure.severity(A3)
     def test_projectPlanInfo(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectPlanInfoVo.json"
@@ -276,6 +289,7 @@ class Test_clinicalInterviewAudit:
 
     @allure.title("终止患者访视审核 终止计划")
     @allure.story("终止患者访视")
+    @allure.severity(A3)
     def test_project_endPlan(self, dlogin, login):
         response1, cook = login
         url = host + port_qt + "/notice/endPlan.json"

@@ -40,8 +40,11 @@ class Test_questionManage:
             if "qtInfoList" not in i.keys():
                 dicData["myself"].append(i["id"])
             else:
-                for k in i["qtInfoList"]:
-                    dicData["myself"][0].append(k["qtId"])
+                if len(i["qtInfoList"]) > 0:
+                    for k in i["qtInfoList"]:
+                        dicData["myself"][0].append(k["qtId"])
+                else:
+                    dicData["myself"].append(i["id"])
         for i in resultDic["share"]:
             dicData["share"].append(i["qtId"])
         return dicData
@@ -159,19 +162,20 @@ class Test_questionManage:
 
     @allure.title("问卷模板->问卷列表->删除")
     @allure.story("问卷管理")
+    @pytest.mark.repeat(2)
     def test_deleteNewMy(self):
         url = host + port_qt + "/qtInfoCategory/removeQtInfoCategory"
         ids = self.transfer_questionlist()["myself"]
+        print(f"ids={ids}")
         allure.attach(f"内部参数：ids={ids}")
-        if len(ids) > 1:
-            for i in ids:
-                if type(i) is not list:
-                    data = {
-                        "id": i,
-                        "authUserId": self.authUserId,
-                        "authToken": self.authToken
-                    }
-                    assert_post(url, data, self.cook)
+        for i in ids:
+            if type(i) is not list:
+                data = {
+                    "id": i,
+                    "authUserId": self.authUserId,
+                    "authToken": self.authToken
+                }
+                assert_post(url, data, self.cook)
 
 
 if __name__ == '__main__':

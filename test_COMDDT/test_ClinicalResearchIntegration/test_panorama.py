@@ -12,6 +12,7 @@ from public.overWrite_Assert import *
 class Test_patientPanorama:
 
     @allure.title("医院和科室 列表")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getOrgInfoTreeList(self, login):
         response1, cook = login
@@ -43,6 +44,7 @@ class Test_patientPanorama:
         return dicdata
 
     @allure.title("查询患者列表")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_search(self, login):
         response1, cook = login
@@ -74,6 +76,7 @@ class Test_patientPanorama:
 
     @allure.title("顶行的数据展示")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getFhirPatientInfo(self, login):
         response1, cook = login
@@ -86,6 +89,7 @@ class Test_patientPanorama:
 
     @allure.title("在fhir中获取患者的ids")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getFhirPantientIds(self, login):
         response1, cook = login
@@ -98,6 +102,7 @@ class Test_patientPanorama:
 
     @allure.title("获取仓库患者门诊住院统计信息")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @pytest.mark.parametrize("sourceType", ("clinical", "project"))
     @pytest.mark.parametrize("start,end", searchdate)
     def test_wareHousePatientDataList(self, login, sourceType, start, end):
@@ -114,6 +119,7 @@ class Test_patientPanorama:
 
     @allure.title("获取project列表")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_projectList123(self, login):
         response1, cook = login
@@ -124,6 +130,7 @@ class Test_patientPanorama:
 
     @allure.title("访视次数")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @pytest.mark.parametrize("sourceType", ("clinical", "project"))
     def test_visitList(self, login, sourceType):
         response1, cook = login
@@ -139,6 +146,7 @@ class Test_patientPanorama:
 
     @allure.title("最后一次指标预警操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_warnIndicatorList(self, login):
         response1, cook = login
@@ -152,6 +160,7 @@ class Test_patientPanorama:
 
     @allure.title("获取住院时间")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getHospitalizationTime(self, login):
         response1, cook = login
@@ -165,6 +174,7 @@ class Test_patientPanorama:
 
     @allure.title("查询主要诊断比率数据")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getMainDiagRatio(self, login, start, end):
@@ -179,6 +189,7 @@ class Test_patientPanorama:
 
     @allure.title("查询门诊和住院主要诊断类型的比率数据操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getMainDiagTypeRatio(self, login, start, end):
@@ -193,6 +204,7 @@ class Test_patientPanorama:
 
     @allure.title("查询住院费用和天数据操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getTotalCosts(self, login, start, end):
@@ -207,6 +219,7 @@ class Test_patientPanorama:
 
     @allure.title("查询时间轴数据【住院诊断，门诊诊断，吸烟，临床主要诊断，胸部影像学】数据操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getTimeAxisList(self, login, start, end):
@@ -221,6 +234,7 @@ class Test_patientPanorama:
 
     @allure.title("查询检验预警指标趋势分析数据操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_eosinophilCountList(self, login, start, end):
@@ -236,6 +250,7 @@ class Test_patientPanorama:
 
     @allure.title("查询访视，门诊，住院的统计数量操作")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getStatisticsCount(self, login):
         response1, cook = login
@@ -250,6 +265,7 @@ class Test_patientPanorama:
 
     @allure.title("访视页数的列表展示")
     @allure.story("首页数据的显示")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_visitPageList(self, login, start, end):
@@ -266,6 +282,7 @@ class Test_patientPanorama:
 
     @allure.title("全部的访视列表")
     @allure.story("对访视的操作")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_zhpbgList(self, login):
         response1, cook = login
@@ -280,6 +297,7 @@ class Test_patientPanorama:
 
     @allure.title("获取版权信息")
     @allure.story("对访视的操作")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_printPageFindList(self, login):
         response1, cook = login
@@ -289,6 +307,7 @@ class Test_patientPanorama:
 
     @allure.title("获取值")
     @allure.story("门诊信息页面操作")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getValue(self, login):
         response1, cook = login
@@ -299,6 +318,7 @@ class Test_patientPanorama:
 
     @allure.title("显示页面的门诊的信息")
     @allure.story("门诊信息页面操作")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getClinicDiagnosisAssistMaster(self, login, start, end):
@@ -315,6 +335,7 @@ class Test_patientPanorama:
 
     @allure.title("这里是主要的展示")
     @allure.story("门诊信息页面操作")
+    @allure.severity(A3)
     def transfer_outPatientNo(self, response1, cook):
         url = host + port_es + "/data/getClinicDiagnosisAssistMaster.json"
         ids = self.transfer_patientList(response1, cook)["id"]
@@ -400,6 +421,7 @@ class Test_patientPanorama:
 
     @allure.title("病案首页-详细信息")
     @allure.story("住院信息-病案首页")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getInpMrFrontSheetById(self, login):
         response1, cook = login
@@ -417,6 +439,7 @@ class Test_patientPanorama:
 
     @allure.title("入院记录列表")
     @allure.story("住院信息-入院记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getAdmissionMrAssistMaster(self, login, start, end):
@@ -457,6 +480,7 @@ class Test_patientPanorama:
 
     @allure.title("入院信息详情")
     @allure.story("住院信息-入院记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getAdminssionMrAssisDetail(self, login):
         response1, cook = login
@@ -475,6 +499,7 @@ class Test_patientPanorama:
 
     @allure.title("出院记录列表")
     @allure.story("住院信息-出院记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDischgedMrAssistMaster(self, login, start, end):
@@ -517,6 +542,7 @@ class Test_patientPanorama:
 
     @allure.title("出院信息详情")
     @allure.story("住院信息-出院记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getDischgedMrAssistDetail(self, login):
         response1, cook = login
@@ -535,6 +561,7 @@ class Test_patientPanorama:
 
     @allure.title("首次病程记录列表")
     @allure.story("住院信息-病程记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getProgressRecMaster(self, login, start, end):
@@ -575,6 +602,7 @@ class Test_patientPanorama:
 
     @allure.title("首页病程信息详情")
     @allure.story("住院信息-病程记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("type", (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
     def test_getProgressRecDetail(self, login, type):
@@ -597,6 +625,7 @@ class Test_patientPanorama:
 
     @allure.title("手术记录列表")
     @allure.story("住院信息-围手术期记录--手术记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_perioperativeRecordMaster(self, login, start, end):
@@ -638,6 +667,7 @@ class Test_patientPanorama:
 
     @allure.title("手术记录信息详情")
     @allure.story("住院信息-围手术期记录--手术记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("reqType", (1, 2, 3, 4))
     def test_perioperativeRecordDetail(self, login, reqType):
@@ -659,6 +689,7 @@ class Test_patientPanorama:
 
     @allure.title("24小时出入院记录列表")
     @allure.story("住院信息-24小时出入院记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_inAndOutHospitalForOneDayMaster(self, login, start, end):
@@ -700,6 +731,7 @@ class Test_patientPanorama:
 
     @allure.title("出院信息详情")
     @allure.story("住院信息-出院")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_inAndOutHospitalForOneDayDetail(self, login):
         response1, cook = login
@@ -717,6 +749,7 @@ class Test_patientPanorama:
 
     @allure.title("急诊留观的列表信息")
     @allure.story("住院信息-急诊留观记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_observationMaster(self, login, start, end):
@@ -758,6 +791,7 @@ class Test_patientPanorama:
 
     @allure.title("急诊留观的信息详情")
     @allure.story("住院信息-急诊留观记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_observationDetail(self, login):
         response1, cook = login
@@ -775,6 +809,7 @@ class Test_patientPanorama:
 
     @allure.title("医嘱列表")
     @allure.story("住院信息-医嘱")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_hospitalization_InAndOutHospitalForOneDayMaster(self, login, start, end):
@@ -816,6 +851,7 @@ class Test_patientPanorama:
 
     @allure.title("医嘱信息详情")
     @allure.story("住院信息-医嘱")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getVisitOrderAssistDetail(self, login, start, end):
@@ -836,6 +872,7 @@ class Test_patientPanorama:
 
     @allure.title("诊断记录列表")
     @allure.story("全景-诊断")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDiagnosisAssistMaster(self, login, start, end):
@@ -877,6 +914,7 @@ class Test_patientPanorama:
 
     @allure.title("诊断信息详情")
     @allure.story("全景-诊断")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getDiagnosisAssistDetail(self, login):
         response1, cook = login
@@ -892,6 +930,7 @@ class Test_patientPanorama:
 
     @allure.title("肺功能检查列表")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getExamReportMasterAssistMaster(self, login, start, end):
@@ -926,6 +965,7 @@ class Test_patientPanorama:
 
     @allure.title("肺功能检查项目列表")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getExamReportDetailPageAssistDetail(self, login):
         response1, cook = login
@@ -943,6 +983,7 @@ class Test_patientPanorama:
 
     @allure.title("趋势分析-指标类型")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getReportTempList(self, login):
         response1, cook = login
@@ -953,6 +994,7 @@ class Test_patientPanorama:
 
     @allure.title("趋势分析-检索指标")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     def test_getReportTempDetailList(self, login):
         response1, cook = login
         url = host + port_es + "/data/getReportTempDetailList.json"
@@ -962,6 +1004,7 @@ class Test_patientPanorama:
 
     @allure.title("趋势分析-检索临时指标")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getReportTempListByName(self, login):
         response1, cook = login
@@ -972,6 +1015,7 @@ class Test_patientPanorama:
 
     @allure.title("趋势分析-执行按钮")
     @allure.story("全景-肺功能检查")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getReportChartList(self, login):
         response1, cook = login
@@ -990,6 +1034,7 @@ class Test_patientPanorama:
 
     @allure.title("全部医嘱用药列表")
     @allure.story("全景-用药")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDrugAssistMaster(self, login, start, end):
@@ -1018,6 +1063,7 @@ class Test_patientPanorama:
 
     @allure.title("医嘱用药详情")
     @allure.story("全景-用药")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDrugAssistDetail(self, login, start, end):
@@ -1035,6 +1081,7 @@ class Test_patientPanorama:
 
     @allure.title("全部检验记录")
     @allure.story("全景-检验")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getVisitLabAssistMaster(self, login, start, end):
@@ -1066,6 +1113,7 @@ class Test_patientPanorama:
 
     @allure.title("检验信息详情")
     @allure.story("全景-检验")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getVisitLabPageAssistDetail(self, login):
         response1, cook = login
@@ -1107,6 +1155,7 @@ class Test_patientPanorama:
 
     @allure.title("检验信息详情中的数据进行-趋势分析")
     @allure.story("全景-检验")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getVisitLabDiagram(self, login):
         response1, cook = login
@@ -1128,6 +1177,7 @@ class Test_patientPanorama:
 
     @allure.title("全景-检查列表")
     @allure.story("全景-检验")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getVisitCheckAssistMaster(self, login, start, end):
@@ -1162,6 +1212,7 @@ class Test_patientPanorama:
 
     @allure.title("检查项目检查报告")
     @allure.story("全景-检验")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getVisitCheckAssistDetail(self, login):
         response1, cook = login
@@ -1177,6 +1228,7 @@ class Test_patientPanorama:
 
     @allure.title("全部住院记录列表信息")
     @allure.story("全景-治疗时间轴")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getTreatmentTimeAxisMaster(self, login, start, end):
@@ -1219,6 +1271,7 @@ class Test_patientPanorama:
 
     @allure.title("住院时间轴的数据显示")
     @allure.story("全景-治疗时间轴")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getTimeAxis(self, login):
         response1, cook = login
@@ -1236,6 +1289,7 @@ class Test_patientPanorama:
 
     @allure.title("患者的基本信息")
     @allure.story("右上角的-查看患者基本信息")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getPatientInfo(self, login):
         response1, cook = login

@@ -19,6 +19,7 @@ class Test_drug:
         self.userName = response["responseData"]["userName"]
 
     @allure.title("药物分类")
+    @allure.severity(A3)
     @allure.story("药物查询")
     def test_Default(self):
         url = host + port_python + "/medicine_altas/default"
@@ -26,6 +27,7 @@ class Test_drug:
         assert_get(url, data, self.cook)
 
     @allure.title("药物查询")
+    @allure.severity(A2)
     @allure.story("药物查询")
     def test_Search_button(self):
         url = host + port_python + "/medicine_altas/search_button"
@@ -38,6 +40,7 @@ class Test_drug:
             goodsList.append(i["商品ID"])
 
     @allure.title("药物使用说明")
+    @allure.severity(A4)
     @allure.story("药物查询")
     def test_drug_instruction(self):
         url = host + port_python + "/medicine_altas/drug_instruction"
@@ -47,9 +50,10 @@ class Test_drug:
         assert_get(url, data, self.cook)
 
     @allure.title("药物图谱")
+    @allure.severity(A3)
     @allure.story("药物查询")
     @pytest.mark.parametrize("goodIds", ("100005", "100005,100010", "100005,100010,100052,100305",
-                                         pytest.param(goodsList[0])))
+                                         pytest.param(goodsList[0])), ids=["查询一种药物", "查询两种药物", "查询多种药物", "动态添加参数"])
     def test_show_durgs_altas(self, goodIds):
         url = host + port_python + "/medicine_altas/show_durgs_altas"
         allure.attach(f"内部传参：goodId={goodsList}")

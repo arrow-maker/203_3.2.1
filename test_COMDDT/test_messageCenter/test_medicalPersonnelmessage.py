@@ -13,6 +13,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("消息类型")
     @allure.story("消息类别")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getNOticeTypeList(self, login):
         response1, cook = login
@@ -28,6 +29,7 @@ class Test_medicalPersonnelmessage:
     # -------------------收到的消息---------------------------
     @allure.title("消息列表")
     @allure.story("收到的消息")
+    @allure.severity(A3)
     @pytest.mark.parametrize("start,end", searchdate)
     def test_findNoticeRecipientPage(self, dlogin, login, start, end):
         response1, cook = login
@@ -59,6 +61,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("消息详情")
     @allure.story("收到的消息")
+    @allure.severity(A3)
     def test_getNoticeDetailsByNoticeId(self,dlogin, login):
         response1, cook = login
         url = host + portlogin + "/notice/getNoticeDetailsByNoticeId.json"
@@ -71,6 +74,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("医院的医生的列表-医生科室列表")
     @allure.story("我创建的")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getOrgInfoTreeList(self, login):
         response1, cook = login
@@ -81,6 +85,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("医院的医生的列表-医生列表")
     @allure.story("我创建的")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_findUserBasePage(self, login):
         response1, cook = login
@@ -104,6 +109,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("创建新的消息")
     @allure.story("我创建的")
+    @allure.severity(A3)
     @allure.step("参数： login={0}")
     def test_createNotice(self, login):
         response1, cook = login
@@ -128,6 +134,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("上传附件")
     @allure.story("我创建的")
+    @allure.severity(A3)
     def test_saveFileattachment(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/common/fileattachment/saveFileattachment.json"
@@ -138,6 +145,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("审核记录列表")
     @allure.story("审核记录")
+    @allure.severity(A3)
     @allure.step("参数： login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_findNoticeExaminetPage(self, login, start, end):
@@ -167,6 +175,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("审核")
     @allure.story("审核记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_updateStatus(self, login):
         response1, cook = login
@@ -182,6 +191,7 @@ class Test_medicalPersonnelmessage:
 
     @allure.title("审核后的项目详情")
     @allure.story("审核记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getCreateAndExamineByNoticeId(self, login):
         response1, cook = login

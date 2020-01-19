@@ -13,6 +13,7 @@ class Test_subjectAnalysis:
 
     @allure.title("找到python中的代码item")
     @allure.step("参数：login={0}")
+    @allure.severity(A4)
     def test_findCodeItem(self, login):
         response1, cook = login
         url = host + portlogin + "/code/codeItem/findCodeItem.json"
@@ -22,6 +23,7 @@ class Test_subjectAnalysis:
 
     @allure.title("看板列表数据列表")
     @allure.story("看板")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_mytemplates(self, login):
         response1, cook = login
@@ -44,6 +46,7 @@ class Test_subjectAnalysis:
 
     @allure.title("默认看板的详细框架的情况")
     @allure.story("看板")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_templateReports(self, login):
         response1, cook = login
@@ -74,6 +77,7 @@ class Test_subjectAnalysis:
 
     @allure.title("默认看板 所有框架 的详细 数据显示 的情况")
     @allure.story("看板")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getReportDatas(self, login, start, end):

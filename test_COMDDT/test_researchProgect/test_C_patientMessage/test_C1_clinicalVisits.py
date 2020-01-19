@@ -7,6 +7,7 @@ class Test_clinicalVisits:
 
     @allure.title("临床访视计划-访视计划列表")
     @allure.story("访视计划")
+    @allure.severity(A3)
     def test_getProjectInfoList(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/getProjectInfoList.json"
@@ -32,6 +33,7 @@ class Test_clinicalVisits:
 
     @allure.title("临床访视计划-添加访视计划")
     @allure.story("访视计划")
+    @allure.severity(A2)
     @pytest.mark.smoke1
     @pytest.mark.parametrize("pname",("新增访视计划2.0", "新增访视计划2.0@+"))
     def test_saveProject(self, pname, login, dlogin, questionId):
@@ -64,6 +66,7 @@ class Test_clinicalVisits:
 
     @allure.title("临床访视计划-添加的临床访视计划审核")
     @allure.story("访视计划")
+    @allure.severity(A2)
     def test_clinicalVisitsAudit(self, submitVisits):
         """
         :param submitVisits:     这个是审核的的过程
@@ -73,6 +76,7 @@ class Test_clinicalVisits:
 
     @allure.title("临床访视计划-查询访视计划")
     @allure.story("访视计划")
+    @allure.severity(A3)
     def test_findProjectDetail(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectDetail.json"
@@ -85,6 +89,7 @@ class Test_clinicalVisits:
 
     @allure.title("为获取科室患者来源信息列表添加数据")
     @allure.story("参与患者")
+    @allure.severity(A3)
     def transfer_OrgList(self, response1, cook):
         url = host + portlogin + "/org/orgInfo/getOrgInfoTreeList.json"
         data = dict(listType=2, status=1, orgTypeIds="33,35,38", path="400,",
@@ -96,6 +101,7 @@ class Test_clinicalVisits:
 
     @allure.title("从科室添加患者-获取患者列表")
     @allure.story("参与患者")
+    @allure.severity(A3)
     def test_save_projectUserList(self, login):
         response1, cook = login
         url = host + port_project + "/project/user/list.json"
@@ -128,6 +134,7 @@ class Test_clinicalVisits:
 
     @allure.title("从科室筛选表中选择一条数据 这里添加所有的数据")
     @allure.story("参与患者")
+    @allure.severity(A2)
     def test_save_clinicalInstance(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/instance.json"
@@ -146,6 +153,7 @@ class Test_clinicalVisits:
 
     @allure.title("从科室筛选表中保存选择的一条数据")
     @allure.story("参与患者")
+    @allure.severity(A2)
     def test_save_projectDetail(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/saveProjectUserBatch.json"
@@ -164,6 +172,7 @@ class Test_clinicalVisits:
 
     @allure.title("从指标筛选表中选择一条数据   这里添加了所有的第一页的患者")
     @allure.story("参与患者")
+    @allure.severity(A2)
     def test_save_indexclinicalInstance(self, dlogin, login, resultList):
         response1, cook = login
         url = host + portlogin + "/clinical/instance.json"
@@ -181,6 +190,7 @@ class Test_clinicalVisits:
 
     @allure.title("从筛选筛选表中保存选择数据")
     @allure.story("参与患者")
+    @allure.severity(A2)
     def test_save_indexSaveProjectDetail(self, dlogin, login, resultList):
         response1, cook = login
         url = host + portlogin + "/projectDetail/saveProjectUserBatch.json"
@@ -206,6 +216,7 @@ class Test_clinicalVisits:
 
     @allure.title("参与患者信息列表")
     @allure.story("参与患者")
+    @allure.severity(A3)
     def test_getProjectPatientLsit(self, login, dlogin):
         response1, cook = login
         url = host + portlogin + "/projectDetail/getProjectPatientList.json"
@@ -243,6 +254,7 @@ class Test_clinicalVisits:
 
     @allure.title("添加失访记录  这里的数据都添加了访视记录")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_appointmentReason(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/appointment/reason.json"
@@ -270,6 +282,7 @@ class Test_clinicalVisits:
 
     @allure.title("开始添加CRF记录")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_qtStart(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/interview/start.json"
@@ -297,6 +310,7 @@ class Test_clinicalVisits:
 
     @allure.title("重新开始添加CRF记录")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_qRtesume(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/interview/resume.json"
@@ -310,6 +324,7 @@ class Test_clinicalVisits:
 
     @allure.title("这里是中间值的传递和传参接口")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_giveItem(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/record/item.json"
@@ -341,6 +356,7 @@ class Test_clinicalVisits:
 
     @allure.title("添加CRF记录")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_qtCheck(self, dlogin, login):
         response1, cook = login
         url = host + port_qt + "/qtCheck/check.json"
@@ -361,6 +377,7 @@ class Test_clinicalVisits:
 
     @allure.title("这里是提交CRF记录 这里的一组数据都提交了")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_qtSubmit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/interview/submit.json"
@@ -377,6 +394,7 @@ class Test_clinicalVisits:
 
     @allure.title("申请终止参与临床访视计划")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_endPlanDefinition(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/endPlanDefinition.json"
@@ -407,6 +425,7 @@ class Test_clinicalVisits:
 
     @allure.title("查看临床访视计划参与患者详情")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_findProjectPlanInfo(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/findProjectPlanInfoVo.json"
@@ -422,6 +441,7 @@ class Test_clinicalVisits:
 
     @allure.title("移除临床访视计划中的参与患者")
     @allure.story("添加失访记录")
+    @allure.severity(A3)
     def test_list_deletePlandefinition(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/deletePlanDefinition.json"
@@ -441,6 +461,7 @@ class Test_clinicalVisits:
 
     @allure.title("CRF展示列表")
     @allure.story("CRF记录")
+    @allure.severity(A3)
     def test_CRFList(self, login):
         response1, cook = login
         url = host + portlogin + "/interview/crflist.json"
@@ -469,6 +490,7 @@ class Test_clinicalVisits:
 
     @allure.title("CRF审核 修订")
     @allure.story("CRF记录")
+    @allure.severity(A3)
     def test_CRFList_amendResume(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/amend/resume.json"
@@ -494,6 +516,7 @@ class Test_clinicalVisits:
 
     @allure.title("CRF审核 点击查看详情（通过后或者待审核）添加批注")
     @allure.story("CRF记录")
+    @allure.severity(A3)
     def test_CRFList_recordComment(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/record/comment.json"
@@ -509,6 +532,7 @@ class Test_clinicalVisits:
 
     @allure.title("CRF记录 提交审核")
     @allure.story("CRF记录")
+    @allure.severity(A3)
     def test_CRFList_amendSubmit(self, dlogin, login):
         response1, cook = login
         url = host + portlogin + "/clinical/amend/submit.json"
@@ -525,6 +549,7 @@ class Test_clinicalVisits:
 
     @allure.title("参与医生 列表展示")
     @allure.story("参与医生")
+    @allure.severity(A3)
     def test_projectDetail(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/getProjectPractitionerList.json"
@@ -538,6 +563,7 @@ class Test_clinicalVisits:
 
     @allure.title("给医生设置权限传值")
     @allure.story("参与医生")
+    @allure.severity(A3)
     def transfer_orgDoctor(self, response1, cook):
         url = host + portlogin + "/projectDetail/getProjectPractitionerList.json"
         projectId = self.transfer_ProjectList(response1, cook)["projectId"]
@@ -558,6 +584,7 @@ class Test_clinicalVisits:
 
     @allure.title("获取医生列表")
     @allure.story("参与医生")
+    @allure.severity(A3)
     def test_getDoctor(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/getProjectPractitionerAddList.json"
@@ -590,6 +617,7 @@ class Test_clinicalVisits:
 
     @allure.title("参与医生  添加参与的医生")
     @allure.story("参与医生")
+    @allure.severity(A3)
     def test_saveUserBatch(self, login):
         response1, cook = login
         url = host + portlogin + "/projectDetail/saveProjectUserBatch.json"
@@ -608,6 +636,7 @@ class Test_clinicalVisits:
 
     @allure.title("参与医生  添加参与的医生")
     @allure.story("参与医生")
+    @allure.severity(A3)
     @pytest.mark.parametrize("status", ("", 9, ""))
     def test_saveProjectUser(self, dlogin, login, status):
         response1, cook = login

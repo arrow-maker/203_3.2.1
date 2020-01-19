@@ -1,3 +1,14 @@
+#登录:
+#  主用户: arrow
+#  配置用户: arrow3
+#  密码: tP123456@
+#  #203环境： 演示医院1：75722  广医：75640
+#  医院: 75722
+#  logindata: '{"loginName": "%s", "password": "e9c37fc431a1a423754260ae02a31e83", "withEncrypt": 1, "itemOrgId": %d}'
+#  logindata2: '{"loginName": "%s","password": "e9c37fc431a1a423754260ae02a31e83","withEncrypt": 1,"itemOrgId": %s}'
+#  # 默认发送邮件
+#  isSend: 1
+
 科研成果_课题信息编辑:
   ktMainInfoJson: '{"id":1258,"createOrgUserId":4400143,"createUsername":"arrow","title":"新增主题分析6.0","infoType":"dataset","researchType":"观察性研究>描述性研究>现况研究","infoStatus":1,"publicVisible":0,"ontop":0,"createdAt":"2019-12-17 13:38","updatedAt":null,"dataId":"14697","_index":0,"_rowKey":11}'
   propDTOListJson: '[{"propName":"纳排组合","propId":5,"propValueId":1987,"mainInfoId":1258,"propType":"3","propMaxLength":500,"propSer":8,"propValue":"[{''var'':''入院时间=2018-12-12 至 2019-12-12''},{''var'':''''}]","propJson":"[{''var'':''纳入标准''},{''var'':''排除标准''}]","propIsShow":"0"},{"propName":"研究变量","propId":7,"propValueId":1988,"mainInfoId":1258,"propType":"3","propMaxLength":200,"propSer":9,"propValue":"[{''var'':[]},{''var'':[]},{''var'':[]}]","propJson":"[{''var'':''因变量''},{''var'':''自变量''},{''var'':''协变量''}]","propIsShow":"0"},{"propName":"研究目的","propValue":"添加数据","id":"aim","propId":1,"propValueId":1980,"mainInfoId":1258,"propType":"1","propMaxLength":500,"propSer":1,"propJson":null,"propIsShow":null},{"propName":"研究假设","propValue":"成果运行","id":"suppose","propId":2,"propValueId":1981,"mainInfoId":1258,"propType":"1","propMaxLength":500,"propSer":2,"propJson":null,"propIsShow":null},{"propName":"研究对象","propValue":"异常处理","id":"object","propId":3,"propValueId":1983,"mainInfoId":1258,"propType":"1","propMaxLength":500,"propSer":4,"propJson":null,"propIsShow":null},{"propName":"统计方法","propValue":"异常值处理","id":"statisticsMethod","propId":8,"propValueId":1985,"mainInfoId":1258,"propType":"2","propMaxLength":500,"propSer":6,"propJson":null,"propIsShow":"0"},{"propName":"样本量","propValue":"100","id":"count","propId":4,"propValueId":1986,"mainInfoId":1258,"propType":"1","propMaxLength":10,"propSer":7,"propJson":null,"propIsShow":"0"}]'
@@ -75,7 +86,7 @@
 
 临床访视计划:
   添加访视计划:
-    followupPlan: '[{"visitOrder":{"start":1,"end":1},"stepCount":1,"stepUnit":{"value":"d","code":"d","display":"天"},"preThreshold":1,"postThreshold":1,"thresholdType":"d","questionnaireId":"%s"}]'
+    followupPlan: '[{"visitOrder":{"start":1,"end":1},"stepCount":0,"stepUnit":{"value":"d","code":"d","display":"天"},"preThreshold":1,"postThreshold":1,"thresholdType":"d","questionnaireId":"%s"}]'
 
 初始化配置:
   安全设置:

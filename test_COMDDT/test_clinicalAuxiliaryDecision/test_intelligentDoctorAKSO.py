@@ -23,6 +23,7 @@ class Test_AKSO:
         self.userName = response["responseData"]["userName"]
 
     @allure.title("历史记录")
+    @allure.severity(A3)
     @allure.story("临床诊断决策支持")
     def test_getSearchRecord(self):
         url = host + port_sourcedata + "/diagPredict/getSearchRecord.json"
@@ -30,6 +31,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("可选指标数据")
+    @allure.severity(A3)
     @allure.story("临床诊断决策支持")
     def test_getSymptomClassify(self):
         url = host + port_sourcedata + "/diagPredict/getSymptomClassify.json"
@@ -37,6 +39,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="临床表现")
 
     @allure.title("可选指标数据-筛选")
+    @allure.severity(A3)
     @allure.story("临床诊断决策支持")
     def test_diagPredictSearch2(self):
         url = host + port_sourcedata + "/diagPredict/search.json"
@@ -47,6 +50,7 @@ class Test_AKSO:
             index_search[i["name"]] = i["icd10"]
 
     @allure.title("可选指标数据-进行保存")
+    @allure.severity(A2)
     @allure.story("临床诊断决策支持")
     def test_saveSearchRecord(self):
         url = host + port_sourcedata + "/diagPredict/saveSearchRecord.json"
@@ -54,6 +58,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="保存成功")
 
     @allure.title("可选指标数据-得到筛选的结果")
+    @allure.severity(A3)
     @allure.story("临床诊断决策支持")
     def test_getSearchRecord1(self):
         url = host + port_sourcedata + "/diagPredict/getSearchRecord.json"
@@ -61,6 +66,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="咳嗽")
 
     @allure.title("筛选结果的详细的数据")
+    @allure.severity(A2)
     @allure.story("筛选结果")
     def test_getMetaData(self):
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
@@ -72,6 +78,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="咳嗽变异性哮喘")
 
     @allure.title("筛选结果的详细的数据-同诊断患者")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getMetaData2(self):
         url = host + port_es + "/diagPredict/getAllPatientByICD.json"
@@ -83,6 +90,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("筛选结果的详细的数据-参考指南")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getGuide(self):
         url = host + port_sourcedata + "/diagPredict/getGuide.json"
@@ -93,6 +101,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("筛选结果的详细的数据-相关文献")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getLiterature(self):
         url = host + port_sourcedata + "/diagPredict/getLiterature.json"
@@ -103,6 +112,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("更完善的筛选条件-数据展示")
+    @allure.severity(A3)
     @allure.story("临床诊断决策支持")
     def test_showBuiltTemplate(self):
         url = host + port_python + "/generalSimilarity/showBuiltTemplate"
@@ -111,6 +121,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="基本信息")
 
     @allure.title("患者姓名查询-保存")
+    @allure.severity(A2)
     @allure.story("更完善的筛选条件")
     def test_insertSimilarRecord(self):
         url = host + port_python + "/generalSimilarity/insertSimilarRecord"
@@ -119,6 +130,7 @@ class Test_AKSO:
         assert_post(url, data, self.cook, hint="患者记录保存成功")
 
     @allure.title("患者姓名查询-检查结果筛选")
+    @allure.severity(A3)
     @allure.story("更完善的筛选条件")
     def test_search(self):
         url = host + port_sourcedata + "/diagPredict/search.json"
@@ -131,6 +143,7 @@ class Test_AKSO:
             muti_search[i["name"]] = i["icd10"]
 
     @allure.title("患者姓名查询-检查数据显示")
+    @allure.severity(A3)
     @allure.story("更完善的筛选条件")
     def test_showBuiltTemplate2(self):
         url = host + port_python + "/generalSimilarity/showBuiltTemplate"
@@ -139,6 +152,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="基本信息")
 
     @allure.title("多条件筛选结果的详细的数据")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getMetaData3(self):
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
@@ -150,6 +164,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="支气管或肺恶性肿瘤")
 
     @allure.title("多条件筛选结果的详细的数据-同诊断患者")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getMetaData4(self):
         url = host + port_es + "/diagPredict/getAllPatientByICD.json"
@@ -161,6 +176,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("多条件筛选结果的详细的数据-参考指南")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getGuide2(self):
         url = host + port_sourcedata + "/diagPredict/getGuide.json"
@@ -171,6 +187,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("多条件筛选结果的详细的数据-相关文献")
+    @allure.severity(A3)
     @allure.story("筛选结果")
     def test_getLiterature2(self):
         url = host + port_sourcedata + "/diagPredict/getLiterature.json"
@@ -185,6 +202,7 @@ class Test_AKSO:
     """
 
     @allure.title("患者数据列表的展示")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_showPatientList(self):
         url = host + port_python + "/generalSimilarity/showPatientList"
@@ -205,6 +223,7 @@ class Test_AKSO:
         return ids
 
     @allure.title("患者详情数据展示")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_showBuiltTemplate3(self):
         url = host + port_python + "/generalSimilarity/showBuiltTemplate"
@@ -215,6 +234,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("患者详情数据-保存")
+    @allure.severity(A2)
     @allure.story("患者列表")
     def test_insertSimilarRecord2(self):
         url = host + port_python + "/generalSimilarity/insertSimilarRecord"
@@ -230,6 +250,7 @@ class Test_AKSO:
         assert_post(url, data, self.cook, hint="患者记录保存成功")
 
     @allure.title("患者诊断预测")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_searchByInpatientNo2(self):
         url = host + port_sourcedata + "/diagPredict/searchByInpatientNo"
@@ -244,6 +265,7 @@ class Test_AKSO:
             patient_search[i["name"]] = i["icd10"]
 
     @allure.title("患者列表筛选结果的详细的数据")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_getMetaData5(self):
         url = host + port_sourcedata + "/diagPredict/getMetaData.json"
@@ -255,6 +277,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook, hint="支气管或肺恶性肿瘤")
 
     @allure.title("患者列表筛选结果的详细的数据-同诊断患者")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_getMetaData6(self):
         url = host + port_es + "/diagPredict/getAllPatientByICD.json"
@@ -266,6 +289,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("患者列表筛选结果的详细的数据-参考指南")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_getGuide3(self):
         url = host + port_sourcedata + "/diagPredict/getGuide.json"
@@ -276,6 +300,7 @@ class Test_AKSO:
         assert_get(url, data, self.cook)
 
     @allure.title("患者列表筛选结果的详细的数据-相关文献")
+    @allure.severity(A3)
     @allure.story("患者列表")
     def test_getLiterature3(self):
         url = host + port_sourcedata + "/diagPredict/getLiterature.json"

@@ -22,6 +22,7 @@ class Test_management:
 
     @allure.title("患教知识分组")
     @allure.story("患教知识")
+    @allure.severity(A3)
     def test_findInfoTypes(self):
         url = host + portlogin + "/info/info/findInfoTypes.json"
         data = {
@@ -44,6 +45,7 @@ class Test_management:
 
     @allure.title("患教知识新增图片")
     @allure.story("患教知识")
+    @allure.severity(A3)
     def test_uploadImageAttachment(self):
         url = host + portlogin + "/common/fileattachment/uploadImageAttachment.json"
         file = {"file": open(uploadpath1, "rb")}
@@ -51,6 +53,7 @@ class Test_management:
 
     @allure.title("患教知识新增图片")
     @allure.story("患教知识")
+    @allure.severity(A3)
     def test_saveAndFlushInfo(self):
         url = host + portlogin + "/info/info/saveAndFlushInfo.json"
         infoTypeId = self.infoTypeId()
@@ -63,6 +66,7 @@ class Test_management:
 
     @allure.title("患教知识详细的数据来源(发布和已保存)")
     @allure.story("患教知识")
+    @allure.severity(A3)
     @pytest.mark.parametrize("status", (1, 2))
     def test_findInfoPage(self, status):
         url = host + portlogin + "/info/info/findInfoPage.json"
@@ -83,6 +87,7 @@ class Test_management:
 
     @allure.title("患教知识所有的数据")
     @allure.story("患教知识")
+    @allure.severity(A3)
     def test_findListInfo(self):
         url = host + portlogin + "/info/info/findListInfo.json"
         data = dict(authUserId=self.authUserId, authToken=self.authToken)
@@ -111,6 +116,7 @@ class Test_management:
 
     @allure.title("患教知识数据删除")
     @allure.story("患教知识")
+    @allure.severity(A3)
     def test_removeInfo(self):
         url = host + portlogin + "/info/info/removeInfo.json"
         infoId = self.infoTypeId()
@@ -122,6 +128,7 @@ class Test_management:
 
     @allure.title("图片信息")
     @allure.story("首页发布")
+    @allure.severity(A3)
     def test_findHomeList(self):
         url = host + portlogin + "/info/info/findHomeList.json"
         data = {

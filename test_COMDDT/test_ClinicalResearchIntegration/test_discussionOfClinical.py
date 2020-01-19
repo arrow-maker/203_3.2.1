@@ -7,6 +7,7 @@
 """
 from public.overWrite_Assert import *
 replyId = []       # 讨论的Id
+sectionId = 249
 """
 这个模块要使用两个账号登录：记得你要有两个账号
     一个用于审核，一个是创建者
@@ -15,16 +16,18 @@ replyId = []       # 讨论的Id
 class Test_dicussion():
 
     @allure.title("添加讨论列表数据")
+    @allure.severity(A2)
     @allure.story("病例讨论-列表")
     def test_sectionsave(self, login):
         response, cook = login
+        name = f"新增3.{num}版本"
         url = host + port_bbs + "/bbs/section/save.json"
-        data = dict(serviceName="discussGroupService", sectionName="新增3.0版本",
+        data = dict(serviceName="discussGroupService", sectionName=name,
                     sectionContent="个个都是", sectionTemplate=20, createdUserId=response["authUserId"],
                     updatedUserId=response["authUserId"], remark="",
                     authUserId=response["authUserId"], authToken=response["authToken"])
         result, resultdic = assert_post(url, data, cook)
-        assert "新增3.0版本" in result
+        assert name in result
         global sectionId
         sectionId = resultdic["responseData"]["sectionId"]
         global dataId
@@ -32,6 +35,7 @@ class Test_dicussion():
 
     @allure.title("讨论列表数据")
     @allure.story("病例讨论-列表")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_sectionList(self, login):
         response, cook = login
@@ -53,6 +57,7 @@ class Test_dicussion():
 
     @allure.title("添加患者")
     @allure.story("病例讨论-患者")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     def test_topicSave(self, login):
         response, cook = login
@@ -69,6 +74,7 @@ class Test_dicussion():
         assert_post(url, data, cook, patiIds)
 
     @allure.title("添加病例")
+    @allure.severity(A2)
     @allure.story("病例讨论-患者")
     def test_topicSave2(self, login, resultList):
         response, cook = login
@@ -85,6 +91,7 @@ class Test_dicussion():
         assert_post(url, data, cook, patiIds)
 
     @allure.title("病例讨论中的患者列表")
+    @allure.severity(A3)
     @allure.story("病例讨论-患者")
     @allure.step("参数：login={0}")
     def test_topicList(self, login):
@@ -108,6 +115,7 @@ class Test_dicussion():
         return ids
 
     @allure.title("添加用于审核组员-组员信息列表")
+    @allure.severity(A3)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_getUserList(self, login):
@@ -131,6 +139,7 @@ class Test_dicussion():
         return ids
 
     @allure.title("添加用于审核组员-保存组员信息列表")
+    @allure.severity(A2)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_sectionMemberSave(self, login):
@@ -144,6 +153,7 @@ class Test_dicussion():
         assert_post(url, data, cook, str(sectionId))
 
     @allure.title("添加用于审核组员-组员信息列表")
+    @allure.severity(A3)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_sectionMemberList(self, login):
@@ -168,6 +178,7 @@ class Test_dicussion():
         return ids
 
     @allure.title("添加用于审核组员-修改组员的职能为审核人")
+    @allure.severity(A3)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_sectionMemberupdate(self, login):
@@ -181,6 +192,7 @@ class Test_dicussion():
         assert_post(url, data, cook, str(sectionId))
 
     @allure.title("开始审核-查看患者详情(用于开始审核)")
+    @allure.severity(A3)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_topicInfo(self, login):
@@ -193,6 +205,7 @@ class Test_dicussion():
         assert_get(url, data, cook, str(topicId[0]))
 
     @allure.title("开始审核-整理并提审-用于审核")
+    @allure.severity(A2)
     @allure.story("病例讨论-审核")
     @allure.step("参数：login={0}")
     def test_topicsave3(self, login):
@@ -220,6 +233,7 @@ class Test_dicussion():
     """
     @allure.title("审核-待审核列表数据")
     @allure.story("病例讨论-审核")
+    @allure.severity(A3)
     @allure.step("参数：login2={0}")
     def test_topicList2(self, login2):
         response, cook = login2
@@ -244,6 +258,7 @@ class Test_dicussion():
 
     @allure.title("审核-查看患者详情(用于审核)")
     @allure.story("病例讨论-审核")
+    @allure.severity(A3)
     @allure.step("参数：login2={0}")
     def test_topicInfo2(self, login2):
         response, cook = login2
@@ -256,6 +271,7 @@ class Test_dicussion():
 
     @allure.title("审核-整理并提审-通过")
     @allure.story("病例讨论-审核")
+    @allure.severity(A2)
     @allure.step("参数：login2={0}")
     def test_topicsave4(self, login2):
         response, cook = login2
@@ -276,6 +292,7 @@ class Test_dicussion():
 
     @allure.title("审核-整理并提审-添加讨论意见")
     @allure.story("病例讨论-审核")
+    @allure.severity(A2)
     @allure.step("参数：login2={0}")
     def test_topicsave5(self, login2):
         response, cook = login2
@@ -291,6 +308,7 @@ class Test_dicussion():
 
     @allure.title("审核-整理并提审-不通过")
     @allure.story("病例讨论-审核")
+    @allure.severity(A2)
     @allure.step("参数：login2={0}")
     def test_topicsave6(self, login2):
         response, cook = login2
@@ -311,6 +329,7 @@ class Test_dicussion():
 
     @allure.title("病例讨论中通过审核的患者列表")
     @allure.story("病例讨论-患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_checkpass_topicList(self, login):
         response, cook = login
@@ -323,6 +342,7 @@ class Test_dicussion():
 
     @allure.title("病例讨论中没有通过审核的患者列表")
     @allure.story("病例讨论-患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_checkNopass_topicList(self, login):
         response, cook = login
@@ -338,6 +358,7 @@ class Test_dicussion():
     """
     @allure.title("讨论列表查看")
     @allure.story("数据操作-查看详情")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_intelligentfindList(self, login):
         response, cook = login
@@ -349,6 +370,7 @@ class Test_dicussion():
 
     @allure.title("患者列表中的讨论状态")
     @allure.story("数据操作-讨论管理")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("audittype", (2, 1))
     def test_bbstopicsave(self, login, audittype):
@@ -367,6 +389,7 @@ class Test_dicussion():
 
     @allure.title("详情中添加关键字")
     @allure.story("数据操作-查看详情")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     def test_topicSave7(self, login):
         response, cook = login
@@ -377,9 +400,9 @@ class Test_dicussion():
                     authUserId=response["authUserId"], authToken=response["authToken"])
         assert_post(url, data, cook)
 
-
     @allure.title("关键字删除")
     @allure.story("数据操作-查看详情")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     def test_topicSave8(self, login):
         response, cook = login
@@ -392,6 +415,7 @@ class Test_dicussion():
 
     @allure.title("添加讨论意见")
     @allure.story("数据操作-查看详情")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     def test_replysave(self, login):
         response, cook = login
@@ -403,6 +427,7 @@ class Test_dicussion():
         assert_post(url, data, cook)
 
     @allure.title("详情中的讨论意见列表")
+    @allure.severity(A3)
     @allure.story("数据操作-查看详情")
     @allure.step("参数：login={0}")
     def test_replygetList(self, login):
@@ -415,11 +440,12 @@ class Test_dicussion():
         global replyId
         for i in result[1]["responseData"]["content"]:
             replyId.append(i["replyId"])
-        # assert timelocal in result[0]               # 断言-创建的日期是当日
+        assert timelocal in result[0]               # 断言-创建的日期是当日
         assert response["userName"] in result[0]    # 断言-创建者是作者本人
 
     @allure.title("讨论意见的回复")
     @allure.story("数据操作-查看详情")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_replysave1(self, login):
         response, cook = login
@@ -432,6 +458,7 @@ class Test_dicussion():
 
     @allure.title("患者的就诊信息")
     @allure.story("数据操作-编辑信息")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getAdmissionMrInfoList(self, login, start, end):
@@ -444,6 +471,7 @@ class Test_dicussion():
 
     @allure.title("保存编辑的信息")
     @allure.story("数据操作-编辑信息保存")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_topicSave9(self, login):
         response, cook = login
@@ -473,6 +501,7 @@ class Test_dicussion():
 
     @allure.title("审核通过导出病例报告")
     @allure.story("审核")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_topicreportdownload(self, login):
         response, cook = login
@@ -484,6 +513,7 @@ class Test_dicussion():
 
     @allure.title("审核未通过的转套讨论中")
     @allure.story("审核")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_topicsave10(self, login):
         response, cook = login
@@ -495,6 +525,7 @@ class Test_dicussion():
 
     @allure.title("上传文件")
     @allure.story("组共享")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("filepath",(uploadpath1, uploadpath2, uploadpath3))
     def test_fileSave(self, login, filepath):
@@ -511,6 +542,7 @@ class Test_dicussion():
 
     @allure.title("上传文件列表")
     @allure.story("组共享")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_fileList(self, login):
         response, cook = login
@@ -548,6 +580,7 @@ class Test_dicussion():
 
     @allure.title("上传文件审核")
     @allure.story("组共享")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_fileUpdataStatus(self, login):
         response, cook = login
@@ -565,6 +598,7 @@ class Test_dicussion():
 
     @allure.title("上传文件审核不通过")
     @allure.story("组共享")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_fileUpdataStatus2(self, login):
         response, cook = login
@@ -582,6 +616,7 @@ class Test_dicussion():
 
     @allure.title("上传文件多个下载")
     @allure.story("组共享")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_downloadBbsFileBatch(self, login):
         response, cook = login
@@ -596,6 +631,7 @@ class Test_dicussion():
 
     @allure.title("上传文件删除")
     @allure.story("组共享")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_fileUpdataDelete(self, login):
         response, cook = login
@@ -612,6 +648,7 @@ class Test_dicussion():
 
     @allure.title("删除讨论列表")
     @allure.story("病例讨论-列表")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     @pytest.mark.repeat(5)
     def test_sectiondelete(self, login):

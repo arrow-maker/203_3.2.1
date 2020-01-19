@@ -28,6 +28,7 @@ class Test_TitanFuzzySearh():
         self.authToken = response["responseData"]["roleList"][0]["orgUserIdToken"]
 
     @allure.story("筛选-字段")
+    @allure.severity(A3)
     @allure.title("模糊搜索")
     def test_nodeGetTree(self):
         url = host + port_patient + "/node/getTree.json"
@@ -35,6 +36,7 @@ class Test_TitanFuzzySearh():
         assert_get(url, data, self.cook, "病案首页")
 
     @allure.story("筛选-来源")
+    @allure.severity(A3)
     @allure.title("模糊搜索")
     def test_patientTotal(self):
         url = host + port_patient + "/patient/total.json"
@@ -42,6 +44,7 @@ class Test_TitanFuzzySearh():
         assert_get(url, data, self.cook, "操作成功")
 
     @allure.story("筛选-联想")
+    @allure.severity(A3)
     @allure.title("模糊搜索")
     def test_patientSuggest1(self):
         url = host + port_patient + "/patient/suggest.json"
@@ -53,6 +56,7 @@ class Test_TitanFuzzySearh():
         assert_get(url, data, self.cook, "白")
 
     @allure.story("筛选-收藏")
+    @allure.severity(A2)
     @allure.title("模糊搜索")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDataTemplateList(self, start, end):
@@ -63,6 +67,7 @@ class Test_TitanFuzzySearh():
         assert_get(url, data, self.cook, "操作成功")
 
     @allure.story("筛选")
+    @allure.severity(A2)
     @allure.title("筛选字段")
     @pytest.mark.parametrize("keyword", wordchech)
     def test_patientSuggest(self, keyword):
@@ -76,6 +81,7 @@ class Test_TitanFuzzySearh():
         assert_get(url, data, self.cook, hint)
 
     @allure.story("添加筛选")
+    @allure.severity(A3)
     @allure.title("筛选字段")
     def test_patientSearch(self):
         url = host + port_patient + "/patient/search.json"
@@ -85,6 +91,7 @@ class Test_TitanFuzzySearh():
         assert result.status_code == 200
 
     @allure.story("筛选到数据")
+    @allure.severity(A2)
     @allure.title("筛选字段")
     @pytest.mark.parametrize("keyword", wordchech)
     def test_patientSearch21(self, keyword):
@@ -152,6 +159,7 @@ class Test_TitanFuzzySearh():
             # assert twotimelist == sorted(twotimelist),    "二层的数据排序"
 
     @allure.story("保存数据")
+    @allure.severity(A2)
     @allure.title("筛选字段")
     @pytest.mark.parametrize("keyword", wordSave)
     def test_saveDataTemplate(self, keyword):
@@ -177,6 +185,7 @@ class Test_TitanFuzzySearh():
         return ids
 
     @allure.story("筛选-历史")
+    @allure.severity(A3)
     @allure.title("模糊搜索")
     @pytest.mark.parametrize("keyword", wordSave)
     @pytest.mark.parametrize("start,end", searchdate)
@@ -196,6 +205,7 @@ class Test_TitanFuzzySearh():
         # assert timelocal in result[1]["responseData"]["content"][0]["CREATED_TIME"], "筛选时间"
 
     @allure.story("筛选-搜索添加收藏")
+    @allure.severity(A3)
     @allure.title("模糊搜索")
     @pytest.mark.parametrize("status", (1, 0))
     def test_updateStatus(self, status):
@@ -206,7 +216,9 @@ class Test_TitanFuzzySearh():
         assert_post(url, data, self.cook, "操作成功")
 
     @allure.story("筛选-删除历史")
+    @allure.severity(A3)
     @allure.title("筛选历史")
+    # @pytest.mark.parametrize("templateId", pytest.lazy_fixture("templateId"))  这个还没有成功
     # @pytest.mark.skipif(len(pytest.lazy_fixture('templateId')) > 0)
     def test_updateStatus2(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/updateStatus.json"

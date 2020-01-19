@@ -125,18 +125,18 @@ class Test_homePage:
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_get(url, data, cook)
 
-    @allure.title("审核情况")
-    @allure.story("首页显示")
-    def test_getAudit(self, dlogin, login):
-        response1, cook = login
-        url = host + portlogin + "/home/getAudit.json"
-        header = {"cookie": dlogin}
-        data = dict(authUserId=response1["authUserId"], authToken=response1["authToken"])
-        assert_get(url, data, headers=header)
+    # @allure.title("审核情况")
+    # @allure.story("首页显示")
+    # def test_getAudit12309(self, dlogin, login):
+    #     response1, cook = login
+    #     url = host + portlogin + "/home/getAudit.json"
+    #     header = {"cookie": dlogin}
+    #     data = dict(authUserId=response1["authUserId"], authToken=response1["authToken"])
+    #     assert_get(url, data, headers=header)
 
     @allure.title("审核情况-跳转")
     @allure.story("首页显示")
-    def test_functionList(self, login):
+    def test_functionList1(self, login):
         response1, cook = login
         url = host + port_project + "/project/functionList.json"
         data = {

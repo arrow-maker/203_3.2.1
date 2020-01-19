@@ -6,14 +6,11 @@
 @Author:Terence
 """
 import os, sys
-from readConfig import get_email, isSend
+from readConfig import sender, passwd, toget, isSend
 from public.configEmail import send_zip
 
 path1 = os.path.dirname(__file__)
 pathcase = os.path.join(path1, "test_COMDDT")
-sender = get_email("sender")
-passwd = get_email("passwd")
-toget = get_email("toget")
 
 if __name__ == '__main__':
     os.system(f"pytest -v -q --alluredir report/test/ --reruns 5")

@@ -17,6 +17,7 @@ class Test_modelDisease:
 
     @allure.title("输入患者流水号-患者列表，数据列表展示")
     @allure.story("典型病例库操作--输入患者流水号")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getPatientList(self, login, start, end):
@@ -46,6 +47,7 @@ class Test_modelDisease:
 
     @allure.title("输入患者流水号-患者列表 病人的详细 诊断")
     @allure.story("典型病例库操作--输入患者流水号")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getPatientInfo(self, login):
         response1, cook = login
@@ -60,6 +62,7 @@ class Test_modelDisease:
 
     @allure.title("患者查询记录 记录列表")
     @allure.story("典型病例库操作--患者查询记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getSimilarRecordDataValue(self, login, start, end):
@@ -71,6 +74,7 @@ class Test_modelDisease:
         overWrite_assert_get_xls_hint(url, data, cook, clincalPath, "分页验证  10")
 
     @allure.title("患者查询记录 记录列表")
+    @allure.severity(A3)
     @allure.story("典型病例库操作--患者查询记录")
     def transfer_getSimilarRecordDataValue(self, response1, cook):
         url = port_model + "/patient_similar/getSimilarRecordDataValue"
@@ -87,6 +91,7 @@ class Test_modelDisease:
 
     @allure.title("患者的查询记录 详细的信息")
     @allure.story("典型病例库操作--患者查询记录")
+    @allure.severity(A4)
     @allure.step("参数：login={0}")
     def test_getNewPatientInfo(self, login):
         response1, cook = login
@@ -99,6 +104,7 @@ class Test_modelDisease:
 
     @allure.title("插入患者数据")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similarInsert_simm_record(self, login):
         response1, cook = login
@@ -113,6 +119,7 @@ class Test_modelDisease:
 
     @allure.title("python统计")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A5)
     @allure.step("参数：login={0}")
     def test_codeItemFindCodeItem(self, login):
         response1, cook = login
@@ -127,6 +134,7 @@ class Test_modelDisease:
 
     @allure.title("患者的基本信息")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similarbase_template(self, login):
         response1, cook = login
@@ -139,6 +147,7 @@ class Test_modelDisease:
         assert_post(url, data, cook)
 
     @allure.title("患者的相似值分析")
+    @allure.severity(A3)
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
     def test_getDataIndexValueTreeList(self, login):
@@ -153,6 +162,7 @@ class Test_modelDisease:
         assert_get(url, data, cook)
 
     @allure.title("保存临时模板")
+    @allure.severity(A3)
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
     def test_dataTemplatesaveDataTemplate(self, login):
@@ -171,6 +181,7 @@ class Test_modelDisease:
         templateId = result[1]["responseData"]["templateId"]
 
     @allure.title("保存临时数据分析结果")
+    @allure.severity(A2)
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
     def test_saveDataAnalysisResult(self, login):
@@ -181,6 +192,7 @@ class Test_modelDisease:
         assert_post(url, data, cook)
 
     @allure.title("获取相似患者列表数据")
+    @allure.severity(A2)
     @allure.story("智能搜索相似患者")
     @allure.step("参数：login={0}")
     def test_patient_similarMatch_weight(self, login):
@@ -198,6 +210,7 @@ class Test_modelDisease:
 
     @allure.title("获取相似患者列表数据统计")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similarCount_proportion(self, login):
         response1, cook = login
@@ -222,6 +235,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的列表")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_patient_page(self, login):
         response1, cook = login
@@ -233,6 +247,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的指标权重值")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_count_proportion(self, login):
         response1, cook = login
@@ -243,6 +258,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的分组路径")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_treatment_pathway(self, login):
         response1, cook = login
@@ -254,6 +270,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的时间轴路径")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_getTimeAxis(self, login):
         response1, cook = login
@@ -266,6 +283,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的病例统计数据比例")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_copd_charts(self, login):
         response1, cook = login
@@ -276,6 +294,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的患者相似对比数据比例")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_patient_contrast(self, login):
         response1, cook = login
@@ -288,6 +307,7 @@ class Test_modelDisease:
 
     @allure.title("患者相似分析后得到的数据导出")
     @allure.story("智能搜索相似患者")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_patient_similar_download_file(self, login):
         response1, cook = login
@@ -304,6 +324,7 @@ class Test_modelDisease:
 
     @allure.title("添加节点")
     @allure.story("保存到历史记录")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     @pytest.mark.parametrize("Name", ("新增节点1.0", "新增节点@2.0"))
     def test_resource_save(self, login, Name):
@@ -316,6 +337,7 @@ class Test_modelDisease:
 
     @allure.title("节点列表展示")
     @allure.story("保存到历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_findList(self, login):
         response1, cook = login
@@ -329,6 +351,7 @@ class Test_modelDisease:
 
     @allure.title("添加节点")
     @allure.story("保存到历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_save1(self, login):
         response1, cook = login
@@ -340,6 +363,7 @@ class Test_modelDisease:
 
     @allure.title("保存到历史的记录")
     @allure.story("保存到历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_save2(self, login):
         response1, cook = login
@@ -357,6 +381,7 @@ class Test_modelDisease:
 
     @allure.title("删除节点")
     @allure.story("保存到历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_delete(self, login):
         response1, cook = login
@@ -371,6 +396,7 @@ class Test_modelDisease:
 
     @allure.title("个人历史记录列表")
     @allure.story("历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_findList1(self, login):
         response1, cook = login
@@ -386,6 +412,7 @@ class Test_modelDisease:
 
     @allure.title("科室目录")
     @allure.story("历史记录")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_resource_findList2(self, login):
         response1, cook = login

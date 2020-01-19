@@ -13,6 +13,7 @@ class Test_similarityMeasure:
 
     # ------------------------------选择与新建患者-----------------------------
     @allure.title("数据库患者列表展示")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getPatientList(self, login, start, end):
@@ -40,6 +41,7 @@ class Test_similarityMeasure:
         return datadic
 
     @allure.title("患者详细信息展示")
+    @allure.severity(A4)
     @allure.story("数据库患者列表")
     @allure.step("参数：login={0}")
     def test_getNewPatientInfo(self, login):
@@ -52,6 +54,7 @@ class Test_similarityMeasure:
         assert_get(url, data, cook, "人口学信息")
 
     @allure.title("数据库患者相似分析设置-权重展示")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @allure.step("参数：login={0}")
     def test_showWeightTemplate(self, login):
@@ -63,6 +66,7 @@ class Test_similarityMeasure:
         assert_get(url, data, cook)
 
     @allure.title("数据库患者相似分析设置-权重保存修改")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.step("参数：login={0}")
     def test_saveWeightTemplate(self, login):
@@ -75,6 +79,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook, "权重配置保存成功")
 
     @allure.title("数据库相似病例智能分析记录-数据展示")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @allure.step("参数：login={0}")
     def test_getSimilarPatientRecord(self, login):
@@ -85,6 +90,7 @@ class Test_similarityMeasure:
         assert_get(url, data, cook)
 
     @allure.title("相似病例智能分析记录-患者的检查指标数据")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @allure.step("参数：login={0}")
     def test_dataGetPatientInfo(self, login):
@@ -97,6 +103,7 @@ class Test_similarityMeasure:
         assert_get(url, data, cook, inpatientNo[0])
 
     @allure.title("相似病例智能分析记录-患者信息添加到数据库中")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.description("这个接口是必须的，要插入的数据库的-临时表中，下一个接口是要使用，以用于查找相似患者")
     def test_generalSimilarityInsertSimilarRecord(self, login, dlogin):
@@ -111,6 +118,7 @@ class Test_similarityMeasure:
         assert_post(url, data1, cook, inpatientNo[0])
 
     @allure.title("由权重找患者--")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     def test_generalSimilartyMathWeight(self, login):
@@ -126,6 +134,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook, response1["hospitalCode"])
 
     @allure.title("相似患者个数配置")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @pytest.mark.parametrize("size", (10, 15, 20, 25))
@@ -146,6 +155,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook, hint=str(size))
 
     @allure.title("导出相似患者列表")
+    @allure.severity(A4)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     def test_downloadFile(self, login):
@@ -159,6 +169,7 @@ class Test_similarityMeasure:
         assert result.status_code == 200
 
     @allure.title("相似患者信息菜单配置")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @pytest.mark.parametrize("groupNo", ("XSG01", "XSG02", "XSG03", "XSG04", "XSG05", "XSG07"))
@@ -204,6 +215,7 @@ class Test_similarityMeasure:
         return ids
 
     @allure.title("相似患者信息菜单详细的信息设置")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @allure.step("参数：login={0}")
@@ -225,6 +237,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook)
 
     @allure.title("相似患者信息菜单详细的信息排序-相似度，转归，入院时间")
+    @allure.severity(A2)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @pytest.mark.parametrize("sort", (0, 1, 2))
@@ -242,38 +255,43 @@ class Test_similarityMeasure:
                     hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
-    @allure.title("相似患者信息菜单详细的信息排序-治疗路径")
-    @allure.story("数据库患者列表")
-    @allure.description("这个接口必须要和添加的接口联用")
-    @allure.step("参数：login={0}")
-    @pytest.mark.parametrize("drugName", (0, 1, 2, 3, 4))
-    def test_treatmentPathway(self, login, drugName):
-        response1, cook = login
-        url = host + port_python + "/generalSimilarity/treatmentPathway"
-        inpatient = self.inpatient_NO(login[0], login[1])["key"]
-        inpatientNo = ""
-        for i in inpatient:
-            inpatientNo += i + ","
-        allure.attach(f"内部参数：inpatent={inpatient}")
-        data = dict(
-            ptList=inpatientNo,
-            drugName=drugName,
-            hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
-        assert_post(url, data, cook)
-
-    @allure.title("相似患者信息菜单详细的信息排序-患者诊疗时间轴")
-    @allure.story("数据库患者列表")
-    @allure.description("这个接口必须要和添加的接口联用")
-    def test_dataGetTimeAxis(self, login):
-        response1, cook = login
-        url = host + port_es + "/similarnew/data/getTimeAxis.json"
-        inpatientNo = self.inpatient_NO(response1, cook)["inpatientNo"]
-        allure.attach(f"内部参数：inpatentNo={inpatientNo}")
-        data = dict(inpatientNo=inpatientNo[0],
-                    hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
-        assert_get(url, data, cook, inpatientNo[0])
+    # @allure.title("相似患者信息菜单详细的信息排序-治疗路径")
+    # @allure.severity(A2)
+    # @allure.story("数据库患者列表")
+    # @allure.description("这个接口必须要和添加的接口联用")
+    # @allure.step("参数：login={0}")
+    # @pytest.mark.parametrize("drugName", (0, 1, 2, 3, 4), ids=["一级路径", "二级目录", "三级目录", "四级目录", "五级目录"])
+    # @pytest.mark.skip("3.2.3版本没有这个模块")
+    # def test_treatmentPathway(self, login, drugName):
+    #     response1, cook = login
+    #     url = host + port_python + "/generalSimilarity/treatmentPathway"
+    #     inpatient = self.inpatient_NO(login[0], login[1])["key"]
+    #     inpatientNo = ""
+    #     for i in inpatient:
+    #         inpatientNo += i + ","
+    #     allure.attach(f"内部参数：inpatent={inpatient}")
+    #     data = dict(
+    #         ptList=inpatientNo,
+    #         drugName=drugName,
+    #         hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
+    #     assert_post(url, data, cook)
+    #
+    # @allure.title("相似患者信息菜单详细的信息排序-患者诊疗时间轴")
+    # @allure.severity(A3)
+    # @allure.story("数据库患者列表")
+    # @allure.description("这个接口必须要和添加的接口联用")
+    # @pytest.mark.skip("3.2.3版本没有这个模块")
+    # def test_dataGetTimeAxis(self, login):
+    #     response1, cook = login
+    #     url = host + port_es + "/similarnew/data/getTimeAxis.json"
+    #     inpatientNo = self.inpatient_NO(response1, cook)["inpatientNo"]
+    #     allure.attach(f"内部参数：inpatentNo={inpatientNo}")
+    #     data = dict(inpatientNo=inpatientNo[0],
+    #                 hospitalCode=response1["hospitalCode"], authUserId=response1["authUserId"], authToken=response1["authToken"])
+    #     assert_get(url, data, cook, inpatientNo[0])
 
     @allure.title("相似患者信息菜单详细的信息排序-患者对比")
+    @allure.severity(A3)
     @allure.story("数据库患者列表")
     @allure.description("这个接口必须要和添加的接口联用")
     @allure.step("参数：login={0}")
@@ -293,19 +311,21 @@ class Test_similarityMeasure:
                     authUserId=response1["authUserId"], authToken=response1["authToken"])
         assert_post(url, data, cook)
 
-    # @allure.story("患者查询记录-数据展示")
-    # @pytest.mark.skip("这个版本没有这个功能")
-    # def test_getSimilarRecordDataValue(self, login):
-    #     response1, cook = login
-    #     url = port_model + "/patient_similar/getSimilarRecordDataValue"
-    #     data = dict(startDate="", endDate="",
-    #                 # page=1, size=10,
-    #                 authUserId=response1["authUserId"], authToken=response1["authToken"])
-    #     overWrite_assert_get_xls_hint(url, data, cook, clincalPath, "分页验证  10")
+    @allure.title("患者查询记录-数据展示")
+    @allure.story("数据库患者列表")
+    @allure.severity(A3)
+    def test_getSimilarRecordDataValue(self, login):
+        response1, cook = login
+        url = port_model + "/patient_similar/getSimilarRecordDataValue"
+        data = dict(startDate="", endDate="",
+                    page=1, size=10,
+                    authUserId=response1["authUserId"], authToken=response1["authToken"])
+        assert_get(url, data, cook, hint="获取患者相似度记录列表成功")
 
     # ----------------------------新建患者----------------------------------------
 
     @allure.title("新建患者列表展示-；列表数据")
+    @allure.severity(A3)
     @allure.story("新建患者列表")
     @allure.step("参数：login={0}")
     def test_showPatientList(self, login):
@@ -328,6 +348,7 @@ class Test_similarityMeasure:
                 pass
 
     @allure.title("新建患者列表展示-；显示要增加的数据")
+    @allure.severity(A3)
     @allure.story("新建患者列表")
     @allure.step("参数：login={0}")
     def test_showBuiltTemplate(self, login):
@@ -338,6 +359,7 @@ class Test_similarityMeasure:
         assert_get(url, data, cook, "基本信息")
 
     @allure.title("新建患者列表展示-；添加患者信息")
+    @allure.severity(A3)
     @allure.story("新建患者列表")
     @allure.step("参数：login={0}")
     def test_insertSimilarRecord(self, login):
@@ -350,6 +372,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook)
 
     @allure.story("写入新建患者数据")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_insert_simm_record(self, login):
         response1, cook = login
@@ -361,6 +384,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook)
 
     @allure.story("去用python统计")
+    @allure.severity(A4)
     @allure.step("参数：login={0}")
     def test_findCodeItem(self, login):
         response1, cook = login
@@ -378,6 +402,7 @@ class Test_similarityMeasure:
         return resultdic
 
     @allure.story("指标的权重值模板")
+    @allure.severity(A2)
     @allure.step("参数：login={0}")
     def test_base_template(self, login):
         response1, cook = login
@@ -388,6 +413,7 @@ class Test_similarityMeasure:
         assert_post(url, data, cook)
 
     @allure.title("获取相似指标值列表")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_getDataIndexValueTreeList(self, login):
         response1, cook = login

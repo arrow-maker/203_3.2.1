@@ -124,6 +124,11 @@ def overWrite_assert_post_xls_hint(url, params, cook, catePath, Sheet):
                         assert "SUCCESS" in actualResult.text, f"{Sheet} 第{i + 2}行 {xlshint}"
 
 
+def assert_page(page=5):
+    if page == 5:
+        pass
+
+
 def assert_get(url, params=None, cook=None, hint="true", **kwargs):
     result = requests.get(url, params=params, cookies=cook, **kwargs)
     resultdic = json.loads(result.text)

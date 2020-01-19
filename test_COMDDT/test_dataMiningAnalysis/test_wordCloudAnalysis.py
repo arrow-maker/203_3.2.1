@@ -14,6 +14,7 @@ class Test_wordCloudAnalysis:
 
     @allure.title("调用python接口，为下面的接口调取资源")
     @allure.story("词云分析")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_findCodeItem(self, login):
         response1, cook = login
@@ -33,6 +34,7 @@ class Test_wordCloudAnalysis:
 
     @allure.title("请求查询的下拉框 的资源")
     @allure.story("词云分析")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_worldCloudTop(self, login):
         response1, cook = login
@@ -44,6 +46,7 @@ class Test_wordCloudAnalysis:
 
     @allure.title("词云 文献 信息")
     @allure.story("词云分析")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_worldCloud(self, login):
         response1, cook = login
@@ -61,6 +64,7 @@ class Test_wordCloudAnalysis:
 
     @allure.title("词云频率")
     @allure.story("词云分析")
+    @allure.severity(A3)
     @allure.step("参数：login={0}")
     def test_worldCloudFrequency(self, login):
         response1, cook = login

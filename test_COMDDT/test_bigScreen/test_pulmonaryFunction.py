@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 @file: test_pulmonaryFunction.py
 @time: 2019/9/30 16:14
@@ -7,7 +7,9 @@
 """
 from public.overWrite_Assert import *
 from public.Link_database import conOracle
-
+import importlib
+importlib.reload(sys)
+os.environ['NLS_LANG'] = 'Simplified Chinese_CHINA.ZHS16GBK'
 
 @allure.feature("肺功能大屏")
 class Test_pulmonartFunction:
@@ -18,9 +20,10 @@ class Test_pulmonartFunction:
 
     # 这里的数据是默认的所有的数据-但是界面上显示的是按日期显示的
     @allure.story("链接数据库")
-    def database(self):
+    def database(self, groupNo):
         # 这里是查找那个大屏的选择
-        result1 = conOracle(OracleDataurl, "SELECT * FROM report_group WHERE GROUP_NAME LIKE '%大屏%'")
+        result1 = conOracle(OracleDataurl, r"select * from report_group where GROUP_NAME like '%大屏%'")
+
         # 这里是选择当前的大屏
         pub = []
         for i in result1:
@@ -31,7 +34,7 @@ class Test_pulmonartFunction:
                 ('ACO大屏', 'acodp'), ('慢阻肺大屏', 'AECOPD-01'), ('慢阻肺大屏', 'AECOPD-031')]
         # 肺功能大屏的数据
         b = []
-        result2 = conOracle(OracleDataurl, "SELECT * FROM report_lib WHERE GROUP_NO = 'fdp01'")
+        result2 = conOracle(OracleDataurl, u"SELECT * FROM report_lib WHERE GROUP_NO = 'fdp01'")
         for i in result2:
             b.append(i[10])
         c = tuple(b)  # 这个大屏的所有的疾病Id
@@ -39,7 +42,7 @@ class Test_pulmonartFunction:
         cccccc = ('I6154', 'I6172', 'I6174', 'I6149', 'I7030', 'I6153', 'I6175', 'I6155', 'I6162', 'I6173', 'I6160',
                   'I6163', 'I6167', 'I6170', 'I6165', 'I6150', 'I6156', 'I6151', 'I6206', 'I6161', 'I6176')
         # 有疾病的id 找到data_Id找到对应的数据参数
-        q3 = conOracle(OracleDataurl, "SELECT * FROM anal_report_source_data WHERE data_id IN {0}".format(c))
+        q3 = conOracle(OracleDataurl, u"SELECT * FROM anal_report_source_data WHERE data_id IN {0}".format(c))
         # print(f"\n+++{q3}")
         # 读取某个指标的具体数据
         dd = []  # 用来保存这个疾病和疾病的数据
@@ -87,6 +90,8 @@ class Test_pulmonartFunction:
         return dd
 
     @allure.story("数据来源 的url")
+    @allure.link(url=f"{host}/code/codeItem/findCodeItem.json", name="link_url")
+    @allure.severity(A2)
     @pytest.mark.parametrize("itemCode", (
             "ES_DOMAIN", "COLLECT_DOMAIN", "KINSHIP_DOMAIN", "DS_DOMAIN", "SOURCEDATA_DOMAIN",
             "PYTHON_STATISTIC_DOMAIN", "QT_DOMAIN", "PRIMARY_INDEX_DOMAIN", "BBS_DOMAIN",
@@ -98,7 +103,10 @@ class Test_pulmonartFunction:
                     itemCode=itemCode)
         assert_get(url, params=data, cook=cook)
 
+
     @allure.story("最近的医院")
+    @allure.link(url=f"{host}/platform/hospital/getCurrentHospital.json", name="link_url")
+    @allure.severity(A3)
     def test_getCurrentHospital(self, login):
         response1, cook = login
         url = host + portlogin + "/platform/hospital/getCurrentHospital.json"
@@ -107,6 +115,8 @@ class Test_pulmonartFunction:
         assert response1["hospital"] in result
 
     @allure.story("显示数据分组")
+    @allure.link(url=f"{host}/quality/control/getReportGroupList.json", name="link_url")
+    @allure.severity(A3)
     @pytest.mark.parametrize("groupNo", ('zkdp', 'fdp01', 'fdp02', 'nzzdp', 'XCDP',
                                          'ipf01', 'AECOPD-01', 'AECOPD-031', 'acodp', 'AECOPD-01', 'AECOPD-031'))
     def test_getReportGroupList(self, login, groupNo):
@@ -128,6 +138,8 @@ class Test_pulmonartFunction:
         return tuple(ids)
 
     @allure.story("地图上所有的医院")
+    @allure.link(url=f"{host}/analItem/getAnalItemConfigList.json", name="link_url")
+    @allure.severity(A3)
     @allure.step("传入的参数：login={0}")
     def test_getAnalItemConfigList(self, login):
         response1, cook = login
@@ -136,12 +148,14 @@ class Test_pulmonartFunction:
         assert_get(url, data, cook)
 
     @allure.story("所有展示数据的数据来源")
+    @allure.link(url=f"{host}/quality/control/getReportDatas.json", name="link_url")
+    @allure.severity(A3)
     @pytest.mark.parametrize("groupNo", ('zkdp', 'fdp01', 'fdp02', 'nzzdp',
                                          'ipf01', 'AECOPD-01', 'acodp', 'AECOPD-01'))
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getReportDatas(self, login, groupNo, start, end):
         response1, cook = login
-        orgdata = self.database()
+        orgdata = self.database(groupNo)
         url = host + port_sourcedata + "/quality/control/getReportDatas.json"
         reportNo = self.trandfer_groupon(groupNo, response1, cook)
         allure.attach(f"内部参数：orgdata={orgdata}\n reportNo={reportNo}")
@@ -168,6 +182,8 @@ class Test_pulmonartFunction:
 
     @allure.story("门诊住院总人数")
     @allure.step("传入的参数：login={0}")
+    @allure.link(url=f"{host}/quality/control/getReportDatas.json", name="link_url")
+    @allure.severity(A3)
     @pytest.mark.parametrize("groupNo", ('zkdp', 'fdp01', 'fdp02', 'nzzdp',
                                          'ipf01', 'AECOPD-01', 'acodp', 'AECOPD-01'))
     @pytest.mark.parametrize("start,end", searchdate)
@@ -185,24 +201,32 @@ class Test_pulmonartFunction:
             assert_get(url, data, cook)
 
     @allure.story("全国省份数据")
+    @allure.link(url=f"{host}/map/geo-json/100000.json", name="link_url")
+    @allure.severity(A3)
     @allure.step("传入的参数：login={0}")
     def test_geoJson10000(self, login):
         url = host + port_sourcedata + "/map/geo-json/100000.json"
         assert_get(url, {}, login[1], "true")
 
     @allure.story("广州省份的数据")
+    @allure.link(url=f"{host}/map/geo-json/province/440000.json", name="link_url")
+    @allure.severity(A3)
     @allure.step("传入的参数：login={0}")
     def test_geoJson440000(self, login):
         url = host + port_sourcedata + "/map/geo-json/province/440000.json"
         assert_get(url, {}, login[1], "广州市")
 
     @allure.story("广东市的数据")
+    @allure.link(url=f"{host}/map/geo-json/440000/440100.json", name="link_url")
+    @allure.severity(A3)
     @allure.step("传入的参数：login={0}")
     def test_geoJson440100(self, login):
         url = host + port_sourcedata + "/map/geo-json/440000/440100.json"
         assert_get(url, {}, login[1], "UTF8Encoding")
 
     @allure.story("顶部显示的区域范围")
+    @allure.link(url=f"{host}/analItem/getAnalItemConfigList.json", name="link_url")
+    @allure.severity(A3)
     @allure.step("传入的参数：login={0}")
     def test_getAnalItemConfigList1(self, login):
         response1, cook = login

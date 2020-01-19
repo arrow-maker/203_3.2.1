@@ -19,6 +19,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("天塔筛选的总人数和病例-数据来源")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_getSourceNum(self):
         url = host + port_dataindex + "/dataIndex/dataStore/getSourceNum.json"
         data = dict(authUserId=self.authUserId, authToken=self.authToken)
@@ -42,6 +43,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("天塔筛选的通用指标数据")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_getDataIndexValueTreeList(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
         data = dict(topCategoryId=15723,
@@ -98,6 +100,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("天塔筛选的专病指标数据")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_getDataIndexValueTreeList2(self):
         url = host + port_dataindex + "/dataIndex/dataIndexValue/getDataIndexValueTreeList.json"
         data = dict(topCategoryIds="15393,15535,63327,63514,63777,63553,15782,",  # 这里好像是固定的
@@ -175,6 +178,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("查看疾病ICD编码")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     @pytest.mark.parametrize("dataId", (4162, 3294, 1565))
     def test_geSynonymTreeList(self, dataId):
         url = host + port_dataindex + "/dataIndex/synonym/geSynonymTreeList.json"
@@ -192,6 +196,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("保存筛选数据")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_saveDataTemplate(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataTemplate.json"
         yamdata = congyaml["天塔筛选"]["保存筛选数据"]
@@ -206,6 +211,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("保存筛选数据的数据统计分析")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_getDataAnalyzeCount(self):
         url = host + port_dataindex + "/dataIndex/dataStore/getDataAnalyzeCount.json"
         global templateId
@@ -216,6 +222,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("保存筛选数据")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A2)
     def test_getDataAnalysisResultList(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataAnalysisResultList.json"
         global templateId
@@ -226,6 +233,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选收藏")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDataTemplateList(self, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
@@ -244,6 +252,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选历史")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getDataTemplateList2(self, start, end):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataTemplateList.json"
@@ -265,6 +274,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选添加收藏指标")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_saveDataQueryGroup(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/saveDataQueryGroup.json"
         patientQuery = congyaml["天塔筛选"]["收藏指标"]["patientQueryWhere"]
@@ -281,6 +291,7 @@ class Test_TitanFiltrateClass():
 
     @allure.title("筛选结果导出")
     @allure.story("天塔筛选-通用指标")
+    @allure.severity(A3)
     def test_exportDataAnalysisResult(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/exportDataAnalysisResult.json"
         data = {

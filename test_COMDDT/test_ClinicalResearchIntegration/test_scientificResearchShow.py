@@ -10,7 +10,7 @@ from public.Login_Cookies import login_cookies
 
 
 @allure.feature("科研成果展示")
-class Test_scintificShow():
+class Test_scintificShow:
 
     def setup_class(self):
         response, self.cook = login_cookies()
@@ -20,6 +20,7 @@ class Test_scintificShow():
 
     @allure.title("课题列表和-数据展示")
     @allure.story("科研成果-展示")
+    @allure.severity(A3)
     @pytest.mark.parametrize("start,end", searchdate)
     def test_getAllTopicDTO(self, start, end):
         url = host + port_sourcedata + "/topic/getAllTopicDTO.json"
@@ -59,6 +60,7 @@ class Test_scintificShow():
 
     @allure.title("查看课题详情-标记")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("添加科研成果是在医索分析中进行的，已经操作过，这里不重复")
     def test_getHavingNoValueCountByCate(self):
         url = host + port_sourcedata + "/topic/getHavingNoValueCountByCate.json"
@@ -73,6 +75,7 @@ class Test_scintificShow():
 
     @allure.title("课题信息-课题的详细的数据")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_getAllValueByCate(self):
         url = host + port_sourcedata + "/topic/getAllValueByCate.json"
@@ -87,6 +90,7 @@ class Test_scintificShow():
 
     @allure.title("课题信息-课题的详细的修改")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_saveAndFlush(self):
         url = host + port_sourcedata + "/topic/saveAndFlush.json"
@@ -102,6 +106,7 @@ class Test_scintificShow():
 
     @allure.title("数据视图-python数据统计")
     @allure.story("课题数据操作")
+    @allure.severity(A4)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_findCodeItem(self):
         url = host + portlogin + "/code/codeItem/findCodeItem.json"
@@ -115,6 +120,7 @@ class Test_scintificShow():
 
     @allure.title("数据视图-查看数据集")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_getDataAnalysisResultList(self):
         url = host + port_dataindex + "/dataIndex/dataTemplate/getDataAnalysisResultList.json"
@@ -131,6 +137,7 @@ class Test_scintificShow():
 
     @allure.title("数据视图-数据概况")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_NewVariableView(self):
         url = host + port_python + "/NewVariableView"
@@ -159,6 +166,7 @@ class Test_scintificShow():
 
     @allure.title("数据视图-数据概况中的数据分布")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_changeVariable(self):
         url = host + port_python + "/changeVariable"
@@ -177,6 +185,7 @@ class Test_scintificShow():
 
     @allure.title("数据视图-数据处理")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_queryDataProcessByMainInfoId(self):
         url = host + port_sourcedata + "/topic/queryDataProcessByMainInfoId.json"
@@ -192,6 +201,7 @@ class Test_scintificShow():
 
     @allure.title("分析结果-数据展示")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_queryKtExtendInfo(self):
         url = host + port_sourcedata + "/topic/queryKtExtendInfo.json"
@@ -221,6 +231,7 @@ class Test_scintificShow():
 
     @allure.title("分析结果-添加图表说明")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_queryKtExtendInfo1(self):
         url = host + port_sourcedata + "/topic/updateTitleNameById.json"
@@ -236,6 +247,7 @@ class Test_scintificShow():
 
     @allure.title("研究结论-数据展示")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_getAllValueByCate1(self):
         url = host + port_sourcedata + "/topic/getAllValueByCate.json"
@@ -250,6 +262,7 @@ class Test_scintificShow():
 
     @allure.title("研究结论-数据编辑修改")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @allure.step("在有数据的前提下，对科研数据的查看")
     def test_saveAndFlush1(self):
         url = host + port_sourcedata + "/topic/saveAndFlush.json"
@@ -264,6 +277,7 @@ class Test_scintificShow():
 
     @allure.title("课题详情-置顶与取消")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     @pytest.mark.parametrize("ontop", (1, 0))
     def test_ontop(self, ontop):
         url = host + port_sourcedata + "/topic/ontop.json"
@@ -278,6 +292,7 @@ class Test_scintificShow():
 
     @allure.title("课题详情-删除课题")
     @allure.story("课题数据操作")
+    @allure.severity(A3)
     # @pytest.mark.skip("这里没有创建，所以关闭了删除")
     def test_deleteByMainInfoId(self):
         url = host + port_sourcedata + "/topic/deleteByMainInfoId.json"
